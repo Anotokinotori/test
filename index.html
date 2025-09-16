@@ -99,6 +99,12 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(233, 69, 96, 0.6);
         }
+        .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
         .btn-secondary {
             background-color: transparent;
             border: 2px solid var(--accent-color);
@@ -233,6 +239,7 @@
             font-size: 1.5em;
             color: black;
             font-weight: bold;
+            cursor: pointer;
         }
 
         /* Screenshot Popup */
@@ -299,6 +306,7 @@
             padding: 15px;
             background-color: var(--secondary-color);
             border-radius: 10px;
+            text-align: center;
         }
         .result-table {
             width: 100%;
@@ -400,7 +408,7 @@
             </table>
              <div class="page-buttons" style="margin-top: 20px;">
                  <button class="btn btn-secondary" onclick="resetApp()">最初からやり直す</button>
-            </div>
+             </div>
         </div>
 
     </div>
@@ -452,19 +460,15 @@
 
 
     <script>
-        // --- DATA (From previous steps) ---
+        // --- DATA (From CSV and analysis) ---
         const eliteGroups = {
-            'A': { name: 'モシリ炎・雷アビス', patterns: ['A', 'B', 'C'] },
-            'B': { name: 'モシリ暴徒', patterns: ['A', 'B', 'C'] },
-            'C': { name: 'チライ機兵', patterns: ['A', 'B', 'C'] },
-            'D': { name: 'オイナ機兵', patterns: ['A', 'B', 'C'] },
-            'E': { name: 'オイナ暴徒', patterns: ['A', 'B', 'C'] },
-            'F': { name: 'シリコロ暴徒', patterns: ['A', 'B', 'C'] },
-            'G': { name: 'アウタケ東', patterns: ['A', 'B', 'C'] },
-            'H': { name: 'アウタケ西', patterns: ['A', 'B', 'C'] },
-            'I': { name: 'ワクカウ', patterns: ['A', 'B', 'C'] },
-            'J': { name: 'その他機兵群', patterns: ['A', 'B', 'C'] },
+            'A': { name: 'モシリ炎・雷アビス' }, 'B': { name: 'モシリ暴徒' },
+            'C': { name: 'チライ機兵' },       'D': { name: 'オイナ機兵' },
+            'E': { name: 'オイナ暴徒' },       'F': { name: 'シリコロ暴徒' },
+            'G': { name: 'アウタケ東' },       'H': { name: 'アウタケ西' },
+            'I': { name: 'ワクカウ' },         'J': { name: 'その他機兵群' },
         };
+        const groupKeys = Object.keys(eliteGroups); // ['A', 'B', ...]
 
         const actionsData = [
             { id: 2, name: 'ワープ(2)', affectedGroups: ['A', 'D'] },
@@ -474,15 +478,15 @@
             { id: 6, name: 'ワープ(6)', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I'] },
             { id: 7, name: 'ワープ(7)', affectedGroups: ['A', 'J'] },
             { id: 8, name: 'ワープ(8)', affectedGroups: ['J'] },
-            { id: 9, name: 'ボート(1から)', affectedGroups: ['A'], type: 'move' },
-            { id: 10, name: 'ボート(1から)', affectedGroups: ['C', 'D'], type: 'move' },
-            { id: 13, name: '歩き(8から)', affectedGroups: ['A', 'B', 'C', 'J'], type: 'move', details: 'モシリ炎アビス + モシリ雷アビス + モシリ暴徒 ロード位置' },
-            { id: 15, name: '歩き(18から)', affectedGroups: ['E', 'G'], type: 'move', details: 'オイナ機兵+シリコロ暴徒 ロード位置' },
-            { id: 17, name: '歩き(7から)', affectedGroups: ['A', 'H', 'J'], type: 'move', details: 'アウタケ東 ロード位置' },
+            { id: 9, name: 'ボート(1からA)', affectedGroups: ['A']},
+            { id: 10, name: 'ボート(1からCD)', affectedGroups: ['C', 'D']},
+            { id: 13, name: '歩き(8からABCJ)', affectedGroups: ['A', 'B', 'C', 'J']},
+            { id: 15, name: '歩き(18からEG)', affectedGroups: ['E', 'G'], details: 'オイナ機兵+シリコロ暴徒 ロード位置' },
+            { id: 17, name: '歩き(7からAHJ)', affectedGroups: ['A', 'H', 'J']},
             { id: 18, name: 'ワープ(ボート)', affectedGroups: ['E'] },
-            { id: 19, name: '歩き(18から)', affectedGroups: ['E', 'F', 'G', 'I'], type: 'move', details: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置' },
-            { id: 20, name: 'ボート(ヤシオリから)', affectedGroups: ['H', 'I'], type: 'move' },
-            { id: 21, name: 'ボート(ヤシオリから)', affectedGroups: ['I'], type: 'move' } // Added based on feedback
+            { id: 19, name: '歩き(18からEFGI)', affectedGroups: ['E', 'F', 'G', 'I']},
+            { id: 20, name: 'ボート(ヤシオリからHI)', affectedGroups: ['H', 'I']},
+            { id: 21, name: 'ボート(ヤシオリからI)', affectedGroups: ['I'] }
         ];
         
         // --- UI DATA (For presentation) ---
@@ -504,7 +508,8 @@
         let currentConfig = {};
         let idealConfig = {};
         let activeSelection = { groupId: null, pattern: null };
-        const totalGroups = Object.keys(eliteGroups).length;
+        const totalGroups = groupKeys.length;
+        let possibleDailyActions = []; // This will be populated later
 
         // --- PAGE/MODAL MANAGEMENT ---
         function showPage(pageId) {
@@ -554,7 +559,7 @@
                 buttons.className = 'pattern-buttons';
                 buttons.id = `ideal-buttons-${groupId}`;
 
-                group.patterns.forEach(pattern => {
+                ['A', 'B', 'C'].forEach(pattern => {
                     const btn = document.createElement('button');
                     btn.textContent = pattern;
                     btn.onclick = () => selectIdealPattern(groupId, pattern);
@@ -573,7 +578,7 @@
             const zoomContainer = document.getElementById('zoom-map-container');
             zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
 
-            eliteGroups[groupId].patterns.forEach(pattern => {
+            ['A', 'B', 'C'].forEach(pattern => {
                 const pos = patternMarkerPositions[pattern];
                 const marker = document.createElement('div');
                 marker.className = 'pattern-marker';
@@ -613,6 +618,7 @@
             activeSelection = { groupId: null, pattern: null };
         }
 
+
         function updateProgress() {
             const completedCount = Object.keys(currentConfig).length;
             document.getElementById('progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
@@ -625,11 +631,7 @@
             idealConfig[groupId] = pattern;
             const buttonContainer = document.getElementById(`ideal-buttons-${groupId}`);
             buttonContainer.querySelectorAll('button').forEach(btn => {
-                if (btn.textContent === pattern) {
-                    btn.classList.add('selected');
-                } else {
-                    btn.classList.remove('selected');
-                }
+                btn.classList.toggle('selected', btn.textContent === pattern);
             });
         }
 
@@ -639,90 +641,173 @@
             }
         }
         
-        // --- NEW CALCULATION LOGIC (REWRITTEN) ---
+        // --- CALCULATION LOGIC (REWRITTEN) ---
+
+        /**
+         * Generates all unique, achievable load patterns by combining the base actions.
+         * This creates the complete "move set" for the BFS algorithm.
+         */
+        function generatePossibleDailyActions() {
+            console.log("Generating all possible daily load patterns...");
+            
+            // Map each base action to a Set for easier union operations
+            const baseActionSets = actionsData.map(action => ({
+                action: action,
+                groups: new Set(action.affectedGroups)
+            }));
+
+            const achievableSets = new Map();
+            // Start with "Do Nothing"
+            achievableSets.set("", {
+                name: "何もしない",
+                actions: [],
+                affectedGroups: new Set()
+            });
+
+            // Iteratively build up all possible combinations
+            let updatedInLastPass = true;
+            while(updatedInLastPass) {
+                updatedInLastPass = false;
+                const currentSets = Array.from(achievableSets.values()); // Snapshot of current achievable sets
+                
+                for (const existingSet of currentSets) {
+                    for (const baseAction of baseActionSets) {
+                        const newAffectedGroups = new Set([...existingSet.affectedGroups, ...baseAction.groups]);
+                        const key = Array.from(newAffectedGroups).sort().join(',');
+
+                        if (!achievableSets.has(key)) {
+                            updatedInLastPass = true;
+                            // Find a reasonably simple set of actions to achieve this new set
+                            const combination = findActionCombination(newAffectedGroups, baseActionSets);
+                            achievableSets.set(key, {
+                                name: combination.map(a => a.name).join(' + '),
+                                actions: combination,
+                                affectedGroups: newAffectedGroups
+                            });
+                        }
+                    }
+                }
+            }
+            
+            possibleDailyActions = Array.from(achievableSets.values());
+            console.log(`Generated ${possibleDailyActions.length} unique daily actions.`);
+        }
+        
+        /**
+         * Helper function to find a valid (but not necessarily shortest) combination of base actions
+         * that covers the target set of groups. This is a greedy "set cover" approach.
+         */
+        function findActionCombination(targetGroups, baseActionSets) {
+            const combination = [];
+            const uncoveredGroups = new Set(targetGroups);
+
+            while (uncoveredGroups.size > 0) {
+                let bestAction = null;
+                let maxCovered = 0;
+
+                for (const baseAction of baseActionSets) {
+                    const covered = new Set([...uncoveredGroups].filter(x => baseAction.groups.has(x)));
+                    if (covered.size > maxCovered) {
+                        maxCovered = covered.size;
+                        bestAction = baseAction;
+                    }
+                }
+                
+                if (bestAction) {
+                    combination.push(bestAction.action);
+                    bestAction.groups.forEach(g => uncoveredGroups.delete(g));
+                } else {
+                    // Should not happen if all groups are coverable
+                    break;
+                }
+            }
+            return combination;
+        }
+
+        function configToString(config) {
+             return groupKeys.map(key => config[key] || 'A').join('');
+        }
+        
+        const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
+        const NEXT_PATTERN = ['B', 'C', 'A'];
+
+        function getNextPattern(currentPattern) {
+            return NEXT_PATTERN[PATTERN_MAP[currentPattern]];
+        }
+        
+        function isConfigEqual(configA, configB) {
+            return configToString(configA) === configToString(configB);
+        }
+
         function calculatePlan() {
             if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length !== totalGroups) {
                 alert('全ての現在配置と理想配置を入力してください。');
                 return;
             }
 
-            const startNode = {
-                config: currentConfig,
-                path: []
-            };
+            showPage('result-page');
+            const summary = document.getElementById('result-summary');
+            summary.textContent = '計算中です...';
+            document.getElementById('result-tbody').innerHTML = '';
 
-            const queue = [startNode];
-            const visited = new Set([JSON.stringify(currentConfig)]);
-            
-            let safetyBreak = 0;
-            const MAX_ITERATIONS = 5000; // Prevents infinite loops
+            setTimeout(() => {
+                if (possibleDailyActions.length === 0) {
+                    generatePossibleDailyActions();
+                }
 
-            while (queue.length > 0) {
-                safetyBreak++;
-                if (safetyBreak > MAX_ITERATIONS) {
-                    console.error("Calculation timed out. Too complex?");
-                    alert("計算が複雑すぎるため、タイムアウトしました。");
+                if (isConfigEqual(currentConfig, idealConfig)) {
+                    displayResults([]);
                     return;
                 }
 
-                const currentNode = queue.shift();
+                const startNode = {
+                    config: currentConfig,
+                    path: []
+                };
 
-                if (isConfigEqual(currentNode.config, idealConfig)) {
-                    // Found the shortest path
-                    const plan = formatPathToPlan(currentNode.path);
-                    displayResults(plan);
-                    showPage('result-page');
-                    return;
-                }
+                const queue = [startNode];
+                const visited = new Set([configToString(currentConfig)]);
+                
+                const MAX_ITERATIONS = 40000;
+                let safetyBreak = 0;
 
-                // Explore next possible states from this node
-                // A "daily action" is a single action from actionsData for now.
-                for (const action of actionsData) {
-                    const nextConfig = { ...currentNode.config };
-                    
-                    // Apply the daily action
-                    action.affectedGroups.forEach(group => {
-                        nextConfig[group] = getNextPattern(group, currentNode.config[group]);
-                    });
-                    
-                    const nextConfigStr = JSON.stringify(nextConfig);
-                    if (!visited.has(nextConfigStr)) {
-                        visited.add(nextConfigStr);
-                        const newPath = [...currentNode.path, action];
-                        queue.push({ config: nextConfig, path: newPath });
+                while (queue.length > 0) {
+                    safetyBreak++;
+                    if (safetyBreak > MAX_ITERATIONS) {
+                        console.error("Calculation timed out.");
+                        alert("計算が複雑すぎるか、指定日数内に完了するルートが見つかりませんでした。");
+                        displayResults(null);
+                        return;
+                    }
+
+                    const currentNode = queue.shift();
+
+                    for (const dailyAction of possibleDailyActions) {
+                        let nextConfig = { ...currentNode.config };
+                        
+                        dailyAction.affectedGroups.forEach(group => {
+                            nextConfig[group] = getNextPattern(nextConfig[group]);
+                        });
+
+                        const nextConfigStr = configToString(nextConfig);
+
+                        if (!visited.has(nextConfigStr)) {
+                            visited.add(nextConfigStr);
+                            const newPath = [...currentNode.path, dailyAction];
+
+                            if (isConfigEqual(nextConfig, idealConfig)) {
+                                displayResults(newPath);
+                                return;
+                            }
+                            
+                            queue.push({ config: nextConfig, path: newPath });
+                        }
                     }
                 }
-            }
-            
-            // If loop finishes and no solution is found
-            alert("解決策が見つかりませんでした。");
-            displayResults([]); // Display empty result
-            showPage('result-page');
-
-        }
-
-        function getNextPattern(groupId, currentPattern) {
-            const patterns = eliteGroups[groupId].patterns;
-            const currentIndex = patterns.indexOf(currentPattern);
-            const nextIndex = (currentIndex + 1) % patterns.length;
-            return patterns[nextIndex];
-        }
-
-        function isConfigEqual(configA, configB) {
-            for (const key in eliteGroups) {
-                if (configA[key] !== configB[key]) return false;
-            }
-            return true;
-        }
-        
-        function formatPathToPlan(path) {
-            if (!path || path.length === 0) return [];
-            return path.map((action, index) => ({
-                day: index + 1,
-                // In this new logic, one day = one action.
-                // The structure supports multiple actions, but our BFS explores one-by-one.
-                actions: [action] 
-            }));
+                
+                console.log("No solution found.");
+                displayResults(null);
+            }, 10);
         }
 
         // --- RESULT DISPLAY LOGIC ---
@@ -731,46 +816,56 @@
             const tbody = document.getElementById('result-tbody');
             tbody.innerHTML = '';
             
+            if (plan === null) {
+                summary.textContent = '調整プランが見つかりませんでした。';
+                return;
+            }
+            
             if (plan.length === 0) {
-                summary.textContent = isConfigEqual(currentConfig, idealConfig) 
-                    ? '調整は不要です！現在の配置が理想の配置と一致しています。'
-                    : '調整プランが見つかりませんでした。';
+                summary.textContent = '調整は不要です！現在の配置が理想の配置と一致しています。';
                 return;
             }
 
             summary.textContent = `最短 ${plan.length} 日で調整が完了します！`;
 
-            plan.forEach(dayPlan => {
+            plan.forEach((dayPlan, index) => {
                 const tr = document.createElement('tr');
-                const actionNames = dayPlan.actions.map(a => a.name).join(', ');
+                const actionNames = dayPlan.name;
                 
                 tr.innerHTML = `
-                    <td>${dayPlan.day}日目</td>
+                    <td>${index + 1}日目</td>
                     <td>${actionNames}</td>
-                    <td><button class="btn btn-details" onclick='showDayDetail(${JSON.stringify(dayPlan)})'>手順を確認</button></td>
+                    <td><button class="btn btn-details" onclick='showDayDetail(${JSON.stringify(dayPlan)}, ${index+1})'>手順を確認</button></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
         
-        function showDayDetail(dayPlan) {
-            document.getElementById('day-detail-title').textContent = `${dayPlan.day}日目の調整手順`;
+        function showDayDetail(dayPlan, dayNumber) {
+            document.getElementById('day-detail-title').textContent = `${dayNumber}日目の調整手順`;
             const content = document.getElementById('day-detail-content');
-content.innerHTML = '';
+            content.innerHTML = '';
             
-            dayPlan.actions.forEach(action => {
+            if(dayPlan.actions.length === 0){
                 const item = document.createElement('div');
                 item.className = 'action-item';
-                let detailsText = action.details ? `<p><strong>詳細:</strong> ${action.details}</p>` : '';
-                item.innerHTML = `
-                    <h3>行動: ${action.name} (ID: ${action.id})</h3>
-                    <p>影響を受けるグループ: ${action.affectedGroups.join(', ')}</p>
-                    ${detailsText}
-                    <img src="https://placehold.co/400x250/16213e/dcdcdc?text=Action+${action.id}+Route" alt="操作手順GIF">
-                `;
+                item.innerHTML = `<h3>今日は何もしません</h3><p>ロードする敵はありません。ゲーム内で日付を更新してください。</p>`;
                 content.appendChild(item);
-            });
-            
+            } else {
+                 dayPlan.actions.forEach(action => {
+                    const item = document.createElement('div');
+                    item.className = 'action-item';
+                    let detailsText = action.details ? `<p><strong>詳細:</strong> ${action.details}</p>` : '';
+                    item.innerHTML = `
+                        <h3>行動: ${action.name}</h3>
+                        <p>影響を受けるグループ: ${action.affectedGroups.join(', ')}</p>
+                        ${detailsText}
+                        <img src="https://placehold.co/400x250/16213e/dcdcdc?text=Action+${action.id}+Route" alt="操作手順GIF">
+                    `;
+                    content.appendChild(item);
+                });
+            }
+           
             showModal('day-detail-modal');
         }
         
@@ -778,9 +873,8 @@ content.innerHTML = '';
             currentConfig = {};
             idealConfig = {};
             
-            // Reset UI
             const mapContainer = document.querySelector('#current-config-page .map-container');
-            mapContainer.innerHTML = '<img src="https://placehold.co/1000x600/1a1a2e/dcdcdc?text=Tsurumi+Map" alt="鶴観マップ" class="map-bg">'; // Reset map
+            mapContainer.innerHTML = '<img src="https://placehold.co/1000x600/1a1a2e/dcdcdc?text=Tsurumi+Map" alt="鶴観マップ" class="map-bg">';
             initCurrentConfigPage();
             initIdealConfigPage();
             updateProgress();

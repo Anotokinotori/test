@@ -482,6 +482,7 @@
             { id: 18, name: 'ワープ(ボート)', affectedGroups: ['E'] },
             { id: 19, name: '歩き(18から)', affectedGroups: ['E', 'F', 'G', 'I'], type: 'move', details: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置' },
             { id: 20, name: 'ボート(ヤシオリから)', affectedGroups: ['H', 'I'], type: 'move' },
+            { id: 21, name: 'ボート(ヤシオリから)', affectedGroups: ['I'], type: 'move' } // Added based on feedback
         ];
         
         // --- UI DATA (For presentation) ---
@@ -570,10 +571,8 @@
             document.getElementById('zoom-title').textContent = `${groupId}: ${eliteGroups[groupId].name} のパターンを選択`;
             
             const zoomContainer = document.getElementById('zoom-map-container');
-            // Clear previous markers
             zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
 
-            // Add new pattern markers
             eliteGroups[groupId].patterns.forEach(pattern => {
                 const pos = patternMarkerPositions[pattern];
                 const marker = document.createElement('div');
@@ -590,7 +589,6 @@
         function selectPatternForConfirmation(pattern) {
             activeSelection.pattern = pattern;
             document.getElementById('screenshot-title').textContent = `${activeSelection.groupId} - パターン ${pattern} で合っていますか？`;
-            // In a real app, you'd change the image source based on group/pattern
             document.getElementById('screenshot-img').src = `https://placehold.co/500x300/0f3460/dcdcdc?text=Group+${activeSelection.groupId}+Pattern+${activeSelection.pattern}`;
             document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
             showModal('screenshot-popup');
@@ -602,7 +600,6 @@
             
             currentConfig[groupId] = pattern;
 
-            // Update UI
             const marker = document.getElementById(`marker-${groupId}`);
             marker.classList.remove('glowing');
             marker.classList.add('completed');
@@ -610,11 +607,9 @@
             
             updateProgress();
             
-            // Close all modals
             closeModal('screenshot-popup');
             closeModal('zoom-view');
             
-            // Reset selection
             activeSelection = { groupId: null, pattern: null };
         }
 
@@ -644,73 +639,66 @@
             }
         }
         
-        // --- CALCULATION LOGIC ---
+        // --- NEW CALCULATION LOGIC (REWRITTEN) ---
         function calculatePlan() {
             if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length !== totalGroups) {
                 alert('全ての現在配置と理想配置を入力してください。');
                 return;
             }
 
-            let tempConfig = { ...currentConfig };
-            const plan = [];
-            const maxDays = 30; // Safety break
+            const startNode = {
+                config: currentConfig,
+                path: []
+            };
 
-            for (let day = 1; day <= maxDays; day++) {
-                if (isConfigEqual(tempConfig, idealConfig)) {
-                    break; // Goal reached
+            const queue = [startNode];
+            const visited = new Set([JSON.stringify(currentConfig)]);
+            
+            let safetyBreak = 0;
+            const MAX_ITERATIONS = 5000; // Prevents infinite loops
+
+            while (queue.length > 0) {
+                safetyBreak++;
+                if (safetyBreak > MAX_ITERATIONS) {
+                    console.error("Calculation timed out. Too complex?");
+                    alert("計算が複雑すぎるため、タイムアウトしました。");
+                    return;
                 }
 
-                let dailyActions = [];
-                let changedToday = true;
+                const currentNode = queue.shift();
 
-                // Loop to add multiple productive actions in one day
-                while (changedToday) {
-                    changedToday = false;
-                    let bestAction = null;
-                    let maxScore = 0;
-
-                    for (const action of actionsData) {
-                        // Avoid using the same action twice a day, simple check
-                        if (dailyActions.find(a => a.id === action.id)) continue;
-                        
-                        let score = 0;
-                        let canBeProductive = false;
-                        for (const group of action.affectedGroups) {
-                            if (tempConfig[group] !== idealConfig[group]) {
-                                canBeProductive = true;
-                                score++;
-                            }
-                        }
-                        
-                        if (canBeProductive && score > maxScore) {
-                            maxScore = score;
-                            bestAction = action;
-                        }
-                    }
-
-                    if (bestAction) {
-                        dailyActions.push(bestAction);
-                        // Apply action to tempConfig
-                        bestAction.affectedGroups.forEach(group => {
-                            tempConfig[group] = getNextPattern(group, tempConfig[group]);
-                        });
-                        changedToday = true;
-                    }
+                if (isConfigEqual(currentNode.config, idealConfig)) {
+                    // Found the shortest path
+                    const plan = formatPathToPlan(currentNode.path);
+                    displayResults(plan);
+                    showPage('result-page');
+                    return;
                 }
-                
-                if (dailyActions.length > 0) {
-                     plan.push({ day, actions: dailyActions });
-                } else {
-                    // If no productive action found, we might be stuck or done
-                    if (!isConfigEqual(tempConfig, idealConfig)) {
-                       console.log(`Day ${day}: No productive action found, but not at goal. Breaking.`);
+
+                // Explore next possible states from this node
+                // A "daily action" is a single action from actionsData for now.
+                for (const action of actionsData) {
+                    const nextConfig = { ...currentNode.config };
+                    
+                    // Apply the daily action
+                    action.affectedGroups.forEach(group => {
+                        nextConfig[group] = getNextPattern(group, currentNode.config[group]);
+                    });
+                    
+                    const nextConfigStr = JSON.stringify(nextConfig);
+                    if (!visited.has(nextConfigStr)) {
+                        visited.add(nextConfigStr);
+                        const newPath = [...currentNode.path, action];
+                        queue.push({ config: nextConfig, path: newPath });
                     }
-                    break;
                 }
             }
-
-            displayResults(plan);
+            
+            // If loop finishes and no solution is found
+            alert("解決策が見つかりませんでした。");
+            displayResults([]); // Display empty result
             showPage('result-page');
+
         }
 
         function getNextPattern(groupId, currentPattern) {
@@ -721,7 +709,20 @@
         }
 
         function isConfigEqual(configA, configB) {
-            return JSON.stringify(configA) === JSON.stringify(configB);
+            for (const key in eliteGroups) {
+                if (configA[key] !== configB[key]) return false;
+            }
+            return true;
+        }
+        
+        function formatPathToPlan(path) {
+            if (!path || path.length === 0) return [];
+            return path.map((action, index) => ({
+                day: index + 1,
+                // In this new logic, one day = one action.
+                // The structure supports multiple actions, but our BFS explores one-by-one.
+                actions: [action] 
+            }));
         }
 
         // --- RESULT DISPLAY LOGIC ---
@@ -731,7 +732,9 @@
             tbody.innerHTML = '';
             
             if (plan.length === 0) {
-                summary.textContent = '調整は不要です！現在の配置が理想の配置と一致しています。';
+                summary.textContent = isConfigEqual(currentConfig, idealConfig) 
+                    ? '調整は不要です！現在の配置が理想の配置と一致しています。'
+                    : '調整プランが見つかりませんでした。';
                 return;
             }
 
@@ -753,14 +756,14 @@
         function showDayDetail(dayPlan) {
             document.getElementById('day-detail-title').textContent = `${dayPlan.day}日目の調整手順`;
             const content = document.getElementById('day-detail-content');
-            content.innerHTML = '';
+content.innerHTML = '';
             
             dayPlan.actions.forEach(action => {
                 const item = document.createElement('div');
                 item.className = 'action-item';
                 let detailsText = action.details ? `<p><strong>詳細:</strong> ${action.details}</p>` : '';
                 item.innerHTML = `
-                    <h3>行動: ${action.name}</h3>
+                    <h3>行動: ${action.name} (ID: ${action.id})</h3>
                     <p>影響を受けるグループ: ${action.affectedGroups.join(', ')}</p>
                     ${detailsText}
                     <img src="https://placehold.co/400x250/16213e/dcdcdc?text=Action+${action.id}+Route" alt="操作手順GIF">
@@ -776,6 +779,8 @@
             idealConfig = {};
             
             // Reset UI
+            const mapContainer = document.querySelector('#current-config-page .map-container');
+            mapContainer.innerHTML = '<img src="https://placehold.co/1000x600/1a1a2e/dcdcdc?text=Tsurumi+Map" alt="鶴観マップ" class="map-bg">'; // Reset map
             initCurrentConfigPage();
             initIdealConfigPage();
             updateProgress();
@@ -787,3 +792,4 @@
     </script>
 </body>
 </html>
+

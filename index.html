@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鶴観調整シミュレーター</title>
+    <style>
+        /* General Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #1a1a2e;
+            --primary-color: #16213e;
+            --secondary-color: #0f3460;
+            --accent-color: #e94560;
+            --text-color: #dcdcdc;
+            --glow-color: #00ffff;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            height: 95vh;
+            max-height: 800px;
+            background-color: var(--primary-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Page Styles */
+        .page {
+            padding: 30px;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transform: scale(0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        h1, h2, h3 {
+            color: white;
+            text-shadow: 0 0 10px var(--accent-color);
+        }
+
+        /* Start Page */
+        #start-page {
+            text-align: center;
+        }
+        #start-page h1 { font-size: 3em; }
+        #start-page p { font-size: 1.2em; max-width: 600px; margin: 20px auto; }
+        .start-buttons { margin-top: 40px; }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+            font-weight: bold;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.6);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--primary-color);
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            border: 1px solid var(--glow-color);
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--accent-color); }
+
+        /* Map Page */
+        #current-config-page {
+             justify-content: flex-start;
+        }
+        .map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 10px auto;
+            flex-grow: 1;
+        }
+        .map-container img.map-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .status-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .progress-text { font-size: 1.1em; }
+
+        .map-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 255, 255, 0.7);
+            border-radius: 50%;
+            border: 2px solid var(--glow-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: black;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        .map-marker.glowing {
+            animation: glowing 2s infinite;
+        }
+        .map-marker.completed {
+            background-color: var(--accent-color);
+            border-color: white;
+            animation: none;
+            color: white;
+        }
+        @keyframes glowing {
+            0% { box-shadow: 0 0 5px var(--glow-color); }
+            50% { box-shadow: 0 0 20px var(--glow-color); }
+            100% { box-shadow: 0 0 5px var(--glow-color); }
+        }
+
+        /* Zoom View */
+        #zoom-view {
+            background-color: rgba(26, 26, 46, 0.95);
+        }
+        #zoom-view .modal-content {
+            background: none; border: none; box-shadow: none; text-align: center;
+        }
+        #zoom-map-container {
+            position: relative;
+            width: 800px; /* Fixed size for demo */
+            height: 500px;
+            margin: 20px auto;
+        }
+        #zoom-map-container img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 10px;
+        }
+        .pattern-marker {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 255, 255, 0.8);
+            border: 3px solid var(--glow-color);
+            animation: glowing 2s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Screenshot Popup */
+        #screenshot-popup .modal-content { max-width: 600px; }
+        #screenshot-popup img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
+        #screenshot-popup .btn-confirm {
+            background-color: #28a745;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        #screenshot-popup .btn-confirm:hover {
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.6);
+        }
+
+        /* Ideal Config Page */
+        #ideal-config-page .config-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px 0;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .config-item {
+            background-color: var(--secondary-color);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .config-item-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .pattern-buttons button {
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: 2px solid var(--secondary-color);
+            padding: 10px;
+            margin: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 50px;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        .pattern-buttons button:hover {
+            border-color: var(--accent-color);
+        }
+        .pattern-buttons button.selected {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* Result Page */
+        #result-page h2 { margin-top: 0; }
+        #result-summary {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+        }
+        .result-table {
+            width: 100%;
+            max-width: 900px;
+            border-collapse: collapse;
+            max-height: 50vh;
+            display: block;
+            overflow-y: auto;
+        }
+        .result-table th, .result-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .result-table th {
+            background-color: var(--secondary-color);
+            position: sticky;
+            top: 0;
+        }
+        .result-table .btn-details {
+            background-color: var(--secondary-color);
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        /* Day Detail Modal */
+        #day-detail-modal .modal-content { max-width: 900px; }
+        #day-detail-content { max-height: 70vh; overflow-y: auto; }
+        .action-item {
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .action-item p { margin: 0 0 10px; font-size: 1.1em; }
+        .action-item img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Page 1: Start Screen -->
+        <div id="start-page" class="page active">
+            <h1>鶴観 精鋭配置シミュレーター</h1>
+            <p>現在の配置と理想の配置を入力するだけで、最短の調整ルートを計算します。</p>
+            <div class="start-buttons">
+                <button class="btn" onclick="showPage('current-config-page')">調整を始める</button>
+                <button class="btn btn-secondary" onclick="showModal('guide-modal')">使い方ガイド</button>
+            </div>
+        </div>
+
+        <!-- Page 2: Current Configuration Input -->
+        <div id="current-config-page" class="page">
+            <div class="status-bar">
+                <h2>現在の配置を入力してください</h2>
+                <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
+            </div>
+            <div class="map-container">
+                <img src="https://placehold.co/1000x600/1a1a2e/dcdcdc?text=Tsurumi+Map" alt="鶴観マップ" class="map-bg">
+                <!-- Markers will be injected by JavaScript -->
+            </div>
+            <button class="btn" id="go-to-ideal-btn" onclick="showPage('ideal-config-page')" disabled>理想の配置へ進む</button>
+        </div>
+        
+        <!-- Page 3: Ideal Configuration Input -->
+        <div id="ideal-config-page" class="page">
+            <h2>理想の配置を入力してください</h2>
+             <button class="btn btn-secondary" onclick="copyCurrentToIdeal()">現在の配置をコピー</button>
+            <div class="config-list" id="ideal-config-list">
+                <!-- Ideal config items will be injected by JavaScript -->
+            </div>
+            <div class="page-buttons">
+                 <button class="btn" onclick="calculatePlan()">調整プランを計算！</button>
+            </div>
+        </div>
+
+        <!-- Page 4: Result Page -->
+        <div id="result-page" class="page">
+            <h2>調整スケジュール</h2>
+            <div id="result-summary"></div>
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>実施する調整箇所</th>
+                        <th>詳細</th>
+                    </tr>
+                </thead>
+                <tbody id="result-tbody">
+                    <!-- Result rows will be injected by JavaScript -->
+                </tbody>
+            </table>
+             <div class="page-buttons" style="margin-top: 20px;">
+                 <button class="btn btn-secondary" onclick="resetApp()">最初からやり直す</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: Guide -->
+    <div id="guide-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('guide-modal')">&times;</span>
+            <h2>使い方ガイド</h2>
+            <p>1. 「調整を始める」をクリックし、マップ上の光るアイコンから現在の精鋭の配置を登録します。</p>
+            <p>2. 全ての配置を登録したら、次に理想の配置を設定します。</p>
+            <p>3. 「調整プランを計算！」ボタンを押すと、日ごとの最適な調整手順が表示されます。</p>
+            <img src="https://placehold.co/700x300/0f3460/dcdcdc?text=Usage+Diagram" style="width:100%; border-radius:10px;">
+        </div>
+    </div>
+    
+    <!-- Modal: Zoom View for Pattern Selection -->
+    <div id="zoom-view" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('zoom-view')">&times;</span>
+            <h3 id="zoom-title"></h3>
+            <div id="zoom-map-container">
+                <img src="https://placehold.co/800x500/16213e/dcdcdc?text=Zoomed+Area" alt="ズームマップ">
+                <!-- Pattern markers will be injected by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Screenshot Confirmation -->
+    <div id="screenshot-popup" class="modal">
+        <div class="modal-content">
+             <span class="modal-close" onclick="closeModal('screenshot-popup')">&times;</span>
+             <h3 id="screenshot-title">この配置で合っていますか？</h3>
+             <img id="screenshot-img" src="https://placehold.co/500x300/0f3460/dcdcdc?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット">
+             <button id="confirm-pattern-btn" class="btn btn-confirm">確定</button>
+        </div>
+    </div>
+    
+    <!-- Modal: Day Detail -->
+    <div id="day-detail-modal" class="modal">
+         <div class="modal-content">
+             <span class="modal-close" onclick="closeModal('day-detail-modal')">&times;</span>
+             <h2 id="day-detail-title"></h2>
+             <div id="day-detail-content">
+                 <!-- Day detail actions will be injected by JavaScript -->
+             </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA (From previous steps) ---
+        const eliteGroups = {
+            'A': { name: 'モシリ炎・雷アビス', patterns: ['A', 'B', 'C'] },
+            'B': { name: 'モシリ暴徒', patterns: ['A', 'B', 'C'] },
+            'C': { name: 'チライ機兵', patterns: ['A', 'B', 'C'] },
+            'D': { name: 'オイナ機兵', patterns: ['A', 'B', 'C'] },
+            'E': { name: 'オイナ暴徒', patterns: ['A', 'B', 'C'] },
+            'F': { name: 'シリコロ暴徒', patterns: ['A', 'B', 'C'] },
+            'G': { name: 'アウタケ東', patterns: ['A', 'B', 'C'] },
+            'H': { name: 'アウタケ西', patterns: ['A', 'B', 'C'] },
+            'I': { name: 'ワクカウ', patterns: ['A', 'B', 'C'] },
+            'J': { name: 'その他機兵群', patterns: ['A', 'B', 'C'] },
+        };
+
+        const actionsData = [
+            { id: 2, name: 'ワープ(2)', affectedGroups: ['A', 'D'] },
+            { id: 3, name: 'ワープ(3)', affectedGroups: ['A', 'B', 'C', 'D', 'E', 'J'] },
+            { id: 4, name: 'ワープ(4)', affectedGroups: ['B', 'C', 'D', 'E', 'F'] },
+            { id: 5, name: 'ワープ(5)', affectedGroups: ['B', 'E', 'F', 'G', 'H', 'I'] },
+            { id: 6, name: 'ワープ(6)', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I'] },
+            { id: 7, name: 'ワープ(7)', affectedGroups: ['A', 'J'] },
+            { id: 8, name: 'ワープ(8)', affectedGroups: ['J'] },
+            { id: 9, name: 'ボート(1から)', affectedGroups: ['A'], type: 'move' },
+            { id: 10, name: 'ボート(1から)', affectedGroups: ['C', 'D'], type: 'move' },
+            { id: 13, name: '歩き(8から)', affectedGroups: ['A', 'B', 'C', 'J'], type: 'move', details: 'モシリ炎アビス + モシリ雷アビス + モシリ暴徒 ロード位置' },
+            { id: 15, name: '歩き(18から)', affectedGroups: ['E', 'G'], type: 'move', details: 'オイナ機兵+シリコロ暴徒 ロード位置' },
+            { id: 17, name: '歩き(7から)', affectedGroups: ['A', 'H', 'J'], type: 'move', details: 'アウタケ東 ロード位置' },
+            { id: 18, name: 'ワープ(ボート)', affectedGroups: ['E'] },
+            { id: 19, name: '歩き(18から)', affectedGroups: ['E', 'F', 'G', 'I'], type: 'move', details: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置' },
+            { id: 20, name: 'ボート(ヤシオリから)', affectedGroups: ['H', 'I'], type: 'move' },
+        ];
+        
+        // --- UI DATA (For presentation) ---
+        const markerPositions = {
+            'A': { top: '25%', left: '20%' }, 'B': { top: '35%', left: '28%' },
+            'C': { top: '50%', left: '15%' }, 'D': { top: '65%', left: '30%' },
+            'E': { top: '75%', left: '45%' }, 'F': { top: '60%', left: '55%' },
+            'G': { top: '45%', left: '68%' }, 'H': { top: '30%', left: '75%' },
+            'I': { top: '55%', left: '85%' }, 'J': { top: '15%', left: '40%' }
+        };
+
+        const patternMarkerPositions = {
+            'A': { top: '30%', left: '20%' },
+            'B': { top: '50%', left: '50%' },
+            'C': { top: '70%', left: '70%' }
+        }
+
+        // --- APPLICATION STATE ---
+        let currentConfig = {};
+        let idealConfig = {};
+        let activeSelection = { groupId: null, pattern: null };
+        const totalGroups = Object.keys(eliteGroups).length;
+
+        // --- PAGE/MODAL MANAGEMENT ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCurrentConfigPage();
+            initIdealConfigPage();
+        });
+
+        function initCurrentConfigPage() {
+            const mapContainer = document.querySelector('#current-config-page .map-container');
+            for (const groupId in eliteGroups) {
+                const pos = markerPositions[groupId];
+                const marker = document.createElement('div');
+                marker.className = 'map-marker glowing';
+                marker.id = `marker-${groupId}`;
+                marker.textContent = groupId;
+                marker.style.top = pos.top;
+                marker.style.left = pos.left;
+                marker.onclick = () => openGroupSelector(groupId);
+                mapContainer.appendChild(marker);
+            }
+        }
+        
+        function initIdealConfigPage() {
+            const listContainer = document.getElementById('ideal-config-list');
+            listContainer.innerHTML = '';
+            for (const groupId in eliteGroups) {
+                const group = eliteGroups[groupId];
+                const item = document.createElement('div');
+                item.className = 'config-item';
+                item.innerHTML = `<span class="config-item-label">${groupId}: ${group.name}</span>`;
+                
+                const buttons = document.createElement('div');
+                buttons.className = 'pattern-buttons';
+                buttons.id = `ideal-buttons-${groupId}`;
+
+                group.patterns.forEach(pattern => {
+                    const btn = document.createElement('button');
+                    btn.textContent = pattern;
+                    btn.onclick = () => selectIdealPattern(groupId, pattern);
+                    buttons.appendChild(btn);
+                });
+                item.appendChild(buttons);
+                listContainer.appendChild(item);
+            }
+        }
+
+        // --- INPUT FLOW LOGIC ---
+        function openGroupSelector(groupId) {
+            activeSelection.groupId = groupId;
+            document.getElementById('zoom-title').textContent = `${groupId}: ${eliteGroups[groupId].name} のパターンを選択`;
+            
+            const zoomContainer = document.getElementById('zoom-map-container');
+            // Clear previous markers
+            zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
+
+            // Add new pattern markers
+            eliteGroups[groupId].patterns.forEach(pattern => {
+                const pos = patternMarkerPositions[pattern];
+                const marker = document.createElement('div');
+                marker.className = 'pattern-marker';
+                marker.textContent = pattern;
+                marker.style.top = pos.top;
+                marker.style.left = pos.left;
+                marker.onclick = () => selectPatternForConfirmation(pattern);
+                zoomContainer.appendChild(marker);
+            });
+            showModal('zoom-view');
+        }
+        
+        function selectPatternForConfirmation(pattern) {
+            activeSelection.pattern = pattern;
+            document.getElementById('screenshot-title').textContent = `${activeSelection.groupId} - パターン ${pattern} で合っていますか？`;
+            // In a real app, you'd change the image source based on group/pattern
+            document.getElementById('screenshot-img').src = `https://placehold.co/500x300/0f3460/dcdcdc?text=Group+${activeSelection.groupId}+Pattern+${activeSelection.pattern}`;
+            document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
+            showModal('screenshot-popup');
+        }
+
+        function confirmPatternSelection() {
+            const { groupId, pattern } = activeSelection;
+            if (!groupId || !pattern) return;
+            
+            currentConfig[groupId] = pattern;
+
+            // Update UI
+            const marker = document.getElementById(`marker-${groupId}`);
+            marker.classList.remove('glowing');
+            marker.classList.add('completed');
+            marker.innerHTML = '✔';
+            
+            updateProgress();
+            
+            // Close all modals
+            closeModal('screenshot-popup');
+            closeModal('zoom-view');
+            
+            // Reset selection
+            activeSelection = { groupId: null, pattern: null };
+        }
+
+        function updateProgress() {
+            const completedCount = Object.keys(currentConfig).length;
+            document.getElementById('progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
+            if (completedCount === totalGroups) {
+                document.getElementById('go-to-ideal-btn').disabled = false;
+            }
+        }
+        
+        function selectIdealPattern(groupId, pattern) {
+            idealConfig[groupId] = pattern;
+            const buttonContainer = document.getElementById(`ideal-buttons-${groupId}`);
+            buttonContainer.querySelectorAll('button').forEach(btn => {
+                if (btn.textContent === pattern) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        function copyCurrentToIdeal() {
+            for (const groupId in currentConfig) {
+                selectIdealPattern(groupId, currentConfig[groupId]);
+            }
+        }
+        
+        // --- CALCULATION LOGIC ---
+        function calculatePlan() {
+            if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length !== totalGroups) {
+                alert('全ての現在配置と理想配置を入力してください。');
+                return;
+            }
+
+            let tempConfig = { ...currentConfig };
+            const plan = [];
+            const maxDays = 30; // Safety break
+
+            for (let day = 1; day <= maxDays; day++) {
+                if (isConfigEqual(tempConfig, idealConfig)) {
+                    break; // Goal reached
+                }
+
+                let dailyActions = [];
+                let changedToday = true;
+
+                // Loop to add multiple productive actions in one day
+                while (changedToday) {
+                    changedToday = false;
+                    let bestAction = null;
+                    let maxScore = 0;
+
+                    for (const action of actionsData) {
+                        // Avoid using the same action twice a day, simple check
+                        if (dailyActions.find(a => a.id === action.id)) continue;
+                        
+                        let score = 0;
+                        let canBeProductive = false;
+                        for (const group of action.affectedGroups) {
+                            if (tempConfig[group] !== idealConfig[group]) {
+                                canBeProductive = true;
+                                score++;
+                            }
+                        }
+                        
+                        if (canBeProductive && score > maxScore) {
+                            maxScore = score;
+                            bestAction = action;
+                        }
+                    }
+
+                    if (bestAction) {
+                        dailyActions.push(bestAction);
+                        // Apply action to tempConfig
+                        bestAction.affectedGroups.forEach(group => {
+                            tempConfig[group] = getNextPattern(group, tempConfig[group]);
+                        });
+                        changedToday = true;
+                    }
+                }
+                
+                if (dailyActions.length > 0) {
+                     plan.push({ day, actions: dailyActions });
+                } else {
+                    // If no productive action found, we might be stuck or done
+                    if (!isConfigEqual(tempConfig, idealConfig)) {
+                       console.log(`Day ${day}: No productive action found, but not at goal. Breaking.`);
+                    }
+                    break;
+                }
+            }
+
+            displayResults(plan);
+            showPage('result-page');
+        }
+
+        function getNextPattern(groupId, currentPattern) {
+            const patterns = eliteGroups[groupId].patterns;
+            const currentIndex = patterns.indexOf(currentPattern);
+            const nextIndex = (currentIndex + 1) % patterns.length;
+            return patterns[nextIndex];
+        }
+
+        function isConfigEqual(configA, configB) {
+            return JSON.stringify(configA) === JSON.stringify(configB);
+        }
+
+        // --- RESULT DISPLAY LOGIC ---
+        function displayResults(plan) {
+            const summary = document.getElementById('result-summary');
+            const tbody = document.getElementById('result-tbody');
+            tbody.innerHTML = '';
+            
+            if (plan.length === 0) {
+                summary.textContent = '調整は不要です！現在の配置が理想の配置と一致しています。';
+                return;
+            }
+
+            summary.textContent = `最短 ${plan.length} 日で調整が完了します！`;
+
+            plan.forEach(dayPlan => {
+                const tr = document.createElement('tr');
+                const actionNames = dayPlan.actions.map(a => a.name).join(', ');
+                
+                tr.innerHTML = `
+                    <td>${dayPlan.day}日目</td>
+                    <td>${actionNames}</td>
+                    <td><button class="btn btn-details" onclick='showDayDetail(${JSON.stringify(dayPlan)})'>手順を確認</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function showDayDetail(dayPlan) {
+            document.getElementById('day-detail-title').textContent = `${dayPlan.day}日目の調整手順`;
+            const content = document.getElementById('day-detail-content');
+            content.innerHTML = '';
+            
+            dayPlan.actions.forEach(action => {
+                const item = document.createElement('div');
+                item.className = 'action-item';
+                let detailsText = action.details ? `<p><strong>詳細:</strong> ${action.details}</p>` : '';
+                item.innerHTML = `
+                    <h3>行動: ${action.name}</h3>
+                    <p>影響を受けるグループ: ${action.affectedGroups.join(', ')}</p>
+                    ${detailsText}
+                    <img src="https://placehold.co/400x250/16213e/dcdcdc?text=Action+${action.id}+Route" alt="操作手順GIF">
+                `;
+                content.appendChild(item);
+            });
+            
+            showModal('day-detail-modal');
+        }
+        
+        function resetApp() {
+            currentConfig = {};
+            idealConfig = {};
+            
+            // Reset UI
+            initCurrentConfigPage();
+            initIdealConfigPage();
+            updateProgress();
+            document.getElementById('go-to-ideal-btn').disabled = true;
+            
+            showPage('start-page');
+        }
+
+    </script>
+</body>
+</html>

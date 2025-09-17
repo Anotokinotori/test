@@ -1,0 +1,5985 @@
+{
+  "0": null,
+  "1": {
+    "name": "ワープ(2)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D"
+    ]
+  },
+  "2": {
+    "name": "ワープ(3)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "J"
+    ]
+  },
+  "3": {
+    "name": "ワープ(4)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "4": {
+    "name": "ワープ(2) + ワープ(4)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "5": {
+    "name": "ワープ(3) + ワープ(4)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "J"
+    ]
+  },
+  "6": {
+    "name": "ワープ(5)",
+    "actions": [
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "7": {
+    "name": "ワープ(2) + ワープ(5)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "8": {
+    "name": "ワープ(3) + ワープ(5)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "9": {
+    "name": "ワープ(4) + ワープ(5)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "10": {
+    "name": "ワープ(2) + ワープ(4) + ワープ(5)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "11": {
+    "name": "ワープ(6)",
+    "actions": [
+      {
+        "id": 6,
+        "name": "ワープ(6)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "12": {
+    "name": "ワープ(7)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "J"
+    ]
+  },
+  "13": {
+    "name": "ワープ(2) + ワープ(7)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "J"
+    ]
+  },
+  "14": {
+    "name": "ワープ(5) + ワープ(7)",
+    "actions": [
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "15": {
+    "name": "ワープ(2) + ワープ(5) + ワープ(7)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "16": {
+    "name": "ワープ(6) + ワープ(7)",
+    "actions": [
+      {
+        "id": 6,
+        "name": "ワープ(6)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "17": {
+    "name": "ワープ(8)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "J"
+    ]
+  },
+  "18": {
+    "name": "ワープ(4) + ワープ(8)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "J"
+    ]
+  },
+  "19": {
+    "name": "ワープ(5) + ワープ(8)",
+    "actions": [
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "20": {
+    "name": "ワープ(4) + ワープ(5) + ワープ(8)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "21": {
+    "name": "ボート(1からA)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A"
+    ]
+  },
+  "22": {
+    "name": "ワープ(5) + ボート(1からA)",
+    "actions": [
+      {
+        "id": 5,
+        "name": "ワープ(5)",
+        "affectedGroups": [
+          "B",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I"
+        ]
+      },
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "23": {
+    "name": "ボート(1からCD)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D"
+    ]
+  },
+  "24": {
+    "name": "ワープ(2) + ボート(1からCD)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D"
+    ]
+  },
+  "25": {
+    "name": "ワープ(7) + ボート(1からCD)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "J"
+    ]
+  },
+  "26": {
+    "name": "ワープ(8) + ボート(1からCD)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "J"
+    ]
+  },
+  "27": {
+    "name": "歩き(8からABCJ)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "J"
+    ]
+  },
+  "28": {
+    "name": "ワープ(2) + 歩き(8からABCJ)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "J"
+    ]
+  },
+  "29": {
+    "name": "歩き(18からEG)",
+    "actions": [
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G"
+    ]
+  },
+  "30": {
+    "name": "ワープ(2) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G"
+    ]
+  },
+  "31": {
+    "name": "ワープ(3) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "32": {
+    "name": "ワープ(4) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ]
+  },
+  "33": {
+    "name": "ワープ(2) + ワープ(4) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ]
+  },
+  "34": {
+    "name": "ワープ(3) + ワープ(4) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "J"
+    ]
+  },
+  "35": {
+    "name": "ワープ(7) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "36": {
+    "name": "ワープ(2) + ワープ(7) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "37": {
+    "name": "ワープ(8) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "38": {
+    "name": "ワープ(4) + ワープ(8) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "J"
+    ]
+  },
+  "39": {
+    "name": "ボート(1からA) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G"
+    ]
+  },
+  "40": {
+    "name": "ボート(1からCD) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G"
+    ]
+  },
+  "41": {
+    "name": "ワープ(2) + ボート(1からCD) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G"
+    ]
+  },
+  "42": {
+    "name": "ワープ(7) + ボート(1からCD) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "43": {
+    "name": "ワープ(8) + ボート(1からCD) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "44": {
+    "name": "歩き(8からABCJ) + 歩き(18からEG)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "G",
+      "J"
+    ]
+  },
+  "45": {
+    "name": "歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "H",
+      "J"
+    ]
+  },
+  "46": {
+    "name": "ワープ(2) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "H",
+      "J"
+    ]
+  },
+  "47": {
+    "name": "ワープ(3) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "H",
+      "J"
+    ]
+  },
+  "48": {
+    "name": "ワープ(4) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "H",
+      "J"
+    ]
+  },
+  "49": {
+    "name": "ボート(1からCD) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "H",
+      "J"
+    ]
+  },
+  "50": {
+    "name": "歩き(8からABCJ) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "H",
+      "J"
+    ]
+  },
+  "51": {
+    "name": "ワープ(2) + 歩き(8からABCJ) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "H",
+      "J"
+    ]
+  },
+  "52": {
+    "name": "歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "53": {
+    "name": "ワープ(2) + 歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "54": {
+    "name": "ワープ(3) + 歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "55": {
+    "name": "ワープ(4) + 歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "56": {
+    "name": "ボート(1からCD) + 歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "57": {
+    "name": "歩き(8からABCJ) + 歩き(18からEG) + 歩き(7からAHJ)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "58": {
+    "name": "ワープ(ボート)",
+    "actions": [
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E"
+    ]
+  },
+  "59": {
+    "name": "ワープ(2) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E"
+    ]
+  },
+  "60": {
+    "name": "ワープ(7) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "J"
+    ]
+  },
+  "61": {
+    "name": "ワープ(2) + ワープ(7) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "J"
+    ]
+  },
+  "62": {
+    "name": "ワープ(8) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "J"
+    ]
+  },
+  "63": {
+    "name": "ボート(1からA) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E"
+    ]
+  },
+  "64": {
+    "name": "ボート(1からCD) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E"
+    ]
+  },
+  "65": {
+    "name": "ワープ(2) + ボート(1からCD) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E"
+    ]
+  },
+  "66": {
+    "name": "ワープ(7) + ボート(1からCD) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "J"
+    ]
+  },
+  "67": {
+    "name": "ワープ(8) + ボート(1からCD) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "J"
+    ]
+  },
+  "68": {
+    "name": "歩き(8からABCJ) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "J"
+    ]
+  },
+  "69": {
+    "name": "歩き(7からAHJ) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "H",
+      "J"
+    ]
+  },
+  "70": {
+    "name": "ワープ(2) + 歩き(7からAHJ) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "H",
+      "J"
+    ]
+  },
+  "71": {
+    "name": "ボート(1からCD) + 歩き(7からAHJ) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "H",
+      "J"
+    ]
+  },
+  "72": {
+    "name": "歩き(8からABCJ) + 歩き(7からAHJ) + ワープ(ボート)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "H",
+      "J"
+    ]
+  },
+  "73": {
+    "name": "歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "74": {
+    "name": "ワープ(2) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "75": {
+    "name": "ワープ(3) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "76": {
+    "name": "ワープ(4) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "77": {
+    "name": "ワープ(2) + ワープ(4) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "78": {
+    "name": "ワープ(7) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "79": {
+    "name": "ワープ(2) + ワープ(7) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "80": {
+    "name": "ワープ(8) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "81": {
+    "name": "ワープ(4) + ワープ(8) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "82": {
+    "name": "ボート(1からA) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "83": {
+    "name": "ボート(1からCD) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "84": {
+    "name": "ワープ(2) + ボート(1からCD) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I"
+    ]
+  },
+  "85": {
+    "name": "ワープ(7) + ボート(1からCD) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "86": {
+    "name": "ワープ(8) + ボート(1からCD) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "87": {
+    "name": "歩き(8からABCJ) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "F",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "88": {
+    "name": "歩き(7からAHJ) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "89": {
+    "name": "ワープ(2) + 歩き(7からAHJ) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "90": {
+    "name": "ボート(1からCD) + 歩き(7からAHJ) + 歩き(18からEFGI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 17,
+        "name": "歩き(7からAHJ)",
+        "affectedGroups": [
+          "A",
+          "H",
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "91": {
+    "name": "ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "H",
+      "I"
+    ]
+  },
+  "92": {
+    "name": "ワープ(2) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "H",
+      "I"
+    ]
+  },
+  "93": {
+    "name": "ワープ(3) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "94": {
+    "name": "ワープ(4) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "H",
+      "I"
+    ]
+  },
+  "95": {
+    "name": "ワープ(2) + ワープ(4) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "H",
+      "I"
+    ]
+  },
+  "96": {
+    "name": "ワープ(3) + ワープ(4) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "97": {
+    "name": "ワープ(7) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "98": {
+    "name": "ワープ(2) + ワープ(7) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "99": {
+    "name": "ワープ(8) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "100": {
+    "name": "ワープ(4) + ワープ(8) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "101": {
+    "name": "ボート(1からA) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "H",
+      "I"
+    ]
+  },
+  "102": {
+    "name": "ボート(1からCD) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "H",
+      "I"
+    ]
+  },
+  "103": {
+    "name": "ワープ(2) + ボート(1からCD) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "H",
+      "I"
+    ]
+  },
+  "104": {
+    "name": "ワープ(7) + ボート(1からCD) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "105": {
+    "name": "ワープ(8) + ボート(1からCD) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "106": {
+    "name": "歩き(8からABCJ) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "107": {
+    "name": "ワープ(2) + 歩き(8からABCJ) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "108": {
+    "name": "歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "109": {
+    "name": "ワープ(2) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "110": {
+    "name": "ワープ(3) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "111": {
+    "name": "ワープ(7) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "112": {
+    "name": "ワープ(2) + ワープ(7) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "113": {
+    "name": "ワープ(8) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "114": {
+    "name": "ボート(1からA) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "115": {
+    "name": "ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "116": {
+    "name": "ワープ(2) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "117": {
+    "name": "ワープ(7) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "118": {
+    "name": "ワープ(8) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "119": {
+    "name": "歩き(8からABCJ) + 歩き(18からEG) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "120": {
+    "name": "ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "H",
+      "I"
+    ]
+  },
+  "121": {
+    "name": "ワープ(2) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "H",
+      "I"
+    ]
+  },
+  "122": {
+    "name": "ワープ(7) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "123": {
+    "name": "ワープ(2) + ワープ(7) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "124": {
+    "name": "ワープ(8) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "125": {
+    "name": "ボート(1からA) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "H",
+      "I"
+    ]
+  },
+  "126": {
+    "name": "ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "H",
+      "I"
+    ]
+  },
+  "127": {
+    "name": "ワープ(2) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "H",
+      "I"
+    ]
+  },
+  "128": {
+    "name": "ワープ(7) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "129": {
+    "name": "ワープ(8) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "130": {
+    "name": "歩き(8からABCJ) + ワープ(ボート) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "131": {
+    "name": "歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "132": {
+    "name": "ワープ(2) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "133": {
+    "name": "ワープ(8) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "134": {
+    "name": "ボート(1からA) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "135": {
+    "name": "ボート(1からCD) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "136": {
+    "name": "ワープ(2) + ボート(1からCD) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ]
+  },
+  "137": {
+    "name": "ワープ(8) + ボート(1からCD) + 歩き(18からEFGI) + ボート(ヤシオリからHI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 19,
+        "name": "歩き(18からEFGI)",
+        "affectedGroups": [
+          "E",
+          "F",
+          "G",
+          "I"
+        ]
+      },
+      {
+        "id": 20,
+        "name": "ボート(ヤシオリからHI)",
+        "affectedGroups": [
+          "H",
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J"
+    ]
+  },
+  "138": {
+    "name": "ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "I"
+    ]
+  },
+  "139": {
+    "name": "ワープ(2) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "I"
+    ]
+  },
+  "140": {
+    "name": "ワープ(3) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "141": {
+    "name": "ワープ(4) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "I"
+    ]
+  },
+  "142": {
+    "name": "ワープ(2) + ワープ(4) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "I"
+    ]
+  },
+  "143": {
+    "name": "ワープ(3) + ワープ(4) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "I",
+      "J"
+    ]
+  },
+  "144": {
+    "name": "ワープ(7) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "I",
+      "J"
+    ]
+  },
+  "145": {
+    "name": "ワープ(2) + ワープ(7) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "I",
+      "J"
+    ]
+  },
+  "146": {
+    "name": "ワープ(8) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "I",
+      "J"
+    ]
+  },
+  "147": {
+    "name": "ワープ(4) + ワープ(8) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 4,
+        "name": "ワープ(4)",
+        "affectedGroups": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "I",
+      "J"
+    ]
+  },
+  "148": {
+    "name": "ボート(1からA) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "I"
+    ]
+  },
+  "149": {
+    "name": "ボート(1からCD) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "I"
+    ]
+  },
+  "150": {
+    "name": "ワープ(2) + ボート(1からCD) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "I"
+    ]
+  },
+  "151": {
+    "name": "ワープ(7) + ボート(1からCD) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "I",
+      "J"
+    ]
+  },
+  "152": {
+    "name": "ワープ(8) + ボート(1からCD) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "I",
+      "J"
+    ]
+  },
+  "153": {
+    "name": "歩き(8からABCJ) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "I",
+      "J"
+    ]
+  },
+  "154": {
+    "name": "ワープ(2) + 歩き(8からABCJ) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "I",
+      "J"
+    ]
+  },
+  "155": {
+    "name": "歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G",
+      "I"
+    ]
+  },
+  "156": {
+    "name": "ワープ(2) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "I"
+    ]
+  },
+  "157": {
+    "name": "ワープ(3) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 3,
+        "name": "ワープ(3)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "158": {
+    "name": "ワープ(7) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "159": {
+    "name": "ワープ(2) + ワープ(7) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "160": {
+    "name": "ワープ(8) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "161": {
+    "name": "ボート(1からA) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "G",
+      "I"
+    ]
+  },
+  "162": {
+    "name": "ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "I"
+    ]
+  },
+  "163": {
+    "name": "ワープ(2) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "I"
+    ]
+  },
+  "164": {
+    "name": "ワープ(7) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "165": {
+    "name": "ワープ(8) + ボート(1からCD) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "166": {
+    "name": "歩き(8からABCJ) + 歩き(18からEG) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 15,
+        "name": "歩き(18からEG)",
+        "affectedGroups": [
+          "E",
+          "G"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "G",
+      "I",
+      "J"
+    ]
+  },
+  "167": {
+    "name": "ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "I"
+    ]
+  },
+  "168": {
+    "name": "ワープ(2) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "I"
+    ]
+  },
+  "169": {
+    "name": "ワープ(7) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "170": {
+    "name": "ワープ(2) + ワープ(7) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "D",
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "171": {
+    "name": "ワープ(8) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "172": {
+    "name": "ボート(1からA) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 9,
+        "name": "ボート(1からA)",
+        "affectedGroups": [
+          "A"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "E",
+      "I"
+    ]
+  },
+  "173": {
+    "name": "ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "I"
+    ]
+  },
+  "174": {
+    "name": "ワープ(2) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 2,
+        "name": "ワープ(2)",
+        "affectedGroups": [
+          "A",
+          "D"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "I"
+    ]
+  },
+  "175": {
+    "name": "ワープ(7) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 7,
+        "name": "ワープ(7)",
+        "affectedGroups": [
+          "A",
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "C",
+      "D",
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "176": {
+    "name": "ワープ(8) + ボート(1からCD) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 8,
+        "name": "ワープ(8)",
+        "affectedGroups": [
+          "J"
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ボート(1からCD)",
+        "affectedGroups": [
+          "C",
+          "D"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "C",
+      "D",
+      "E",
+      "I",
+      "J"
+    ]
+  },
+  "177": {
+    "name": "歩き(8からABCJ) + ワープ(ボート) + ボート(ヤシオリからI)",
+    "actions": [
+      {
+        "id": 13,
+        "name": "歩き(8からABCJ)",
+        "affectedGroups": [
+          "A",
+          "B",
+          "C",
+          "J"
+        ]
+      },
+      {
+        "id": 18,
+        "name": "ワープ(ボート)",
+        "affectedGroups": [
+          "E"
+        ]
+      },
+      {
+        "id": 21,
+        "name": "ボート(ヤシオリからI)",
+        "affectedGroups": [
+          "I"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "I",
+      "J"
+    ]
+  }
+}

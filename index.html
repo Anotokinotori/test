@@ -133,7 +133,7 @@
         #start-page .subtitle {
             font-size: clamp(1em, 1.5vw, 1.2em);
             color: var(--secondary-text-color);
-            max-width: 500px;
+            max-width: 600px; /* Increased width */
             margin: 0 auto 40px;
         }
         
@@ -361,7 +361,7 @@
         }
 
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
-        .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%; max-width: 1000px; }
+        .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%; max-width: 1000px; /* Increased max-width */ }
         .result-table { width: 100%; border-collapse: collapse; }
         .result-table th, .result-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
         .result-table th { background-color: #f9f9f9; position: sticky; top: 0; }
@@ -370,7 +370,7 @@
         /* Modal Styles */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: none; justify-content: center; align-items: center; }
         .modal.active { opacity: 1; visibility: visible; display: flex; }
-        .modal-content { background-color: #fff; color: var(--primary-text-color); padding: 30px; border-radius: 15px; position: relative; width: 90%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-content { background-color: #fff; color: var(--primary-text-color); padding: 30px; border-radius: 15px; position: relative; width: 90%; max-width: 900px; /* Increased max-width */ box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
         .modal-close:hover { color: #333; }
         .pattern-marker { position: absolute; width: 50px; height: 50px; background-color: rgba(59, 130, 246, 0.8); border: 3px solid var(--accent-color); animation: glowing 2s infinite; display: flex; justify-content: center; align-items: center; font-size: 1.5em; color: white; font-weight: bold; cursor: pointer; border-radius: 50%; }
@@ -495,7 +495,7 @@
                     <div class="input-views-container">
                         <div id="current-map-view" class="input-view active">
                             <div class="map-container" id="current-map-container">
-                                 <img src="https://placehold.co/1000x600/e9e9e9/333?text=Tsurumi+Map+Placeholder" alt="鶴観マップ" class="map-bg">
+                                 <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
                         <div id="current-list-view" class="input-view">
@@ -536,7 +536,7 @@
                     <div class="input-views-container">
                         <div id="ideal-map-view" class="input-view active">
                             <div class="map-container" id="ideal-map-container">
-                                 <img src="https://placehold.co/1000x600/e9e9e9/333?text=Tsurumi+Map+Placeholder" alt="鶴観マップ" class="map-bg">
+                                 <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
                         <div id="ideal-list-view" class="input-view">
@@ -572,7 +572,7 @@
 
                     <div class="result-layout-container">
                         <div class="result-map-container">
-                            <img src="https://placehold.co/800x800/e9e9e9/333?text=Result+Map" alt="鶴観マップ" class="map-bg">
+                            <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ" class="map-bg">
                         </div>
                         <div class="result-details-container">
                              <div id="result-summary"></div>
@@ -1117,3 +1117,4 @@
     </script>
 </body>
 </html>
+

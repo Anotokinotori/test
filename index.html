@@ -440,6 +440,7 @@
             font-weight: bold; 
             cursor: pointer; 
             border-radius: 50%;
+            transform: translate(-50%, -50%); /* Center the marker on the coordinate */
             background-size: cover;
             background-position: center;
         }
@@ -595,7 +596,7 @@
                             </div>
                         </div>
                     </div>
-                     
+                    
                     <div class="page-footer">
                         <div class="left-action"></div>
                         <div class="center-action">
@@ -604,7 +605,7 @@
                         <div class="right-action">
                             <button class="btn" id="go-to-ideal-btn" disabled>理想の配置へ進む</button>
                         </div>
-                     </div>
+                   </div>
                 </div>
             </div>
             
@@ -651,7 +652,7 @@
                         <div class="right-action">
                              <button class="btn" id="calculate-btn">調整プランを計算！</button>
                         </div>
-                     </div>
+                   </div>
                 </div>
             </div>
 
@@ -688,7 +689,7 @@
                          <div class="page-footer-placeholder"></div>
                          <div class="page-footer-placeholder"></div>
                          <button class="btn btn-secondary" id="reset-btn">最初からやり直す</button>
-                     </div>
+                   </div>
                 </div>
             </div>
         </div>
@@ -726,10 +727,10 @@
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-               <span class="modal-close" data-target="day-detail-modal">&times;</span>
-               <h2 id="day-detail-title"></h2>
-               <div id="day-detail-content" style="max-height: 70vh; overflow-y: auto;"></div>
-         </div>
+              <span class="modal-close" data-target="day-detail-modal">&times;</span>
+              <h2 id="day-detail-title"></h2>
+              <div id="day-detail-content" style="max-height: 70vh; overflow-y: auto;"></div>
+       </div>
     </div>
 
 
@@ -763,18 +764,19 @@
             'I': { top: '48%', left: '23%' },
             'J': { top: '69%', left: '43%' }
         };
-
+        
+        // --- [EDIT HERE!] You can now adjust positions using 'bottom' and 'right' properties ---
         const patternMarkerPositions = {
-            'A': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'B': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'C': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'D': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'E': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'F': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'G': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'H': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'I': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } },
-            'J': { 'A': { top: '30%', left: '25%' }, 'B': { top: '50%', left: '50%' }, 'C': { top: '70%', left: '75%' } }
+            'A': { 'A': { bottom: '22%', right: '77%' }, 'B': { bottom: '75%', right: '25%' }, 'C': { bottom: '50%', right: '55%' } },
+            'B': { 'A': { bottom: '35%', right: '70%' }, 'B': { bottom: '65%', right: '30%' }, 'C': { bottom: '25%', right: '25%' } },
+            'C': { 'A': { bottom: '30%', right: '70%' }, 'B': { bottom: '60%', right: '55%' }, 'C': { bottom: '30%', right: '30%' } },
+            'D': { 'A': { bottom: '25%', right: '65%' }, 'B': { bottom: '40%', right: '30%' }, 'C': { bottom: '70%', right: '40%' } },
+            'E': { 'A': { bottom: '70%', right: '70%' }, 'B': { bottom: '30%', right: '70%' }, 'C': { bottom: '50%', right: '30%' } },
+            'F': { 'A': { bottom: '65%', right: '30%' }, 'B': { bottom: '25%', right: '45%' }, 'C': { bottom: '55%', right: '70%' } },
+            'G': { 'A': { bottom: '30%', right: '25%' }, 'B': { bottom: '70%', right: '40%' }, 'C': { bottom: '40%', right: '75%' } },
+            'H': { 'A': { bottom: '45%', right: '75%' }, 'B': { bottom: '75%', right: '45%' }, 'C': { bottom: '30%', right: '30%' } },
+            'I': { 'A': { bottom: '75%', right: '65%' }, 'B': { bottom: '25%', right: '60%' }, 'C': { bottom: '50%', right: '30%' } },
+            'J': { 'A': { bottom: '35%', right: '75%' }, 'B': { bottom: '70%', right: '55%' }, 'C': { bottom: '35%', right: '30%' } }
         };
 
         const recommendedConfig = {
@@ -867,7 +869,7 @@
                      updateMapLayout('ideal-map-container');
                 });
                 if (img.complete) {
-                    updateMapLayout(img.closest('.map-container').id);
+                   updateMapLayout(img.closest('.map-container').id);
                 }
             });
         });
@@ -954,8 +956,19 @@
                     marker.textContent = '✔';
                 }
 
-                marker.style.top = pos.top;
-                marker.style.left = pos.left;
+                // --- MODIFICATION START ---
+                // Convert user-friendly 'bottom' and 'right' values to CSS-friendly 'top' and 'left'
+                if (pos.bottom !== undefined && pos.right !== undefined) {
+                    const topValue = 100 - parseFloat(pos.bottom);
+                    const leftValue = 100 - parseFloat(pos.right);
+                    marker.style.top = `${topValue}%`;
+                    marker.style.left = `${leftValue}%`;
+                } else { // Fallback for old format
+                    marker.style.top = pos.top;
+                    marker.style.left = pos.left;
+                }
+                // --- MODIFICATION END ---
+                
                 marker.addEventListener('click', () => selectPatternForConfirmation(pattern));
                 zoomContainer.appendChild(marker);
             });

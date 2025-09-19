@@ -159,7 +159,7 @@
             opacity: 1;
         }
         .header-placeholder {
-            width: 40px; /* Match back button width */
+            width: 40px;
             flex-shrink: 0;
         }
         .steps-container {
@@ -404,16 +404,21 @@
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
         .modal-close:hover { color: #333; }
         
+        #zoom-view .modal-content {
+            overflow: hidden; /* Prevent modal's own scrollbar */
+        }
         #zoom-map-container {
             position: relative;
             width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
+            margin: 20px auto 0;
             aspect-ratio: 16 / 9;
             flex-shrink: 1;
             min-height: 0;
         }
         #zoom-map-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -704,8 +709,8 @@
         <div class="modal-content">
             <span class="modal-close" data-target="zoom-view">&times;</span>
             <h3 id="zoom-title"></h3>
-            <div id="zoom-map-container" style="position: relative; width: 100%; max-width: 800px; margin: 20px auto; height: 300px;">
-                <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ" style="width:100%; height:100%; object-fit:cover; border-radius: 10px;">
+            <div id="zoom-map-container">
+                <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ">
             </div>
         </div>
     </div>
@@ -714,7 +719,7 @@
         <div class="modal-content">
              <span class="modal-close" data-target="screenshot-popup">&times;</span>
              <h3 id="screenshot-title">この配置で合っていますか？</h3>
-             <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット" style="width: 100%; border-radius: 10px; margin-bottom: 20px;">
+             <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット">
              <button id="confirm-pattern-btn" class="btn">確定</button>
         </div>
     </div>

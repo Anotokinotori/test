@@ -228,6 +228,24 @@
             margin-top: 50px;
         }
         
+        .multi-mode-toggle {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-text-color);
+        }
+        .multi-mode-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .multi-mode-toggle label {
+            font-size: 1em;
+            cursor: pointer;
+        }
+        
         /* General Button Styles */
         .btn { border: none; padding: 14px 28px; border-radius: 50px; font-size: clamp(1em, 1.5vw, 1.2em); cursor: pointer; transition: all 0.3s ease; font-weight: bold; text-decoration: none; display: inline-block; }
         .btn-primary { background-color: var(--accent-color); color: white; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
@@ -451,6 +469,55 @@
             animation: none;
             background-image: none !important;
         }
+        
+        /* Loading Modal Spinner */
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid var(--accent-color); /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Day Detail Modal Styles */
+        #day-detail-content ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+            text-align: left;
+        }
+        #day-detail-content li {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-color);
+        }
+        #day-detail-content h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #day-detail-content h4 {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            text-align: left;
+        }
+        #day-detail-content img {
+            display: block;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 8px;
+            margin: 10px auto 0;
+            border: 1px solid var(--border-color);
+        }
 
         /* --- RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
@@ -528,7 +595,7 @@
                 <div class="page-content-wrapper">
                     <div class="start-header">
                         <h1>鶴観配置調整ツール</h1>
-                        <p class="subtitle">ソロ・マルチ(周期ホールド)両対応！<br>現在と理想の配置を入力すると、最短の調整スケジュールを計算します。</p>
+                        <p class="subtitle">※PCでの使用をおすすめします<br>現在と理想の配置を入力すると、最短の調整スケジュールを計算します。</p>
                     </div>
                     
                     <div class="steps-container">
@@ -541,6 +608,11 @@
 
                     <div class="start-buttons">
                         <button id="go-to-current-btn" class="btn btn-primary">調整を始める</button>
+                    </div>
+
+                    <div class="multi-mode-toggle">
+                        <input type="checkbox" id="multiplayer-mode-checkbox">
+                        <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
                     </div>
 
                     <div class="start-footer">
@@ -629,14 +701,13 @@
 
                      <div class="page-footer">
                         <div class="left-action">
-                             <button class="btn btn-secondary" id="copy-current-btn">現在の配置をコピー</button>
-                        </div>
-                        <div class="center-action">
                             <button class="btn btn-secondary" id="set-recommended-btn">環境配置を自動入力</button>
                         </div>
+                        <div class="center-action">
+                            <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
+                        </div>
                         <div class="right-action">
-                            <button id="calculate-solo-btn" class="btn btn-primary">ソロで計算</button>
-                            <button id="calculate-multi-btn" class="btn btn-multi">マルチで計算</button>
+                            <button id="calculate-plan-btn" class="btn btn-primary">調整プランを計算</button>
                         </div>
                    </div>
                 </div>
@@ -687,9 +758,28 @@
         <div class="modal-content">
             <span class="modal-close" data-target="guide-modal">&times;</span>
             <h2>使い方ガイド</h2>
-            <p>1. 「調整を始める」をクリックし、マップまたはリストから現在の精鋭の配置を登録します。</p>
-            <p>2. 全ての配置を登録したら、次に理想の配置を設定します。ここでもマップとリストを選べます。</p>
-            <p>3. 「ソロで計算」または「マルチで計算」ボタンを押すと、日ごとの最適な調整手順が表示されます。</p>
+            <p>このツールは、鶴観の精鋭エネミーの配置を、最短日数で理想の配置に調整するためのスケジュールを計算します。</p>
+            
+            <hr style="margin: 20px 0;">
+
+            <h3>Step 1: 現在の配置を入力</h3>
+            <p>まず、あなたの世界の現在のエネミー配置を10ヶ所すべて入力します。「マップ表示」または「リスト表示」で入力できます。</p>
+            <img src="https://placehold.co/600x350/eef2ff/312e81?text=1.+Input+via+Map+View" alt="マップ入力画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <p style="margin-top: 10px;">マップ上のアイコンをタップすると、詳細なマップが表示され、A/B/Cのパターンを選択できます。選択に迷ったら、スクリーンショットで実際のゲーム画面を確認できます。</p>
+            
+            <hr style="margin: 20px 0;">
+
+            <h3>Step 2: 理想の配置を入力</h3>
+            <p>次に、目標とする理想の配置を入力します。すべて入力する必要はなく、変更したい場所だけ入力すればOKです。</p>
+            <p>便利な「環境配置を自動入力」ボタンも活用してください。</p>
+            <img src="https://placehold.co/600x350/eef2ff/312e81?text=2.+Input+Ideal+Configuration" alt="理想配置の入力" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            
+            <hr style="margin: 20px 0;">
+            
+            <h3>Step 3: スケジュールを計算・確認</h3>
+            <p>入力が終わったら、「調整プランを計算」ボタンを押します。</p>
+            <p>スタートページで「周期ホールドを有効にする」にチェックを入れていると、マルチプレイを前提とした最短ルートを計算します。</p>
+            <img src="https://placehold.co/600x350/eef2ff/312e81?text=3.+Check+Result+Schedule" alt="結果表示画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
         </div>
     </div>
     
@@ -716,15 +806,16 @@
          <div class="modal-content" style="text-align: center;">
             <h2>計算中...</h2>
             <p>最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
+            <div class="loader"></div>
          </div>
     </div>
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-              <span class="modal-close" data-target="day-detail-modal">&times;</span>
-              <h2 id="day-detail-title"></h2>
-              <div id="day-detail-content"></div>
-       </div>
+               <span class="modal-close" data-target="day-detail-modal">&times;</span>
+               <h2 id="day-detail-title"></h2>
+               <div id="day-detail-content"></div>
+        </div>
     </div>
 
 <script>
@@ -804,6 +895,7 @@ let currentConfig = {};
 let idealConfig = {};
 let possibleDailyActions = [];
 let activeSelection = { configType: null, groupId: null, pattern: null };
+let lastCalculatedPlan = null; // Store the last calculated plan
 const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
 
 // --- SCRIPT START ---
@@ -813,10 +905,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-close').forEach(el => el.addEventListener('click', () => closeModal(el.dataset.target)));
     
     document.getElementById('go-to-ideal-btn').addEventListener('click', () => showPage('ideal-config-page'));
-    document.getElementById('copy-current-btn').addEventListener('click', copyCurrentToIdeal);
     document.getElementById('set-recommended-btn').addEventListener('click', setRecommendedConfig);
-    document.getElementById('calculate-solo-btn').addEventListener('click', () => calculatePlan(false));
-    document.getElementById('calculate-multi-btn').addEventListener('click', () => calculatePlan(true));
+    document.getElementById('calculate-plan-btn').addEventListener('click', () => {
+        const isMultiplayer = document.getElementById('multiplayer-mode-checkbox').checked;
+        calculatePlan(isMultiplayer);
+    });
     
     document.getElementById('back-to-start-btn').addEventListener('click', () => showPage('start-page'));
     document.getElementById('back-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
@@ -826,6 +919,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('current-list-tab').addEventListener('click', () => switchInputView('current', 'list'));
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
+
+    // Add event listener for details buttons on the result table
+    document.getElementById('result-tbody').addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('btn-details')) {
+            const dayIndex = parseInt(e.target.dataset.dayIndex, 10);
+            if (lastCalculatedPlan && !isNaN(dayIndex) && lastCalculatedPlan[dayIndex]) {
+                showDayDetail(lastCalculatedPlan[dayIndex], dayIndex + 1);
+            }
+        }
+    });
 
     initInputPage('current');
     initInputPage('ideal');
@@ -966,7 +1069,11 @@ function updateConfig(configType, groupId, pattern) {
         btn.classList.toggle('selected', btn.textContent === pattern);
     });
     
-    if (configType === 'current') updateProgress();
+    if (configType === 'current') {
+        updateProgress();
+    } else if (configType === 'ideal') {
+        updateIdealProgress();
+    }
     updateGuideTextVisibility();
 }
 
@@ -974,10 +1081,6 @@ function updateProgress() {
     const completedCount = Object.keys(currentConfig).length;
     document.getElementById('progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
     document.getElementById('go-to-ideal-btn').disabled = completedCount !== totalGroups;
-}
-
-function copyCurrentToIdeal() {
-    for (const groupId in currentConfig) updateConfig('ideal', groupId, currentConfig[groupId]);
 }
 
 function setRecommendedConfig() {
@@ -990,6 +1093,7 @@ function resetApp() {
     initInputPage('current');
     initInputPage('ideal');
     updateProgress();
+    updateIdealProgress();
     updateGuideTextVisibility();
     showPage('start-page');
 }
@@ -1041,6 +1145,12 @@ function updateGuideTextVisibility() {
     document.querySelector('#current-map-container .map-guide-text').classList.toggle('hidden', isCurrentAnyConfigStarted);
     document.querySelector('#ideal-map-container .map-guide-text').classList.toggle('hidden', isIdealAnyConfigStarted);
 }
+
+function updateIdealProgress() {
+    const completedCount = Object.keys(idealConfig).length;
+    document.getElementById('ideal-progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
+}
+
 
 // --- CALCULATION LOGIC ---
 function configToString(config) {
@@ -1099,7 +1209,7 @@ function calculatePlan(isMultiplayer) {
             const { config, path } = queue.shift();
             if (path.length >= 10) continue; // Safety break
 
-            // Solo Mode
+            // Solo Mode (always available)
             for (const soloAction of possibleDailyActions) {
                 let nextConfigArr = config.split('').map(Number);
                 for (const group of soloAction.affectedGroups) {
@@ -1117,11 +1227,13 @@ function calculatePlan(isMultiplayer) {
             }
             if (solutionPath) break;
 
-            // Multiplayer Mode
+            // Multiplayer Mode (only if enabled)
             if (isMultiplayer) {
                 for (const holdAction of possibleDailyActions) {
                     for (const advanceAction of possibleDailyActions) {
                         const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(x => !holdAction.affectedGroups.has(x)));
+                        if (effectiveAdvance.size === 0) continue; // Skip if no effective change
+                        
                         let nextConfigArr = config.split('').map(Number);
                         for (const group of effectiveAdvance) {
                              nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
@@ -1150,6 +1262,7 @@ function calculatePlan(isMultiplayer) {
 
 // --- RESULT DISPLAY ---
 function displayResults(plan, isMultiplayer) {
+    lastCalculatedPlan = plan; // Store the plan for the details modal listener
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
     
@@ -1170,11 +1283,67 @@ function displayResults(plan, isMultiplayer) {
                 <td><span class="${modeClass}">${day.mode}</span></td>
                 <td>${day.holdAction.name}</td>
                 <td>${day.advanceAction.name}</td>
+                <td><button class="btn btn-details" data-day-index="${index}">手順を確認</button></td>
             `;
             tbody.appendChild(tr);
         });
     }
     showPage('result-page');
+}
+
+function showDayDetail(dayData, dayNumber) {
+    const titleEl = document.getElementById('day-detail-title');
+    const contentEl = document.getElementById('day-detail-content');
+    
+    titleEl.textContent = `${dayNumber}日目の手順詳細`;
+    
+    let contentHTML = '';
+
+    if (dayData.mode === 'ソロ') {
+        contentHTML += `<h3>ソロモードでの行動</h3>`;
+        contentHTML += `<p>以下の行動で影響範囲内のエネミーの配置を1つ進めます。</p>`;
+        contentHTML += generateActionDetailsHTML(dayData.advanceAction.name, "ソロ");
+    } else { // multi
+        contentHTML += `<h3>マルチモードでの行動</h3>`;
+        contentHTML += `<h4>2P (ホールド役) の行動</h4>`;
+        if (dayData.holdAction.name === '何もしない' || dayData.holdAction.name === '---') {
+             contentHTML += `<p>何もしません。ログイン後、その場で待機してください。</p>`;
+        } else {
+            contentHTML += `<p>以下の行動で、ホールド対象のエネミーの周期を固定します。</p>`;
+            contentHTML += generateActionDetailsHTML(dayData.holdAction.name, "2P");
+        }
+       
+        contentHTML += `<h4 style="margin-top: 20px;">1P (ホスト) の行動</h4>`;
+        if (dayData.advanceAction.name === '何もしない' || dayData.advanceAction.name === '---') {
+            contentHTML += `<p>特別な行動は不要です。</p>`;
+        } else {
+            contentHTML += `<p>2Pがホールドした後、以下の行動でターゲットのエネミーの配置を1つ進めます。</p>`;
+            contentHTML += generateActionDetailsHTML(dayData.advanceAction.name, "1P");
+        }
+    }
+
+    contentEl.innerHTML = contentHTML;
+    showModal('day-detail-modal');
+}
+
+function generateActionDetailsHTML(actionString, playerRole) {
+    if (!actionString || actionString === '---' || actionString === '何もしない') return '<p>特別な行動は不要です。</p>';
+    
+    const actions = actionString.split(' + ');
+    let html = '<ul>';
+    actions.forEach(actionName => {
+        // This is a placeholder for actual details.
+        const detailText = `「${actionName}」を実行します。影響を受ける敵グループを確認し、ルートに沿って移動してください。`;
+        const imageUrl = `https://placehold.co/400x250/e9e9e9/333?text=${encodeURIComponent(actionName.replace(/\//g, ''))}`;
+        html += `
+            <li>
+                <strong>${actionName}</strong>
+                <p>${detailText}</p>
+                <img src="${imageUrl}" alt="${actionName} のルート図" >
+            </li>`;
+    });
+    html += '</ul>';
+    return html;
 }
 
 </script>

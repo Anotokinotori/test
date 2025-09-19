@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鶴観配置調整ツール (レスポンシブ対応版)</title>
+    <title>鶴観配置調整ツール</title>
     <style>
         /* General Styles */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
@@ -18,8 +18,7 @@
             --accent-hover-color: #2563EB;
             --border-color: #e0e0e0;
             --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
+        }        
         body {
             font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
@@ -32,8 +31,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-        }
-
+        }        
         .backdrop-blur {
             -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
@@ -65,8 +63,7 @@
             overflow: hidden; 
             padding: 2vh 2vw;
             box-sizing: border-box;
-        }
-
+        }        
         .container {
             width: 100%;
             height: 100%; 
@@ -80,8 +77,7 @@
             display: flex;
             flex-direction: column;
             border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
+        }        
         /* Page Transitions */
         .page {
             padding: 2vw 4vw;
@@ -101,19 +97,16 @@
             justify-content: center;
             text-align: center;
             pointer-events: none;
-        }
-
+        }        
         .page.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
             pointer-events: auto;
-        }
-
+        }        
         h1, h2, h3 {
             color: var(--primary-text-color);
-        }
-
+        }        
         /* --- Start Page --- */
         #start-page .page-content-wrapper {
              height: auto;
@@ -194,7 +187,7 @@
             font-size: 1.1em;
             font-weight: bold;
             color: var(--secondary-text-color);
-             transition: all 0.3s ease;
+            transition: all 0.3s ease;
         }
         .step-arrow {
             font-size: 2.5em;
@@ -220,9 +213,7 @@
         }
         #start-page .step.active-step .step-label {
             color: var(--primary-text-color);
-        }
-
-
+        }        
         .start-buttons {
             margin-top: 50px;
         }
@@ -269,8 +260,7 @@
             transform: none;
             box-shadow: none;
             color: var(--primary-text-color);
-        }
-
+        }        
         /* --- Input Pages (Current & Ideal) --- */
         .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
         
@@ -302,8 +292,7 @@
              flex: 1 1 0%;
              display: flex;
              justify-content: flex-end;
-        }
-
+        }        
         /* Tab UI for Input Pages */
         .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
         .view-tab { padding: 10px 20px; font-size: 1em; font-weight: bold; color: var(--secondary-text-color); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s; }
@@ -320,6 +309,32 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        .map-guide-text {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: bold;
+            pointer-events: none; /* So it doesn't block clicks */
+            z-index: 5;
+            opacity: 0.8;
+            transition: opacity 0.5s ease-in-out;
+            animation: pulsing-text 2.5s infinite ease-in-out;
+        }
+        @keyframes pulsing-text {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
+            100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+        }
+        .map-guide-text.hidden {
+            opacity: 0;
+            animation: none;
         }
         .map-container img.map-bg {
             max-width: 100%;
@@ -388,8 +403,7 @@
             display: flex;
             flex-direction: column;
             min-height: 0;
-        }
-
+        }        
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
         .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%; max-width: 1000px; }
         .result-table { width: 100%; border-collapse: collapse; }
@@ -423,8 +437,7 @@
             height: 100%;
             object-fit: contain;
             border-radius: 10px;
-        }
-
+        }        
         .pattern-marker { 
             position: absolute; 
             width: 50px; 
@@ -454,9 +467,7 @@
             border-color: white;
             animation: none;
             background-image: none !important;
-        }
-
-
+        }        
         /* --- RESPONSIVE STYLES --- */
         @media (max-width: 900px) {
             .result-layout-container {
@@ -466,8 +477,7 @@
                 flex: 0 0 200px;
                 margin-bottom: 20px;
             }
-        }
-
+        }        
         @media (max-width: 768px) {
             .site-header { padding: 10px 20px; }
             main { padding: 0; }
@@ -486,8 +496,7 @@
                 width: 35px;
                 height: 35px;
             }
-        }
-
+        }        
         @media (max-width: 480px) {
             #start-page h1 { font-size: 2em; }
             .steps-container { gap: 5px; margin-top: 15px; margin-bottom: 10px;}
@@ -528,8 +537,7 @@
                 height: 28px;
                 border-width: 2px;
             }
-        }
-
+        }    
     </style>
 </head>
 <body>
@@ -553,18 +561,16 @@
                         <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
                         <div class="step-arrow">→</div>
                         <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                    </div>
-
+                    </div>                    
                     <div class="start-buttons">
                         <button id="start-btn" class="btn">調整を始める</button>
-                    </div>
-
+                        <button id="mode-toggle" class="btn btn-secondary">マルチモード: オフ</button>
+                    </div>                    
                     <div class="start-footer">
                          <button id="guide-btn" class="btn btn-secondary">使い方ガイド</button>
                     </div>
                 </div>
-            </div>
-
+            </div>            
             <!-- Page 2: Current Configuration Input -->
             <div id="current-config-page" class="page">
                 <div class="page-content-wrapper">
@@ -578,16 +584,15 @@
                             <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
                         </div>
                         <div class="header-placeholder"></div>
-                    </div>
-
+                    </div>                    
                     <div class="view-switcher">
                         <button id="current-map-tab" class="view-tab active" data-view="map">マップ表示</button>
                         <button id="current-list-tab" class="view-tab" data-view="list">リスト表示</button>
-                    </div>
-
+                    </div>                    
                     <div class="input-views-container">
                         <div id="current-map-view" class="input-view active">
                             <div class="map-container" id="current-map-container">
+                                 <div class="map-guide-text">アイコンをタップして選択</div>
                                  <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
@@ -622,17 +627,16 @@
                             <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
                         </div>
                         <div class="header-placeholder"></div>
-                    </div>
-
+                    </div>                    
                     <div class="view-switcher">
                         <button id="ideal-map-tab" class="view-tab active" data-view="map">マップ表示</button>
                         <button id="ideal-list-tab" class="view-tab" data-view="list">リスト表示</button>
                         <button id="copy-current-btn" class="btn btn-secondary" style="margin-left: auto;">現在の配置をコピー</button>
-                    </div>
-
+                    </div>                    
                     <div class="input-views-container">
                         <div id="ideal-map-view" class="input-view active">
                             <div class="map-container" id="ideal-map-container">
+                                 <div class="map-guide-text">アイコンをタップして選択</div>
                                  <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
@@ -640,9 +644,8 @@
                             <div class="config-list" id="ideal-config-list">
                             </div>
                         </div>
-                    </div>
-
-                     <div class="page-footer">
+                    </div>                     
+                    <div class="page-footer">
                         <div class="left-action">
                             <button class="btn btn-secondary" id="set-recommended-btn">環境配置を自動入力</button>
                         </div>
@@ -654,19 +657,21 @@
                         </div>
                    </div>
                 </div>
-            </div>
-
+            </div>            
             <!-- Page 4: Result Page -->
             <div id="result-page" class="page">
                 <div class="page-content-wrapper">
-                     <div class="steps-container">
-                        <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                    </div>
-
+                     <div class="page-header">
+                        <button id="back-to-ideal-btn" class="btn-back" aria-label="戻る"></button>
+                         <div class="steps-container">
+                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
+                        </div>
+                        <div class="header-placeholder"></div>
+                    </div>                    
                     <div class="result-layout-container">
                         <div class="result-map-container">
                             <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ" class="map-bg">
@@ -683,12 +688,9 @@
                                 </table>
                              </div>
                         </div>
-                    </div>
-
-                      <div class="page-footer">
-                         <div class="page-footer-placeholder"></div>
-                         <div class="page-footer-placeholder"></div>
-                         <button class="btn btn-secondary" id="reset-btn">最初からやり直す</button>
+                    </div>                     
+                    <div class="page-footer" style="justify-content: center;">
+                        <button class="btn btn-secondary" id="reset-btn">最初からやり直す</button>
                    </div>
                 </div>
             </div>
@@ -714,26 +716,23 @@
                 <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ">
             </div>
         </div>
-    </div>
-
+    </div>    
     <div id="screenshot-popup" class="modal backdrop-blur">
         <div class="modal-content">
              <span class="modal-close" data-target="screenshot-popup">&times;</span>
              <h3 id="screenshot-title">この配置で合っていますか？</h3>
-             <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット">
-             <button id="confirm-pattern-btn" class="btn">確定</button>
+             <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット" style="width: 100%; height: auto; border-radius: 10px; margin: 15px 0;">
+             <button id="confirm-pattern-btn" class="btn" style="margin-top: 15px;">確定</button>
         </div>
     </div>
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-              <span class="modal-close" data-target="day-detail-modal">&times;</span>
-              <h2 id="day-detail-title"></h2>
-              <div id="day-detail-content" style="max-height: 70vh; overflow-y: auto;"></div>
+               <span class="modal-close" data-target="day-detail-modal">&times;</span>
+               <h2 id="day-detail-title"></h2>
+               <div id="day-detail-content" style="max-height: 70vh; overflow-y: auto;"></div>
        </div>
-    </div>
-
-
+    </div>    
     <script>
         // --- DATA DEFINITION ---
         const eliteGroups = {
@@ -749,8 +748,24 @@
             'J': { name: 'ワクカウ', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/c0b9fccb976922890793a88cefa44525_4478418637550120506.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419878-oLvIuKdDGVEc3RsO6UWrZFH4.jpg?width=1200' },
         };
         const groupKeys = Object.keys(eliteGroups);
-        const totalGroups = groupKeys.length;
-
+        const totalGroups = groupKeys.length;        
+        const actionsData = [
+            {'id': 2, 'name': 'ワープ(2)', 'affectedGroups': ['A', 'D']},
+            {'id': 3, 'name': 'ワープ(3)', 'affectedGroups': ['A', 'B', 'C', 'D', 'E', 'J']},
+            {'id': 4, 'name': 'ワープ(4)', 'affectedGroups': ['B', 'C', 'D', 'E', 'F']},
+            {'id': 5, 'name': 'ワープ(5)', 'affectedGroups': ['B', 'E', 'F', 'G', 'H', 'I']},
+            {'id': 6, 'name': 'ワープ(6)', 'affectedGroups': ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I']},
+            {'id': 7, 'name': 'ワープ(7)', 'affectedGroups': ['A', 'J']},
+            {'id': 8, 'name': 'ワープ(8)', 'affectedGroups': ['J']},
+            {'id': 9, 'name': 'ボート(1から)', 'affectedGroups': ['A'], 'type': 'move'},
+            {'id': 10, 'name': 'ボート(1から)', 'affectedGroups': ['C', 'D'], 'type': 'move'},
+            {'id': 13, 'name': '歩き(8から)', 'affectedGroups': ['A', 'B', 'C', 'J'], 'type': 'move', 'details': 'モシリ炎アビス + モシリ雷アビス + モシリ暴徒 ロード位置'},
+            {'id': 15, 'name': '歩き(18から)', 'affectedGroups': ['E', 'G'], 'type': 'move', 'details': 'オイナ機兵+シリコロ暴徒 ロード位置'},
+            {'id': 17, 'name': '歩き(7から)', 'affectedGroups': ['A', 'H', 'J'], 'type': 'move', 'details': 'アウタケ東 ロード位置'},
+            {'id': 18, 'name': 'ワープ(ボート)', 'affectedGroups': ['E']},
+            {'id': 19, 'name': '歩き(18から)', 'affectedGroups': ['E', 'F', 'G', 'I'], 'type': 'move', 'details': 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置'},
+            {'id': 20, 'name': 'ボート(ヤシオリから)', 'affectedGroups': ['H', 'I'], 'type': 'move'},
+        ];        
         // --- UI DATA ---
         const markerPositions = {
             'A': { top: '52%', left: '60%' },
@@ -765,77 +780,85 @@
             'J': { top: '69%', left: '43%' }
         };
         
-        // --- [EDIT HERE!] You can now adjust positions using 'bottom' and 'right' properties ---
         const patternMarkerPositions = {
-            'A': { 'A': { bottom: '22%', right: '77%' }, 'B': { bottom: '75%', right: '25%' }, 'C': { bottom: '50%', right: '55%' } },
-            'B': { 'A': { bottom: '35%', right: '70%' }, 'B': { bottom: '65%', right: '30%' }, 'C': { bottom: '25%', right: '25%' } },
-            'C': { 'A': { bottom: '30%', right: '70%' }, 'B': { bottom: '60%', right: '55%' }, 'C': { bottom: '30%', right: '30%' } },
-            'D': { 'A': { bottom: '25%', right: '65%' }, 'B': { bottom: '40%', right: '30%' }, 'C': { bottom: '70%', right: '40%' } },
-            'E': { 'A': { bottom: '70%', right: '70%' }, 'B': { bottom: '30%', right: '70%' }, 'C': { bottom: '50%', right: '30%' } },
-            'F': { 'A': { bottom: '65%', right: '30%' }, 'B': { bottom: '25%', right: '45%' }, 'C': { bottom: '55%', right: '70%' } },
-            'G': { 'A': { bottom: '30%', right: '25%' }, 'B': { bottom: '70%', right: '40%' }, 'C': { bottom: '40%', right: '75%' } },
-            'H': { 'A': { bottom: '45%', right: '75%' }, 'B': { bottom: '75%', right: '45%' }, 'C': { bottom: '30%', right: '30%' } },
-            'I': { 'A': { bottom: '75%', right: '65%' }, 'B': { bottom: '25%', right: '60%' }, 'C': { bottom: '50%', right: '30%' } },
-            'J': { 'A': { bottom: '35%', right: '75%' }, 'B': { bottom: '70%', right: '55%' }, 'C': { bottom: '35%', right: '30%' } }
+            'A': { 'A': { bottom: '46%', right: '43%' }, 'B': { bottom: '54%', right: '47%' }, 'C': { bottom: '40%', right: '51%' } },
+            'B': { 'A': { bottom: '62%', right: '57%' }, 'B': { bottom: '52%', right: '52%' }, 'C': { bottom: '61%', right: '48%' } },
+            'C': { 'A': { bottom: '75%', right: '50%' }, 'B': { bottom: '64%', right: '54%' }, 'C': { bottom: '61%', right: '45%' } },
+            'D': { 'A': { bottom: '73.5%', right: '28.6%' }, 'B': { bottom: '59.9%', right: '31.3%' }, 'C': { bottom: '57.8%', right: '27.4%' } },
+            'E': { 'A': { bottom: '54.1%', right: '36.7%' }, 'B': { bottom: '51.0%', right: '43.2%' }, 'C': { bottom: '73.7%', right: '40.7%' } },
+            'F': { 'A': { bottom: '42.9%', right: '49.9%' }, 'B': { bottom: '36.5%', right: '45.0%' }, 'C': { bottom: '48.3%', right: '46.0%' } },
+            'G': { 'A': { bottom: '63.0%', right: '49.5%' }, 'B': { bottom: '59.5%', right: '55.4%' }, 'C': { bottom: '63.0%', right: '44.5%' } },
+            'H': { 'A': { bottom: '41.3%', right: '58.7%' }, 'B': { bottom: '45.2%', right: '63.4%' }, 'C': { bottom: '47.0%', right: '57.6%' } },
+            'I': { 'A': { bottom: '58.4%', right: '66.3%' }, 'B': { bottom: '61.1%', right: '61.0%' }, 'C': { bottom: '51.0%', right: '67.5%' } },
+            'J': { 'A': { bottom: '58.0%', right: '40.8%' }, 'B': { bottom: '51.8%', right: '56.5%' }, 'C': { bottom: '28.5%', right: '52.6%' } }
         };
-
+        
+        const screenshotImageUrls = {
+            'A': {
+                'A': 'https://assets.st-note.com/img/1738372100-wkRfaQDElqCepTY12bHVJszm.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738372108-Ozf8gFbjTZEaGJMDx7qHAoVN.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738420209-Vs9IFoQq3dJxwOGv5RM7Xh0C.jpg?width=1200'
+            },
+            'B': {
+                'A': 'https://assets.st-note.com/img/1738419367-4wCdF5eOLbmtVuDAURYSaIr1.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419379-3mOLkEy16jefW0nvGlctzK9B.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419389-Zm5ra9xD6JU2SKfNzeBHpIl1.jpg?width=1200'
+            },
+            'C': {
+                'A': 'https://assets.st-note.com/img/1738419522-lgzSU9nI2x6ZYhkNfHqiPXOo.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419532-g9URz8f04FckmJtAseBhu7Qj.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419541-1IgcObQjl3dH4rwy2LNM6SP9.jpg?width=1200'
+            },
+            'D': {
+                'A': 'https://assets.st-note.com/img/1738419563-xyMQ1nkuOjbpa6Dwm3KWoYh9.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419572-YuweId6SiyKDBAtWgOlojQGa.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419580-quLQMGeRlbfv0wSgmh8jCINt.jpg?width=1200'
+            },
+            'E': {
+                'A': 'https://assets.st-note.com/img/1738419683-Y3pzloUPmn861idxQvLaMNZy.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419695-t41JA6FX2CeViT9GB3UOdhlK.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419704-xdZlTOuatBockhDLVgsN4I3w.jpg?width=1200'
+            },
+            'F': {
+                'A': 'https://assets.st-note.com/img/1738419747-YfBn7iOzKVekQRAJ9DParxlv.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419755-5CmQ8u0hGFrsfRyZojIH2kpX.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419763-zFvuEZK9nYgd61OsrM5NeRAP.jpg?width=1200'
+            },
+            'G': {
+                'A': 'https://assets.st-note.com/img/1738586151-mkVNDUfHbGTQFJ7M9opaYRK2.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419796-1mHqF5OyP6rEAoU3YZNcuQKj.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419805-MF0UpPyI6cNzqldvXADiuEwg.jpg?width=1200'
+            },
+            'H': {
+                'A': 'https://assets.st-note.com/img/1738419821-2VtSLA5DROoJ0wBClZIxvMTu.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419829-4evqad8bPjYEAmBfpZH9RuT1.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419837-4tSaJMW6y7BzDZQ3fRC2LXqH.jpg?width=1200'
+            },
+            'I': {
+                'A': 'https://assets.st-note.com/img/1738419855-V8XBf5WexFzy60psuQGvmNdY.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738586173-KCQXfOlVjNtUoBn37qg5Fcu0.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419868-YORuncAJ3DgLoZ560WwCv4Uq.jpg?width=1200'
+            },
+            'J': {
+                'A': 'https://assets.st-note.com/img/1738419900-C9ZW6JqmkxnVz5vBrKbAXtDo.jpg?width=1200',
+                'B': 'https://assets.st-note.com/img/1738419916-pQNEJcL0dXovR7jnTfa8qzeh.jpg?width=1200',
+                'C': 'https://assets.st-note.com/img/1738419933-zFKX9tqVyjMilUBRdJIWNYrH.jpg?width=1200'
+            }
+        };        
         const recommendedConfig = {
             'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C',
             'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B'
-        };
-
+        };        
         // --- APPLICATION STATE ---
         let currentConfig = {};
         let idealConfig = {};
         let activeSelection = { configType: null, groupId: null, pattern: null };
-        let actionsMap = null; 
-        const solutionCache = new Map(); 
-
-        // --- PAGE/MODAL MANAGEMENT ---
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            const el = document.getElementById(pageId);
-            if (!el) { console.error(`showPage: Element not found (id=${pageId})`); return; }
-            el.classList.add('active');
-
-            document.querySelectorAll('.step').forEach(step => step.classList.remove('active-step'));
-            let activeStepNumber;
-            if (pageId === 'start-page') {
-                const firstStep = document.querySelector('#start-page .step[data-step="1"]');
-                if(firstStep) firstStep.classList.add('active-step');
-                return;
-            }
-            if (pageId === 'current-config-page') activeStepNumber = 1;
-            if (pageId === 'ideal-config-page') activeStepNumber = 2;
-            if (pageId === 'result-page') activeStepNumber = 3;
-            
-            if(activeStepNumber) {
-                document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => {
-                    stepEl.classList.add('active-step');
-                });
-            }
-        }
-        function showModal(modalId) { 
-            const el = document.getElementById(modalId);
-            if(el) el.classList.add('active');
-        }
-        function closeModal(modalId) { 
-            const el = document.getElementById(modalId);
-            if(el) el.classList.remove('active');
-        }
+        let possibleDailyActions = [];
+        let isMulti = false;
         
-        // --- INITIALIZATION & EVENT LISTENERS ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const response = await fetch('./actions_map.json');
-                if (!response.ok) throw new Error('actions_map.json not found');
-                actionsMap = await response.json();
-                console.log("Action map loaded successfully.");
-            } catch (error) {
-                console.error("Failed to load action map:", error);
-                alert("エラー: actions_map.json の読み込みに失敗しました。ファイルが正しく配置されているか、ローカルサーバー経由でアクセスしているか確認してください。");
-            }
-
+        // --- SCRIPT START ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners
             document.getElementById('start-btn').addEventListener('click', () => showPage('current-config-page'));
             document.getElementById('guide-btn').addEventListener('click', () => showModal('guide-modal'));
             document.querySelectorAll('.modal-close').forEach(el => {
@@ -849,24 +872,28 @@
             
             document.getElementById('back-to-start-btn').addEventListener('click', () => showPage('start-page'));
             document.getElementById('back-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
+            document.getElementById('back-to-ideal-btn').addEventListener('click', () => showPage('ideal-config-page'));
             
             document.getElementById('current-map-tab').addEventListener('click', () => switchInputView('current', 'map'));
             document.getElementById('current-list-tab').addEventListener('click', () => switchInputView('current', 'list'));
             document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
             document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
             
+            document.getElementById('mode-toggle').addEventListener('click', () => {
+                isMulti = !isMulti;
+                document.getElementById('mode-toggle').textContent = `マルチモード: ${isMulti ? 'オン' : 'オフ'}`;
+            });
+            
             initInputPage('current');
             initInputPage('ideal');
-            showPage('start-page'); 
-
+            showPage('start-page');   
             window.addEventListener('resize', () => {
                 updateMapLayout('current-map-container');
                 updateMapLayout('ideal-map-container');
             });
             document.querySelectorAll('.map-bg').forEach(img => {
                 img.addEventListener('load', () => {
-                     updateMapLayout('current-map-container');
-                     updateMapLayout('ideal-map-container');
+                     updateMapLayout(img.closest('.map-container').id);
                 });
                 if (img.complete) {
                    updateMapLayout(img.closest('.map-container').id);
@@ -874,18 +901,37 @@
             });
         });
         
-        // --- GENERALIZED FUNCTIONS ---
+        // --- PAGE/UI LOGIC ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');            
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active-step'));
+            let activeStepNumber;
+            if (pageId.includes('current')) activeStepNumber = 1;
+            if (pageId.includes('ideal')) activeStepNumber = 2;
+            if (pageId.includes('result')) activeStepNumber = 3;
+            if (pageId === 'start-page') activeStepNumber = 1;
+            
+            if(activeStepNumber) {
+                document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => {
+                    stepEl.classList.add('active-step');
+                });
+            }
+        }
+        function showModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }        
         function initInputPage(configType) {
             const mapContainer = document.getElementById(`${configType}-map-container`);
             const listContainer = document.getElementById(`${configType}-config-list`);
-            if (!mapContainer || !listContainer) return;
-
+            if (!mapContainer || !listContainer) return;            
             mapContainer.querySelectorAll('.map-marker').forEach(marker => marker.remove());
             listContainer.innerHTML = '';
             
             for (const groupId in eliteGroups) {
                 const group = eliteGroups[groupId];
                 const patterns = ['A', 'B', 'C'];
+                
+                // Map Markers
                 const pos = markerPositions[groupId];
                 const marker = document.createElement('div');
                 marker.className = 'map-marker glowing';
@@ -895,19 +941,16 @@
                 } else {
                     marker.textContent = groupId;
                 }
-                marker.style.top = pos.top;
-                marker.style.left = pos.left;
                 marker.addEventListener('click', () => openGroupSelector(configType, groupId));
-                mapContainer.appendChild(marker);
-
+                mapContainer.appendChild(marker);                
+                // List Items
                 const item = document.createElement('div');
                 item.className = 'config-item';
                 item.innerHTML = `<span class="config-item-label">${groupId}: ${group.name}</span>`;
                 
                 const buttons = document.createElement('div');
                 buttons.className = 'pattern-buttons';
-                buttons.id = `${configType}-buttons-${groupId}`;
-
+                buttons.id = `${configType}-buttons-${groupId}`;                
                 patterns.forEach(pattern => {
                     const btn = document.createElement('button');
                     btn.textContent = pattern;
@@ -917,19 +960,18 @@
                 item.appendChild(buttons);
                 listContainer.appendChild(item);
             }
-        }
-
+             setTimeout(() => updateMapLayout(`${configType}-map-container`), 100);
+        }        
         function switchInputView(configType, viewType) {
             document.getElementById(`${configType}-map-tab`).classList.toggle('active', viewType === 'map');
             document.getElementById(`${configType}-list-tab`).classList.toggle('active', viewType === 'list');
             document.getElementById(`${configType}-map-view`).classList.toggle('active', viewType === 'map');
             document.getElementById(`${configType}-list-view`).classList.toggle('active', viewType === 'list');
-        
+         
             if(viewType === 'map') {
                 setTimeout(() => updateMapLayout(`${configType}-map-container`), 50);
             }
-        }
-
+        }        
         function openGroupSelector(configType, groupId) {
             activeSelection = { configType, groupId, pattern: null };
             document.getElementById('zoom-title').textContent = `${groupId}: ${eliteGroups[groupId].name} のパターンを選択`;
@@ -937,37 +979,26 @@
             const zoomMapImage = zoomContainer.querySelector('img');
             if (zoomMapImage && eliteGroups[groupId].zoomMapUrl) {
                 zoomMapImage.src = eliteGroups[groupId].zoomMapUrl;
-            }
-
-            zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
-
+            }            
+            zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());            
             const config = (configType === 'current') ? currentConfig : idealConfig;
-            const selectedPattern = config[groupId];
-
+            const selectedPattern = config[groupId];            
             ['A', 'B', 'C'].forEach(pattern => {
-                const pos = patternMarkerPositions[groupId][pattern];
+                const pos = patternMarkerPositions[groupId]?.[pattern];
+                if (!pos) return;                
                 const marker = document.createElement('div');
                 marker.className = 'pattern-marker';
                 
-                marker.textContent = pattern; 
-
+                marker.innerHTML = `<span class="pattern-label">${pattern}</span>`;                
                 if (pattern === selectedPattern) {
                     marker.classList.add('completed');
-                    marker.textContent = '✔';
+                    marker.innerHTML = '';
                 }
-
-                // --- MODIFICATION START ---
-                // Convert user-friendly 'bottom' and 'right' values to CSS-friendly 'top' and 'left'
-                if (pos.bottom !== undefined && pos.right !== undefined) {
-                    const topValue = 100 - parseFloat(pos.bottom);
-                    const leftValue = 100 - parseFloat(pos.right);
-                    marker.style.top = `${topValue}%`;
-                    marker.style.left = `${leftValue}%`;
-                } else { // Fallback for old format
-                    marker.style.top = pos.top;
-                    marker.style.left = pos.left;
-                }
-                // --- MODIFICATION END ---
+                
+                const topValue = 100 - parseFloat(pos.bottom);
+                const leftValue = 100 - parseFloat(pos.right);
+                marker.style.top = `${topValue}%`;
+                marker.style.left = `${leftValue}%`;
                 
                 marker.addEventListener('click', () => selectPatternForConfirmation(pattern));
                 zoomContainer.appendChild(marker);
@@ -978,11 +1009,17 @@
         function selectPatternForConfirmation(pattern) {
             activeSelection.pattern = pattern;
             document.getElementById('screenshot-title').textContent = `${activeSelection.groupId} - パターン ${pattern} で合っていますか？`;
-            document.getElementById('screenshot-img').src = `https://placehold.co/500x300/eef2ff/312e81?text=Group+${activeSelection.groupId}+Pattern+${pattern}`;
+            
+            const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
+            if (imageUrl) {
+                document.getElementById('screenshot-img').src = imageUrl;
+            } else {
+                console.error(`Screenshot URL not found for ${activeSelection.groupId}-${pattern}`);
+                document.getElementById('screenshot-img').src = 'https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found';
+            }            
             document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
             showModal('screenshot-popup');
-        }
-
+        }        
         function confirmPatternSelection() {
             const { configType, groupId, pattern } = activeSelection;
             if (!configType || !groupId || !pattern) return;
@@ -992,8 +1029,7 @@
             closeModal('screenshot-popup');
             closeModal('zoom-view');
             activeSelection = { configType: null, groupId: null, pattern: null };
-        }
-
+        }        
         function updateConfig(configType, groupId, pattern) {
             const configToUpdate = (configType === 'current') ? currentConfig : idealConfig;
             configToUpdate[groupId] = pattern;
@@ -1002,9 +1038,8 @@
             if (marker) {
                 marker.classList.remove('glowing');
                 marker.classList.add('completed');
-                marker.innerHTML = '✔';
-            }
-
+                marker.innerHTML = '';
+            }            
             const buttonContainer = document.getElementById(`${configType}-buttons-${groupId}`);
             if (buttonContainer) {
                 buttonContainer.querySelectorAll('button').forEach(btn => {
@@ -1017,25 +1052,22 @@
             } else {
                 updateIdealProgress();
             }
-        }
-
+            updateGuideTextVisibility();
+        }        
         function updateProgress() {
             const completedCount = Object.keys(currentConfig).length;
             document.getElementById('progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
             document.getElementById('go-to-ideal-btn').disabled = completedCount !== totalGroups;
-        }
-
+        }        
         function updateIdealProgress() {
             const completedCount = Object.keys(idealConfig).length;
             document.getElementById('ideal-progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
-        }
-
+        }        
         function copyCurrentToIdeal() {
             for (const groupId in currentConfig) {
                  updateConfig('ideal', groupId, currentConfig[groupId]);
             }
-        }
-        
+        }        
         function setRecommendedConfig() {
             for (const groupId in recommendedConfig) {
                 updateConfig('ideal', groupId, recommendedConfig[groupId]);
@@ -1044,225 +1076,36 @@
         
         function updateMapLayout(containerId) {
             const mapContainer = document.getElementById(containerId);
-            if (!mapContainer || !mapContainer.offsetParent) return;
-
+            if (!mapContainer || !mapContainer.offsetParent) return;            
             const mapImage = mapContainer.querySelector('.map-bg');
-            const markers = mapContainer.querySelectorAll('.map-marker');
-
+            const markers = mapContainer.querySelectorAll('.map-marker');            
             if (mapImage.complete && mapImage.naturalWidth > 0) {
-                const containerWidth = mapContainer.clientWidth;
-                const containerHeight = mapContainer.clientHeight;
+                const containerRect = mapContainer.getBoundingClientRect();
                 const imageAspectRatio = mapImage.naturalWidth / mapImage.naturalHeight;
-                const containerAspectRatio = containerWidth / containerHeight;
-
-                let renderedWidth, renderedHeight, offsetX, offsetY;
-
+                const containerAspectRatio = containerRect.width / containerRect.height;                
+                let renderedWidth, renderedHeight, offsetX, offsetY;                
                 if (imageAspectRatio > containerAspectRatio) {
-                    renderedWidth = containerWidth;
-                    renderedHeight = containerWidth / imageAspectRatio;
+                    renderedWidth = containerRect.width;
+                    renderedHeight = containerRect.width / imageAspectRatio;
                     offsetX = 0;
-                    offsetY = (containerHeight - renderedHeight) / 2;
+                    offsetY = (containerRect.height - renderedHeight) / 2;
                 } else {
-                    renderedHeight = containerHeight;
-                    renderedWidth = containerHeight * imageAspectRatio;
-                    offsetX = (containerWidth - renderedWidth) / 2;
+                    renderedHeight = containerRect.height;
+                    renderedWidth = containerRect.height * imageAspectRatio;
+                    offsetX = (containerRect.width - renderedWidth) / 2;
                     offsetY = 0;
-                }
-
+                }                
                 mapImage.style.width = `${renderedWidth}px`;
                 mapImage.style.height = `${renderedHeight}px`;
-
+                mapImage.style.position = 'absolute';
+                mapImage.style.left = `${offsetX}px`;
+                mapImage.style.top = `${offsetY}px`;                
                 markers.forEach(marker => {
                     const groupId = marker.id.split('-')[2];
                     const pos = markerPositions[groupId];
                     if (pos) {
-                        const topPercent = parseFloat(pos.top);
-                        const leftPercent = parseFloat(pos.left);
-
-                        const newLeft = offsetX + (renderedWidth * (leftPercent / 100));
-                        const newTop = offsetY + (renderedHeight * (topPercent / 100));
+                        const newLeft = offsetX + (renderedWidth * (parseFloat(pos.left) / 100));
+                        const newTop = offsetY + (renderedHeight * (parseFloat(pos.top) / 100));
                         
-                        marker.style.left = `${newLeft - (marker.offsetWidth / 2)}px`;
-                        marker.style.top = `${newTop - (marker.offsetHeight / 2)}px`;
-                    }
-                });
-            }
-        }
-
-        // --- CALCULATION LOGIC (Your preferred version) ---
-        function configToString(config) {
-             return groupKeys.map(key => config[key] || 'A').join('');
-        }
-        
-        const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
-        const NEXT_PATTERN = ['B', 'C', 'A'];
-
-        function getNextPattern(currentPattern) {
-            const nextIndex = (PATTERN_MAP[currentPattern] + 1) % 3;
-            return NEXT_PATTERN[nextIndex];
-        }
-        
-        async function getSolutionForState(stateKey) {
-            const prefix = stateKey.substring(0, 3);
-            const url = `./solutions/${prefix}.json`;
-            
-            if (!solutionCache.has(prefix)) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`File not found: ${url}`);
-                    const data = await response.json();
-                    solutionCache.set(prefix, data);
-                } catch (error) {
-                    console.error("Failed to load solution file:", error);
-                    return null;
-                }
-            }
-            
-            const solutionsForPrefix = solutionCache.get(prefix);
-            return solutionsForPrefix[stateKey] || null;
-        }
-
-        async function calculatePlan() {
-            const calcButton = document.getElementById('calculate-btn');
-            calcButton.disabled = true;
-
-            if (!actionsMap) {
-                alert("エラー: actions_map.json がロードされていません。");
-                calcButton.disabled = false;
-                return;
-            }
-            if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length !== totalGroups) {
-                alert('全ての現在配置と理想配置を入力してください。');
-                calcButton.disabled = false;
-                return;
-            }
-
-            showPage('result-page');
-            const summary = document.getElementById('result-summary');
-            summary.textContent = '最適なルートを探しています...';
-            document.getElementById('result-tbody').innerHTML = '';
-            
-            const plan = [];
-            let tempConfig = { ...currentConfig };
-            
-            for (let i = 0; i < 20; i++) { 
-                const currentStateKey = configToString(tempConfig);
-                const idealStateKey = configToString(idealConfig);
-
-                if (currentStateKey === idealStateKey) break;
-                
-                const diffConfig = {};
-                for (const key of groupKeys) {
-                    const currentPattern = tempConfig[key] || 'A';
-                    const idealPattern = idealConfig[key] || 'A';
-                    const diff = (PATTERN_MAP[idealPattern] - PATTERN_MAP[currentPattern] + 3) % 3;
-                    diffConfig[key] = ['A', 'B', 'C'][diff];
-                }
-                const diffKey = configToString(diffConfig);
-                
-                const solution = await getSolutionForState(diffKey);
-
-                if (!solution) {
-                    summary.textContent = `調整プランが見つかりませんでした (差分: ${diffKey})。データファイルに問題がある可能性があります。`;
-                    calcButton.disabled = false;
-                    return;
-                }
-                
-                const [days, actionId] = solution;
-                const nextAction = actionsMap[actionId];
-                
-                plan.push(nextAction ? nextAction : { name: "何もしない", actions: [] });
-
-                const affectedGroups = nextAction ? nextAction.affectedGroups : [];
-                for (const group of affectedGroups) {
-                    const currentGroupPattern = tempConfig[group] || 'A';
-                    tempConfig[group] = getNextPattern(currentGroupPattern);
-                }
-            }
-
-            displayResults(plan);
-            calcButton.disabled = false;
-        }
-
-        // --- RESULT DISPLAY LOGIC ---
-        function displayResults(plan) {
-            const summary = document.getElementById('result-summary');
-            const tbody = document.getElementById('result-tbody');
-            tbody.innerHTML = '';
-            
-            const isAlreadyDone = configToString(currentConfig) === configToString(idealConfig);
-
-            if (plan === null || (plan.length === 0 && !isAlreadyDone)) {
-                summary.textContent = '調整プランが見つかりませんでした。';
-                return;
-            }
-            
-            if (plan.length === 0 && isAlreadyDone) {
-                summary.textContent = '調整は不要です！現在の配置が理想の配置と一致しています。';
-                return;
-            }
-            
-            summary.textContent = `最短 ${plan.length} 日で調整が完了します！`;
-
-            plan.forEach((dayPlan, index) => {
-                const tr = document.createElement('tr');
-                const actionNames = dayPlan.name;
-                
-                tr.innerHTML = `
-                    <td>${index + 1}日目</td>
-                    <td>${actionNames}</td>
-                    <td><button class="btn btn-details">手順を確認</button></td>
-                `;
-                tr.querySelector('.btn-details').addEventListener('click', () => showDayDetail(dayPlan, index + 1));
-                tbody.appendChild(tr);
-            });
-        }
-        
-        function showDayDetail(dayPlan, dayNumber) {
-            document.getElementById('day-detail-title').textContent = `${dayNumber}日目の調整手順`;
-            const content = document.getElementById('day-detail-content');
-            content.innerHTML = '';
-            
-            if(!dayPlan.actions || dayPlan.actions.length === 0){
-                const item = document.createElement('div');
-                item.className = 'action-item';
-                item.innerHTML = `<h3>今日は何もしません</h3><p>ロードする敵はありません。ゲーム内で日付を更新してください。</p>`;
-                content.appendChild(item);
-            } else {
-                 dayPlan.actions.forEach(action => {
-                    const item = document.createElement('div');
-                    item.className = 'action-item';
-                    let detailsText = action.details ? `<p><strong>詳細:</strong> ${action.details}</p>` : '';
-                    item.innerHTML = `
-                        <h3>行動: ${action.name}</h3>
-                        <p>影響を受けるグループ: ${action.affectedGroups.join(', ')}</p>
-                        ${detailsText}
-                        <img src="https://placehold.co/400x250/eef2ff/312e81?text=Action+${action.id}+Route" alt="操作手順GIF">
-                    `;
-                    content.appendChild(item);
-                });
-            }
-            
-            showModal('day-detail-modal');
-        }
-        
-        function resetApp() {
-            currentConfig = {};
-            idealConfig = {};
-            solutionCache.clear();
-            
-            initInputPage('current');
-            initInputPage('ideal');
-            updateProgress();
-            updateIdealProgress();
-            
-            switchInputView('current', 'map');
-            switchInputView('ideal', 'map');
-            
-            showPage('start-page');
-        }
-
-    </script>
-</body>
-</html>
+                        marker.style
 

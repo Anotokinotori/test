@@ -17,7 +17,6 @@
             --accent-color: #3B82F6; /* Blue accent */
             --accent-hover-color: #2563EB;
             --multiplayer-accent-color: #EC4899; /* Pink for multi */
-            --multiplayer-accent-hover-color: #DB2777;
             --border-color: #e0e0e0;
             --shadow-color: rgba(0, 0, 0, 0.1);
         }
@@ -113,38 +112,79 @@
             pointer-events: auto;
         }
         
-        .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
-        
-        /* Common page header/footer */
-        .page-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; flex-shrink: 0; }
-        .page-footer { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 15px; flex-shrink: 0; }
-        
-        /* Start Page Specific */
+        /* --- Start Page --- */
         #start-page h1 { font-size: clamp(2em, 4vw, 3.5em); font-weight: 700; color: #1E3A8A; margin-bottom: 10px; }
         #start-page .subtitle { font-size: clamp(1em, 1.5vw, 1.2em); color: var(--secondary-text-color); max-width: 600px; margin: 0 auto 30px; }
+        .multi-mode-toggle { display: flex; align-items: center; justify-content: center; margin: 20px 0; font-size: 1.1em; color: var(--primary-text-color); }
+        .multi-mode-toggle input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer;}
+        .multi-mode-toggle label { cursor: pointer; }
+        .start-footer { margin-top: 20px; }
 
         /* General Button Styles */
         .btn { border: none; padding: 14px 28px; border-radius: 50px; font-size: clamp(1em, 1.5vw, 1.2em); cursor: pointer; transition: all 0.3s ease; font-weight: bold; text-decoration: none; display: inline-block; }
         .btn-primary { background-color: var(--accent-color); color: white; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
         .btn-primary:hover { background-color: var(--accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
-        .btn-multi { background-color: var(--multiplayer-accent-color); color: white; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
-        .btn-multi:hover { background-color: var(--multiplayer-accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.5); }
         .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-secondary { background: none; color: var(--secondary-text-color); font-size: 1em; text-decoration: underline; padding: 10px 20px; box-shadow: none; }
         .btn-secondary:hover { background: none; transform: none; box-shadow: none; color: var(--primary-text-color); }
+        .btn-details { background-color: #6b7280; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9em; }
+        .btn-details:hover { background-color: #4b5563; }
         
-        /* --- Config/Result Pages --- */
-        .config-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; overflow-y: auto; padding: 15px; height: 100%;}
+        /* --- Step Indicator --- */
+        .page-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; flex-shrink: 0; }
+        .btn-back { background: none; border: none; cursor: pointer; padding: 0; width: 40px; height: 40px; background-image: url('https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/chevron_backward_41dp_1F1F1F_FILL0_wght400_GRAD0_opsz40.png?raw=true'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.6; transition: opacity 0.2s; }
+        .btn-back:hover { opacity: 1; }
+        .header-placeholder { width: 40px; flex-shrink: 0; }
+        .steps-container { display: flex; justify-content: center; align-items: center; gap: 20px; flex-grow: 1; }
+        .step { display: flex; flex-direction: column; align-items: center; }
+        .step-icon { width: 60px; height: 60px; background-color: #fff; border: 3px solid var(--border-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5em; font-weight: bold; color: var(--secondary-text-color); box-shadow: 0 4px 10px var(--shadow-color); transition: all 0.3s ease; }
+        .step-label { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--secondary-text-color); transition: all 0.3s ease; }
+        .step-arrow { font-size: 2.5em; color: var(--border-color); }
+        .step.active-step .step-icon { border-color: var(--accent-color); color: var(--accent-color); }
+        .step.active-step .step-label { color: var(--primary-text-color); }
+        
+        /* --- Input Pages --- */
+        .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
+        .page-footer { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 15px; flex-shrink: 0; }
+        .page-footer .progress-text { font-size: 1.1em; font-weight: bold; color: var(--secondary-text-color); }
+        .page-footer .left-action { flex: 1 1 0%; display: flex; justify-content: flex-start; }
+        .page-footer .center-action { flex: 1 1 0%; display: flex; justify-content: center; }
+        .page-footer .right-action { flex: 1 1 0%; display: flex; justify-content: flex-end; }
+        
+        /* Tab UI for Input Pages */
+        .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
+        .view-tab { padding: 10px 20px; font-size: 1em; font-weight: bold; color: var(--secondary-text-color); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s; }
+        .view-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+        .input-views-container { flex-grow: 1; position: relative; width: 100%; min-height: 200px; }
+        .input-view { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .input-view.active { opacity: 1; visibility: visible; }
+
+        /* Map View Styles */
+        .map-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        .map-container img.map-bg { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; }
+        .map-marker { position: absolute; width: 40px; height: 40px; background-color: rgba(59, 130, 246, 0.7); background-size: cover; background-position: center; border-radius: 50%; border: 3px solid var(--accent-color); cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; color: white; font-size: 1.1em; transition: all 0.3s ease; }
+        .map-marker.glowing { animation: glowing 2s infinite; }
+        @keyframes glowing { 0% { box-shadow: 0 0 5px var(--accent-color); } 50% { box-shadow: 0 0 20px var(--accent-color); } 100% { box-shadow: 0 0 5px var(--accent-color); } }
+        .map-marker.completed { background-color: #10B981; border-color: white; animation: none; background-image: none !important; }
+
+        /* List View Styles */
+        .config-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1200px; overflow-y: auto; padding: 15px; height: 100%;}
         .config-item { background-color: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: left;}
         .config-item-label { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; display: block; }
         .pattern-buttons button { background: #fff; color: var(--secondary-text-color); border: 2px solid var(--border-color); padding: 10px; margin: 2px; border-radius: 5px; cursor: pointer; width: 50px; font-size: 1em; transition: all 0.2s; }
         .pattern-buttons button:hover { border-color: var(--accent-hover-color); }
         .pattern-buttons button.selected { background: var(--accent-color); color: white; border-color: var(--accent-color); }
 
+        /* Result Page Layout */
+        .result-layout-container { display: flex; flex-grow: 1; width: 100%; gap: 20px; min-height: 0; }
+        .result-map-container { flex: 1 1 40%; display: flex; justify-content: center; align-items: center; }
+        .result-map-container img { max-width: 100%; max-height: 100%; border-radius: 10px; object-fit: contain; }
+        .result-details-container { flex: 1 1 60%; display: flex; flex-direction: column; min-height: 0; }
+
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
-        .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%; max-width: 1000px; }
+        .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%; }
         .result-table { width: 100%; border-collapse: collapse; }
-        .result-table th, .result-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .result-table th, .result-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
         .result-table th { background-color: #f9f9f9; position: sticky; top: 0; }
         .mode-solo { color: var(--accent-color); font-weight: bold; }
         .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
@@ -155,11 +195,15 @@
         .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; position: relative; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 95vh; overflow-y: auto;}
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
         .modal-close:hover { color: #333; }
+        
+        .pattern-marker { position: absolute; width: 50px; height: 50px; background-color: rgba(59, 130, 246, 0.8); border: 3px solid var(--accent-color); animation: glowing 2s infinite; display: flex; justify-content: center; align-items: center; font-size: 1.5em; color: white; font-weight: bold; cursor: pointer; border-radius: 50%; transform: translate(-50%, -50%); background-size: cover; background-position: center; }
+        .pattern-marker.completed { background-color: #10B981; border-color: white; animation: none; background-image: none !important; }
 
         /* Responsive */
         @media (max-width: 768px) {
             .container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
             .page { padding: 20px; }
+            .result-layout-container { flex-direction: column; }
         }
 
     </style>
@@ -174,20 +218,52 @@
             <div id="start-page" class="page active">
                 <h1>鶴観配置調整ツール</h1>
                 <p class="subtitle">ソロ・マルチ(周期ホールド)両対応！<br>現在と理想の配置を入力すると、最短の調整スケジュールを計算します。</p>
-                <div style="display: flex; gap: 20px; margin-top: 20px;">
-                     <button id="go-to-current-btn" class="btn btn-primary">調整を始める</button>
+                <button id="start-btn" class="btn btn-primary">調整を始める</button>
+                <div class="multi-mode-toggle">
+                    <input type="checkbox" id="multiplayer-mode-checkbox">
+                    <label for="multiplayer-mode-checkbox">マルチプレイヤーモードを有効にする</label>
+                </div>
+                <div class="start-footer">
+                    <button class="btn btn-secondary" onclick="alert('使い方の説明（未実装）')">使い方ガイド</button>
                 </div>
             </div>
             
             <!-- Page 2: Current Config -->
             <div id="current-config-page" class="page">
-                 <div class="page-content-wrapper">
-                    <h2>① 現在の配置を入力してください</h2>
-                    <div class="config-list" id="current-config-list"></div>
+                <div class="page-content-wrapper">
+                    <div class="page-header">
+                        <button id="back-to-start-btn" class="btn-back" aria-label="戻る"></button>
+                        <div class="steps-container">
+                            <div class="step active-step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">スケジュール</div> </div>
+                        </div>
+                        <div class="header-placeholder"></div>
+                    </div>
+                    <div class="view-switcher">
+                        <button id="current-map-tab" class="view-tab active" data-view="map">マップ表示</button>
+                        <button id="current-list-tab" class="view-tab" data-view="list">リスト表示</button>
+                    </div>
+                    <div class="input-views-container">
+                        <div id="current-map-view" class="input-view active">
+                            <div class="map-container" id="current-map-container">
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
+                            </div>
+                        </div>
+                        <div id="current-list-view" class="input-view">
+                            <div class="config-list" id="current-config-list"></div>
+                        </div>
+                    </div>
                     <div class="page-footer">
-                        <button class="btn btn-secondary" onclick="showPage('start-page')">戻る</button>
-                        <div id="progress-text">入力完了: 0 / 10</div>
-                        <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
+                        <div class="left-action"></div>
+                        <div class="center-action">
+                             <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
+                        </div>
+                        <div class="right-action">
+                            <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -195,17 +271,41 @@
             <!-- Page 3: Ideal Config -->
             <div id="ideal-config-page" class="page">
                 <div class="page-content-wrapper">
-                    <h2>② 理想の配置を入力してください</h2>
-                    <div class="config-list" id="ideal-config-list"></div>
+                    <div class="page-header">
+                        <button id="back-to-current-btn" class="btn-back" aria-label="戻る"></button>
+                         <div class="steps-container">
+                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step active-step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">スケジュール</div> </div>
+                        </div>
+                        <div class="header-placeholder"></div>
+                    </div>
+                     <div class="view-switcher">
+                        <button id="ideal-map-tab" class="view-tab active" data-view="map">マップ表示</button>
+                        <button id="ideal-list-tab" class="view-tab" data-view="list">リスト表示</button>
+                        <button id="copy-current-btn" class="btn btn-secondary" style="margin-left: auto;">現在の配置をコピー</button>
+                    </div>
+                    <div class="input-views-container">
+                        <div id="ideal-map-view" class="input-view active">
+                            <div class="map-container" id="ideal-map-container">
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
+                            </div>
+                        </div>
+                        <div id="ideal-list-view" class="input-view">
+                            <div class="config-list" id="ideal-config-list"></div>
+                        </div>
+                    </div>
                      <div class="page-footer">
-                        <button class="btn btn-secondary" onclick="showPage('current-config-page')">戻る</button>
-                        <div>
-                             <button class="btn btn-secondary" id="copy-current-btn">現在の配置をコピー</button>
+                        <div class="left-action">
                              <button class="btn btn-secondary" id="set-recommended-btn">環境配置を自動入力</button>
                         </div>
-                        <div>
-                            <button id="calculate-solo-btn" class="btn btn-primary">ソロで計算</button>
-                            <button id="calculate-multi-btn" class="btn btn-multi">マルチで計算</button>
+                        <div class="center-action">
+                             <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
+                        </div>
+                        <div class="right-action">
+                            <button id="calculate-btn" class="btn btn-primary">計算を実行！</button>
                         </div>
                     </div>
                 </div>
@@ -213,43 +313,77 @@
             
             <!-- Page 4: Result Page -->
             <div id="result-page" class="page">
-                <div class="page-content-wrapper">
-                    <h2 id="result-title">計算結果</h2>
-                    <div id="result-summary"></div>
-                    <div class="result-table-container">
-                        <table class="result-table">
-                            <thead>
-                                <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)の行動</th> <th>1P(ホスト)の行動</th> </tr>
-                            </thead>
-                            <tbody id="result-tbody"></tbody>
-                        </table>
+                <div class="page-content-wrapper" style="padding: 20px;">
+                     <div class="result-layout-container">
+                        <div class="result-map-container">
+                            <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ">
+                        </div>
+                        <div class="result-details-container">
+                            <div id="result-summary"></div>
+                            <div class="result-table-container">
+                                <table class="result-table">
+                                    <thead>
+                                        <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)</th> <th>1P(ホスト)</th> <th>詳細</th> </tr>
+                                    </thead>
+                                    <tbody id="result-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                     <div class="page-footer">
+                     <div class="page-footer" style="justify-content: center; gap: 20px;">
                         <button class="btn btn-secondary" onclick="showPage('ideal-config-page')">再計算する</button>
                         <button class="btn btn-secondary" onclick="resetApp()">最初からやり直す</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Loading Modal -->
+            <!-- Modals -->
             <div id="loading-modal" class="modal">
                  <div class="modal-content" style="text-align: center;">
                     <h2>計算中...</h2>
                     <p>最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
                  </div>
             </div>
-
+            <div id="day-detail-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('day-detail-modal')">&times;</span>
+                    <h2 id="day-detail-title"></h2>
+                    <div id="day-detail-content"></div>
+                </div>
+            </div>
+            <div id="zoom-view" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('zoom-view')">&times;</span>
+                    <h3 id="zoom-title"></h3>
+                    <div id="zoom-map-container" style="position: relative; width: 100%; aspect-ratio: 16/9;">
+                         <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                </div>
+            </div>
+             <div id="screenshot-popup" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('screenshot-popup')">&times;</span>
+                    <h3 id="screenshot-title"></h3>
+                    <img id="screenshot-img" src="" alt="ゲーム内スクリーンショット" style="width: 100%; height: auto; border-radius: 10px; margin: 15px 0;">
+                    <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
+                </div>
+            </div>
         </div>
     </main>
 
 <script>
 // --- DATA DEFINITION ---
 const eliteGroups = {
-    'A': { name: 'モシリ炎アビス' }, 'B': { name: 'モシリ雷アビス' },
-    'C': { name: 'モシリ暴徒' },   'D': { name: 'チライ機兵' },
-    'E': { name: 'オイナ機兵' },   'F': { name: 'オイナ暴徒' },
-    'G': { name: 'シリコロ暴徒' }, 'H': { name: 'アウタケ東' },
-    'I': { name: 'アウタケ西' },   'J': { name: 'ワクカウ' },
+    'A': { name: 'モシリ炎アビス', zoomMapUrl: 'https://assets.st-note.com/img/1738372090-i0Dg36tAbTaRjEHlpQhPr5NY.jpg?width=1200' },
+    'B': { name: 'モシリ雷アビス', zoomMapUrl: 'https://assets.st-note.com/img/1738419313-vIRa5KkjYBwznp1OSoUMZCLG.jpg?width=1200' },
+    'C': { name: 'モシリ暴徒', zoomMapUrl: 'https://assets.st-note.com/img/1738419512-Zn6ERGTQCwgakSrmVHjWztFY.jpg?width=1200' },
+    'D': { name: 'チライ機兵', zoomMapUrl: 'https://assets.st-note.com/img/1738419554-5Vfy0paPscJjSACn4DTvY3Mr.jpg?width=1200' },
+    'E': { name: 'オイナ機兵', zoomMapUrl: 'https://assets.st-note.com/img/1738419603-5ULFDgf1RN86dZQHnMJoSX3e.jpg?width=1200' },
+    'F': { name: 'オイナ暴徒', zoomMapUrl: 'https://assets.st-note.com/img/1738419733-GNO1jErQmFh9p5yP423WgLaH.jpg?width=1200' },
+    'G': { name: 'シリコロ暴徒', zoomMapUrl: 'https://assets.st-note.com/img/1738419775-yxGHB6uJZpdh7VDzT2n85osX.jpg?width=1200' },
+    'H': { name: 'アウタケ東', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E6%9D%B1.png?raw=true' },
+    'I': { name: 'アウタケ西', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E8%A5%BF.png?raw=true' },
+    'J': { name: 'ワクカウ', zoomMapUrl: 'https://assets.st-note.com/img/1738419878-oLvIuKdDGVEc3RsO6UWrZFH4.jpg?width=1200' },
 };
 const groupKeys = Object.keys(eliteGroups);
 const totalGroups = groupKeys.length;
@@ -272,27 +406,34 @@ const actionsData = [
     {id: 20, name: 'ボート(ヤシオリから)', affectedGroups: ['H', 'I']},
 ];
 
-const recommendedConfig = {
-    'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C',
-    'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B'
-};
+const markerPositions = { 'A': { top: '52%', left: '60%' }, 'B': { top: '48%', left: '56%' }, 'C': { top: '43%', left: '58%' }, 'D': { top: '35%', left: '59%' }, 'E': { top: '34%', left: '43%' }, 'F': { top: '40%', left: '38%' }, 'G': { top: '32%', left: '35%' }, 'H': { top: '50%', left: '32%' }, 'I': { top: '48%', left: '23%' }, 'J': { top: '69%', left: '43%' } };
+const patternMarkerPositions = { 'A': { 'A': { bottom: '46%', right: '43%' }, 'B': { bottom: '54%', right: '47%' }, 'C': { bottom: '40%', right: '51%' } }, 'B': { 'A': { bottom: '62%', right: '57%' }, 'B': { bottom: '52%', right: '52%' }, 'C': { bottom: '61%', right: '48%' } }, 'C': { 'A': { bottom: '75%', right: '50%' }, 'B': { bottom: '64%', right: '54%' }, 'C': { bottom: '61%', right: '45%' } }, 'D': { 'A': { bottom: '73.5%', right: '28.6%' }, 'B': { bottom: '59.9%', right: '31.3%' }, 'C': { bottom: '57.8%', right: '27.4%' } }, 'E': { 'A': { bottom: '54.1%', right: '36.7%' }, 'B': { bottom: '51.0%', right: '43.2%' }, 'C': { bottom: '73.7%', right: '40.7%' } }, 'F': { 'A': { bottom: '42.9%', right: '49.9%' }, 'B': { bottom: '36.5%', right: '45.0%' }, 'C': { bottom: '48.3%', right: '46.0%' } }, 'G': { 'A': { bottom: '63.0%', right: '49.5%' }, 'B': { bottom: '59.5%', right: '55.4%' }, 'C': { bottom: '63.0%', right: '44.5%' } }, 'H': { 'A': { bottom: '41.3%', right: '58.7%' }, 'B': { bottom: '45.2%', right: '63.4%' }, 'C': { bottom: '47.0%', right: '57.6%' } }, 'I': { 'A': { bottom: '58.4%', right: '66.3%' }, 'B': { bottom: '61.1%', right: '61.0%' }, 'C': { bottom: '51.0%', right: '67.5%' } }, 'J': { 'A': { bottom: '58.0%', right: '40.8%' }, 'B': { bottom: '51.8%', right: '56.5%' }, 'C': { bottom: '28.5%', right: '52.6%' } } };
+const screenshotImageUrls = { 'A': { 'A': 'https://assets.st-note.com/img/1738372100-wkRfaQDElqCepTY12bHVJszm.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738372108-Ozf8gFbjTZEaGJMDx7qHAoVN.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738420209-Vs9IFoQq3dJxwOGv5RM7Xh0C.jpg?width=1200' }, 'B': { 'A': 'https://assets.st-note.com/img/1738419367-4wCdF5eOLbmtVuDAURYSaIr1.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419379-3mOLkEy16jefW0nvGlctzK9B.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419389-Zm5ra9xD6JU2SKfNzeBHpIl1.jpg?width=1200' }, 'C': { 'A': 'https://assets.st-note.com/img/1738419522-lgzSU9nI2x6ZYhkNfHqiPXOo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419532-g9URz8f04FckmJtAseBhu7Qj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419541-1IgcObQjl3dH4rwy2LNM6SP9.jpg?width=1200' }, 'D': { 'A': 'https://assets.st-note.com/img/1738419563-xyMQ1nkuOjbpa6Dwm3KWoYh9.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419572-YuweId6SiyKDBAtWgOlojQGa.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419580-quLQMGeRlbfv0wSgmh8jCINt.jpg?width=1200' }, 'E': { 'A': 'https://assets.st-note.com/img/1738419683-Y3pzloUPmn861idxQvLaMNZy.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419695-t41JA6FX2CeViT9GB3UOdhlK.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419704-xdZlTOuatBockhDLVgsN4I3w.jpg?width=1200' }, 'F': { 'A': 'https://assets.st-note.com/img/1738419747-YfBn7iOzKVekQRAJ9DParxlv.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419755-5CmQ8u0hGFrsfRyZojIH2kpX.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419763-zFvuEZK9nYgd61OsrM5NeRAP.jpg?width=1200' }, 'G': { 'A': 'https://assets.st-note.com/img/1738586151-mkVNDUfHbGTQFJ7M9opaYRK2.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419796-1mHqF5OyP6rEAoU3YZNcuQKj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419805-MF0UpPyI6cNzqldvXADiuEwg.jpg?width=1200' }, 'H': { 'A': 'https://assets.st-note.com/img/1738419821-2VtSLA5DROoJ0wBClZIxvMTu.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419829-4evqad8bPjYEAmBfpZH9RuT1.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419837-4tSaJMW6y7BzDZQ3fRC2LXqH.jpg?width=1200' }, 'I': { 'A': 'https://assets.st-note.com/img/1738419855-V8XBf5WexFzy60psuQGvmNdY.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738586173-KCQXfOlVjNtUoBn37qg5Fcu0.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419868-YORuncAJ3DgLoZ560WwCv4Uq.jpg?width=1200' }, 'J': { 'A': 'https://assets.st-note.com/img/1738419900-C9ZW6JqmkxnVz5vBrKbAXtDo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419916-pQNEJcL0dXovR7jnTfa8qzeh.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419933-zFKX9tqVyjMilUBRdJIWNYrH.jpg?width=1200' } };
+const recommendedConfig = { 'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C', 'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B' };
 
 const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
-const REVERSE_PATTERN_MAP = { 0: 'A', 1: 'B', 2: 'C' };
 
 // --- APPLICATION STATE ---
 let currentConfig = {};
 let idealConfig = {};
+let activeSelection = { configType: null, groupId: null, pattern: null };
 let possibleDailyActions = [];
+let isMultiplayerMode = false;
 
 // --- UI LOGIC ---
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('go-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
+    document.getElementById('start-btn').addEventListener('click', () => showPage('current-config-page'));
     document.getElementById('go-to-ideal-btn').addEventListener('click', () => showPage('ideal-config-page'));
     document.getElementById('copy-current-btn').addEventListener('click', copyCurrentToIdeal);
     document.getElementById('set-recommended-btn').addEventListener('click', setRecommendedConfig);
-    document.getElementById('calculate-solo-btn').addEventListener('click', () => calculatePlan(false));
-    document.getElementById('calculate-multi-btn').addEventListener('click', () => calculatePlan(true));
+    document.getElementById('calculate-btn').addEventListener('click', () => calculatePlan());
+    document.getElementById('multiplayer-mode-checkbox').addEventListener('change', (e) => { isMultiplayerMode = e.target.checked; });
+    document.getElementById('back-to-start-btn').addEventListener('click', () => showPage('start-page'));
+    document.getElementById('back-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
+    document.getElementById('current-map-tab').addEventListener('click', () => switchInputView('current', 'map'));
+    document.getElementById('current-list-tab').addEventListener('click', () => switchInputView('current', 'list'));
+    document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
+    document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
     
     initInputPage('current');
     initInputPage('ideal');
@@ -302,23 +443,46 @@ document.addEventListener('DOMContentLoaded', () => {
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active-step'));
+    let activeStepNumber;
+    if (pageId.includes('current')) activeStepNumber = 1;
+    if (pageId.includes('ideal')) activeStepNumber = 2;
+    if (pageId.includes('result')) activeStepNumber = 3;
+    if (pageId === 'start-page') activeStepNumber = 0;
+    if (activeStepNumber) {
+        document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => stepEl.classList.add('active-step'));
+    }
 }
+
 function showModal(modalId) { document.getElementById(modalId).classList.add('active'); }
 function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
 
 function initInputPage(configType) {
+    const mapContainer = document.getElementById(`${configType}-map-container`);
     const listContainer = document.getElementById(`${configType}-config-list`);
+    mapContainer.querySelectorAll('.map-marker').forEach(marker => marker.remove());
     listContainer.innerHTML = '';
+    
     groupKeys.forEach(groupId => {
         const group = eliteGroups[groupId];
+        // Map Markers
+        const marker = document.createElement('div');
+        marker.className = 'map-marker glowing';
+        marker.id = `${configType}-marker-${groupId}`;
+        marker.style.left = markerPositions[groupId].left;
+        marker.style.top = markerPositions[groupId].top;
+        marker.textContent = groupId;
+        marker.addEventListener('click', () => openGroupSelector(configType, groupId));
+        mapContainer.appendChild(marker);
+
+        // List Items
         const item = document.createElement('div');
         item.className = 'config-item';
         item.innerHTML = `<span class="config-item-label">${groupId}: ${group.name}</span>`;
-        
         const buttons = document.createElement('div');
         buttons.className = 'pattern-buttons';
         buttons.id = `${configType}-buttons-${groupId}`;
-
         ['A', 'B', 'C'].forEach(pattern => {
             const btn = document.createElement('button');
             btn.textContent = pattern;
@@ -328,24 +492,134 @@ function initInputPage(configType) {
         item.appendChild(buttons);
         listContainer.appendChild(item);
     });
+    setTimeout(() => updateMapLayout(`${configType}-map-container`), 100);
+}
+
+function switchInputView(configType, viewType) {
+    document.getElementById(`${configType}-map-tab`).classList.toggle('active', viewType === 'map');
+    document.getElementById(`${configType}-list-tab`).classList.toggle('active', viewType === 'list');
+    document.getElementById(`${configType}-map-view`).classList.toggle('active', viewType === 'map');
+    document.getElementById(`${configType}-list-view`).classList.toggle('active', viewType === 'list');
+    if(viewType === 'map') {
+        setTimeout(() => updateMapLayout(`${configType}-map-container`), 50);
+    }
+}
+
+function openGroupSelector(configType, groupId) {
+    activeSelection = { configType, groupId, pattern: null };
+    document.getElementById('zoom-title').textContent = `${groupId}: ${eliteGroups[groupId].name} のパターンを選択`;
+    const zoomContainer = document.getElementById('zoom-map-container');
+    const zoomMapImage = zoomContainer.querySelector('img');
+    if (zoomMapImage && eliteGroups[groupId].zoomMapUrl) {
+        zoomMapImage.src = eliteGroups[groupId].zoomMapUrl;
+    }
+    zoomContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
+    const config = (configType === 'current') ? currentConfig : idealConfig;
+    const selectedPattern = config[groupId];
+    ['A', 'B', 'C'].forEach(pattern => {
+        const pos = patternMarkerPositions[groupId]?.[pattern];
+        if (!pos) return;
+        const marker = document.createElement('div');
+        marker.className = 'pattern-marker';
+        marker.innerHTML = `<span>${pattern}</span>`;
+        if (pattern === selectedPattern) {
+            marker.classList.add('completed');
+            marker.innerHTML = '✔';
+        }
+        marker.style.bottom = pos.bottom;
+        marker.style.right = pos.right;
+        marker.addEventListener('click', () => selectPatternForConfirmation(pattern));
+        zoomContainer.appendChild(marker);
+    });
+    showModal('zoom-view');
+}
+
+function selectPatternForConfirmation(pattern) {
+    activeSelection.pattern = pattern;
+    document.getElementById('screenshot-title').textContent = `${activeSelection.groupId} - パターン ${pattern} で合っていますか？`;
+    const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
+    if (imageUrl) {
+        document.getElementById('screenshot-img').src = imageUrl;
+    }
+    document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
+    showModal('screenshot-popup');
+}
+
+function confirmPatternSelection() {
+    const { configType, groupId, pattern } = activeSelection;
+    if (!configType || !groupId || !pattern) return;
+    updateConfig(configType, groupId, pattern);
+    closeModal('screenshot-popup');
+    closeModal('zoom-view');
 }
 
 function updateConfig(configType, groupId, pattern) {
     const configToUpdate = (configType === 'current') ? currentConfig : idealConfig;
     configToUpdate[groupId] = pattern;
     
+    const marker = document.getElementById(`${configType}-marker-${groupId}`);
+    if (marker) {
+        marker.classList.remove('glowing');
+        marker.classList.add('completed');
+        marker.innerHTML = '✔';
+    }
     const buttonContainer = document.getElementById(`${configType}-buttons-${groupId}`);
     buttonContainer.querySelectorAll('button').forEach(btn => {
         btn.classList.toggle('selected', btn.textContent === pattern);
     });
     
     if (configType === 'current') updateProgress();
+    else updateIdealProgress();
 }
 
 function updateProgress() {
     const completedCount = Object.keys(currentConfig).length;
     document.getElementById('progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
     document.getElementById('go-to-ideal-btn').disabled = completedCount !== totalGroups;
+}
+
+function updateIdealProgress() {
+    const completedCount = Object.keys(idealConfig).length;
+    document.getElementById('ideal-progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
+}
+
+function updateMapLayout(containerId) {
+    const mapContainer = document.getElementById(containerId);
+    if (!mapContainer || !mapContainer.offsetParent) return;
+    const mapImage = mapContainer.querySelector('.map-bg');
+    const markers = mapContainer.querySelectorAll('.map-marker');
+    if (mapImage.complete && mapImage.naturalWidth > 0) {
+        const containerRect = mapContainer.getBoundingClientRect();
+        const imageAspectRatio = mapImage.naturalWidth / mapImage.naturalHeight;
+        const containerAspectRatio = containerRect.width / containerRect.height;
+        let renderedWidth, renderedHeight, offsetX, offsetY;
+        if (imageAspectRatio > containerAspectRatio) {
+            renderedWidth = containerRect.width;
+            renderedHeight = containerRect.width / imageAspectRatio;
+            offsetX = 0;
+            offsetY = (containerRect.height - renderedHeight) / 2;
+        } else {
+            renderedHeight = containerRect.height;
+            renderedWidth = containerRect.height * imageAspectRatio;
+            offsetX = (containerRect.width - renderedWidth) / 2;
+            offsetY = 0;
+        }
+        mapImage.style.width = `${renderedWidth}px`;
+        mapImage.style.height = `${renderedHeight}px`;
+        mapImage.style.position = 'absolute';
+        mapImage.style.left = `${offsetX}px`;
+        mapImage.style.top = `${offsetY}px`;
+        markers.forEach(marker => {
+            const groupId = marker.id.split('-')[2];
+            const pos = markerPositions[groupId];
+            if (pos) {
+                const newLeft = offsetX + (renderedWidth * (parseFloat(pos.left) / 100));
+                const newTop = offsetY + (renderedHeight * (parseFloat(pos.top) / 100));
+                marker.style.left = `${newLeft - (marker.offsetWidth / 2)}px`;
+                marker.style.top = `${newTop - (marker.offsetHeight / 2)}px`;
+            }
+        });
+    }
 }
 
 function copyCurrentToIdeal() {
@@ -366,6 +640,9 @@ function resetApp() {
     initInputPage('current');
     initInputPage('ideal');
     updateProgress();
+    updateIdealProgress();
+    document.getElementById('multiplayer-mode-checkbox').checked = false;
+    isMultiplayerMode = false;
     showPage('start-page');
 }
 
@@ -399,23 +676,22 @@ function generatePossibleDailyActions() {
         }
     }
     possibleDailyActions = Array.from(achievablePatterns.values());
-    console.log(`Generated ${possibleDailyActions.length} unique daily actions.`);
 }
 
-function calculatePlan(isMultiplayer) {
+function calculatePlan() {
     if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length === 0) {
         alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
         return;
     }
     showModal('loading-modal');
     
-    // Use setTimeout to allow the loading modal to render before blocking the main thread
     setTimeout(() => {
         const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
-        const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
+        const idealWithFallback = { ...currentConfig, ...idealConfig };
+        const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealWithFallback[k]]])));
 
         if (startConfigStr === endConfigStr) {
-            displayResults([], isMultiplayer);
+            displayResults([]);
             closeModal('loading-modal');
             return;
         }
@@ -424,91 +700,79 @@ function calculatePlan(isMultiplayer) {
         const visited = new Set([startConfigStr]);
         
         let solutionPath = null;
+        let iterationCount = 0;
+        const maxIterations = isMultiplayerMode ? 30000 : 10000;
 
         while (queue.length > 0) {
+            iterationCount++;
+            if(iterationCount > maxIterations){
+                console.error("Max iterations reached. Aborting.");
+                solutionPath = null;
+                break;
+            }
+
             const { config, path } = queue.shift();
-            const currentDay = path.length + 1;
+            
+            const dailyActions = isMultiplayerMode
+                ? possibleDailyActions.flatMap(holdAction => possibleDailyActions.map(advanceAction => ({holdAction, advanceAction, mode: 'マルチ'})))
+                : possibleDailyActions.map(soloAction => ({holdAction: {name: '---', affectedGroups: new Set()}, advanceAction: soloAction, mode: 'ソロ'}));
 
-            if (currentDay > 10) continue; // safety break
-
-            // Solo Mode Actions
-            for (const soloAction of possibleDailyActions) {
-                const soloAffected = soloAction.affectedGroups;
+            for (const dayAction of dailyActions) {
                 let nextConfigArr = config.split('').map(Number);
-                
-                for (const group of soloAffected) {
+                let effectiveAdvance;
+
+                if (dayAction.mode === 'マルチ') {
+                    const holdAffected = dayAction.holdAction.affectedGroups;
+                    const advanceAffected = dayAction.advanceAction.affectedGroups;
+                    effectiveAdvance = new Set([...advanceAffected].filter(x => !holdAffected.has(x)));
+                } else {
+                    effectiveAdvance = dayAction.advanceAction.affectedGroups;
+                }
+
+                for (const group of effectiveAdvance) {
                     const index = groupKeys.indexOf(group);
                     nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
                 }
-                
+
                 const nextConfigStr = nextConfigArr.join('');
+
                 if (nextConfigStr === endConfigStr) {
-                    solutionPath = [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }];
+                    solutionPath = [...path, dayAction];
                     break;
                 }
                 if (!visited.has(nextConfigStr)) {
                     visited.add(nextConfigStr);
-                    queue.push({ config: nextConfigStr, path: [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }] });
+                    queue.push({ config: nextConfigStr, path: [...path, dayAction] });
                 }
             }
-            if (solutionPath) break;
-
-
-            // Multiplayer Mode Actions
-            if (isMultiplayer) {
-                for (const holdAction of possibleDailyActions) {
-                    for (const advanceAction of possibleDailyActions) {
-                        const holdAffected = holdAction.affectedGroups;
-                        const advanceAffected = advanceAction.affectedGroups;
-                        
-                        const effectiveAdvance = new Set([...advanceAffected].filter(x => !holdAffected.has(x)));
-                        
-                        let nextConfigArr = config.split('').map(Number);
-                        for (const group of effectiveAdvance) {
-                             const index = groupKeys.indexOf(group);
-                             nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
-                        }
-                        
-                        const nextConfigStr = nextConfigArr.join('');
-
-                        if (nextConfigStr === endConfigStr) {
-                            solutionPath = [...path, { holdAction, advanceAction, mode: 'マルチ' }];
-                            break;
-                        }
-
-                        if (!visited.has(nextConfigStr)) {
-                            visited.add(nextConfigStr);
-                            queue.push({ config: nextConfigStr, path: [...path, { holdAction, advanceAction, mode: 'マルチ' }] });
-                        }
-                    }
-                    if (solutionPath) break;
-                }
-            }
-            if (solutionPath) break;
+             if (solutionPath) break;
         }
         
-        displayResults(solutionPath, isMultiplayer);
+        displayResults(solutionPath);
         closeModal('loading-modal');
     }, 50);
 }
 
-
 // --- RESULT DISPLAY ---
-function displayResults(plan, isMultiplayer) {
+function displayResults(plan) {
+    showPage('result-page'); 
+    
     const tbody = document.getElementById('result-tbody');
+    const summaryEl = document.getElementById('result-summary');
+    const titleEl = document.getElementById('result-title');
+
     tbody.innerHTML = '';
     
-    document.getElementById('result-title').textContent = isMultiplayer ? "計算結果 (マルチモード)" : "計算結果 (ソロモード)";
+    if (titleEl) {
+        titleEl.textContent = isMultiplayerMode ? "計算結果 (マルチモード)" : "計算結果 (ソロモード)";
+    }
     
-    const summaryEl = document.getElementById('result-summary');
     if (plan === null) {
-        summaryEl.textContent = '調整プランが見つかりませんでした。';
-        showPage('result-page');
+        summaryEl.textContent = '調整プランが見つかりませんでした。計算が複雑すぎる可能性があります。';
         return;
     }
     if (plan.length === 0) {
         summaryEl.textContent = '調整は不要です！';
-        showPage('result-page');
         return;
     }
     
@@ -522,13 +786,45 @@ function displayResults(plan, isMultiplayer) {
             <td><span class="${modeClass}">${day.mode}</span></td>
             <td>${day.holdAction.name}</td>
             <td>${day.advanceAction.name}</td>
+            <td><button class="btn btn-details">手順</button></td>
         `;
+        tr.querySelector('.btn-details').addEventListener('click', () => showDayDetail(day, index + 1));
         tbody.appendChild(tr);
     });
-    
-    showPage('result-page');
 }
+
+function showDayDetail(dayPlan, dayNumber) {
+    document.getElementById('day-detail-title').textContent = `${dayNumber}日目の手順詳細`;
+    const content = document.getElementById('day-detail-content');
+    
+    if (dayPlan.mode === 'ソロ') {
+         content.innerHTML = `
+            <h3>ソロプレイ</h3>
+            <p><strong>実行するアクション:</strong> ${dayPlan.advanceAction.name}</p>
+            <p>これにより、以下のグループの周期が1つ進みます:</p>
+            <ul>${[...dayPlan.advanceAction.affectedGroups].map(g => `<li>${g}: ${eliteGroups[g].name}</li>`).join('') || '<li>なし</li>'}</ul>
+        `;
+    } else {
+        const effectiveAdvance = new Set([...dayPlan.advanceAction.affectedGroups].filter(x => !dayPlan.holdAction.affectedGroups.has(x)));
+         content.innerHTML = `
+            <h3>マルチプレイ（周期ホールド）</h3>
+            <p><strong>手順1 (2P ホールド役):</strong> ワールドに入り、以下のロードを実行後、すぐにワールドを抜けてください。</p>
+            <p><strong>ホールドアクション:</strong> ${dayPlan.holdAction.name}</p>
+            <ul>${[...dayPlan.holdAction.affectedGroups].map(g => `<li>${g}: ${eliteGroups[g].name}</li>`).join('') || '<li>なし</li>'}</ul>
+            <hr>
+            <p><strong>手順2 (1P ホスト):</strong> 2Pが抜けたら、同日中に以下のロードを実行してください。</p>
+            <p><strong>進行アクション:</strong> ${dayPlan.advanceAction.name}</p>
+             <ul>${[...dayPlan.advanceAction.affectedGroups].map(g => `<li>${g}: ${eliteGroups[g].name}</li>`).join('') || '<li>なし</li>'}</ul>
+            <hr>
+            <p><strong>結果として、以下のグループのみ周期が進みます:</strong></p>
+            <ul>${[...effectiveAdvance].map(g => `<li>${g}: ${eliteGroups[g].name}</li>`).join('') || '<li>なし</li>'}</ul>
+        `;
+    }
+    showModal('day-detail-modal');
+}
+
 </script>
 
 </body>
 </html>
+

@@ -846,8 +846,8 @@
             #start-page {
                 justify-content: center;
                 /* スタートページの高さを自然にし、paddingで余白を調整 */
-                padding-top: 10vh;
-                padding-bottom: 10vh;
+                padding-top: 2vh;
+                padding-bottom: 2vh;
             }
 
             /* 最小の高さが必要な入力ページにのみ、スタイルを適用 */
@@ -942,6 +942,11 @@
              .page-footer .btn-secondary-link {
                 font-size: 0.9em;
                 padding: 10px;
+            }
+
+            /* === [修正] スマホ表示(幅480px以下)でもスクロール矢印を表示 === */
+            #result-page #scroll-indicator {
+                display: flex;
             }
         }
         
@@ -2026,6 +2031,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+
 
 
 

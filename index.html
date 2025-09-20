@@ -1,4 +1,4 @@
-1:15
+21
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -845,20 +845,18 @@
             }
             #start-page {
                 justify-content: center;
+                /* === [修正] スマホ表示で高さが引き伸ばされるのをやめ、paddingで余白を調整 === */
+                min-height: unset;
+                padding-top: 5vh;
+                padding-bottom: 3vh;
             }
-            
-            /* === [修正] スマホ表示でスタートページの間隔を調整 === */
-            #start-page .page-content-wrapper {
-                justify-content: flex-start; /* 自動調整をやめて、marginで制御できるように変更 */
-                padding-top: 5vh; /* 画面の上部に寄りすぎないよう、少しだけ余白を追加 */
-            }
-            #start-page .subtitle {
-                margin-bottom: 10px; /* 40pxから縮小 */
-            }
-            .start-buttons {
-                margin-top: 15px; /* 50pxから縮小 */
-            }
-            /* === [修正] ここまで === */
+
+            /* 古い、不要なスタイルを削除 */
+            /*
+            #start-page .page-content-wrapper { ... }
+            #start-page .subtitle { ... }
+            .start-buttons { ... }
+            */
 
             .site-header, .site-credit-footer { padding: 10px 20px; }
             #start-page h1 { font-size: 2.5em; }
@@ -2024,6 +2022,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+
 
 
 

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -405,10 +406,10 @@
             transform: translateY(0);
         }
         @keyframes shake {
-          10%, 90% { transform: translateX(-1px); }
-          20%, 80% { transform: translateX(2px); }
-          30%, 50%, 70% { transform: translateX(-3px); }
-          40%, 60% { transform: translateX(3px); }
+         10%, 90% { transform: translateX(-1px); }
+         20%, 80% { transform: translateX(2px); }
+         30%, 50%, 70% { transform: translateX(-3px); }
+         40%, 60% { transform: translateX(3px); }
         }
         .shake {
             animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
@@ -751,6 +752,7 @@
             padding-bottom: 8px;
         }
 
+        /* ★★★ ここからが変更箇所です (Scroll Indicator) ★★★ */
         .scroll-indicator {
             display: none; /* Hidden by default */
             position: absolute;
@@ -787,6 +789,7 @@
                 transform: translateY(-5px);
             }
         }
+        /* ★★★ ここまでが変更箇所です ★★★ */
 
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
@@ -809,19 +812,23 @@
             body {
                 overflow: auto;
                 height: auto;
+                min-height: 100%;
             }
             main {
-                padding: 0;
-                height: auto;
-                flex-grow: 1;
+                 padding: 0;
+                 height: auto;
+                 flex-grow: 1;
             }
             .container { 
                 width: 100%; 
                 height: auto;
-                min-height: 100%;
+                min-height: 0;
                 max-height: none; 
                 border-radius: 0; 
-                overflow: visible;
+                overflow: visible; /* Let content determine height */
+            }
+            body {
+                 padding-bottom: 50px; /* Space for the footer */
             }
             .page { 
                 padding: 20px; 
@@ -832,14 +839,12 @@
                 transform: none;
                 display: none; 
                 justify-content: flex-start;
-                min-height: calc(100vh - 65px - 50px - 40px); /* VP height - header - footer - padding */
             }
             .page.active {
                 display: flex;
             }
             #start-page {
                 justify-content: center;
-                min-height: 0;
             }
             
             .site-header, .site-credit-footer { padding: 10px 20px; }
@@ -854,18 +859,24 @@
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
             
             .page-content-wrapper {
-                height: auto;
+                height: auto; 
             }
             .input-views-container {
                 flex-grow: 1;
-                min-height: 350px;
+                min-height: calc(100vh - 260px); /* Adjusted for header (~50px), info-banner (~50px), page-header (~80px), view-switcher (~30px), page-footer (~50px) */
+            }
+            .input-views-container .map-container {
+                height: 100%;
+                aspect-ratio: unset;
             }
             .config-list {
-                height: auto; 
+                height: 100%; 
                 max-height: none;
             }
             .site-credit-footer {
-                position: static;
+                position: fixed;
+                bottom: 0;
+                left: 0;
             }
         }
 
@@ -948,9 +959,11 @@
             .page-footer {
                 margin-top: 10px;
             }
+            /* ★★★ ここからが変更箇所です ★★★ */
             #result-page #scroll-indicator {
                 display: flex;
             }
+            /* ★★★ ここまでが変更箇所です ★★★ */
         }
     </style>
 </head>
@@ -1134,9 +1147,11 @@
                          </div>
                     </div>
                 </div>
+                <!-- ★★★ ここからが変更箇所です ★★★ -->
                 <a href="#result-details" id="scroll-indicator" class="scroll-indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                 </a>
+                <!-- ★★★ ここまでが変更箇所です ★★★ -->
             </div>
         </div>
     </main>
@@ -1200,10 +1215,10 @@
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-               <span class="modal-close" data-target="day-detail-modal">&times;</span>
-               <h2 id="day-detail-title"></h2>
-               <div id="day-detail-content"></div>
-        </div>
+              <span class="modal-close" data-target="day-detail-modal">&times;</span>
+              <h2 id="day-detail-title"></h2>
+              <div id="day-detail-content"></div>
+       </div>
     </div>
 
     <div id="credit-modal" class="modal backdrop-blur">
@@ -1353,14 +1368,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoBanner = document.getElementById('info-banner');
     const closeBannerBtn = document.getElementById('close-banner-btn');
     
-    // Check localStorage to see if the banner was closed before
+    // localStorageをチェックして、バナーが以前に閉じられたか確認
     if (localStorage.getItem('tsurumiBannerClosed') === 'true') {
-        infoBanner.style.display = 'none'; // Hide it from the start
+        infoBanner.style.display = 'none'; // 最初から非表示にする
     }
 
     closeBannerBtn.addEventListener('click', () => {
         infoBanner.classList.add('hidden');
-        // Save the state to localStorage
+        // localStorageに状態を保存
         localStorage.setItem('tsurumiBannerClosed', 'true');
     });
 
@@ -1406,6 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
 
+    // ★★★ ここからが変更箇所です ★★★
     const resultPage = document.getElementById('result-page');
     const scrollIndicator = document.getElementById('scroll-indicator');
 
@@ -1421,6 +1437,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
     });
+    // ★★★ ここまでが変更箇所です ★★★
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1550,9 +1567,9 @@ function selectPatternForConfirmation(pattern) {
     document.getElementById('screenshot-title').textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
     const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
      if (imageUrl) {
-        document.getElementById('screenshot-img').src = imageUrl;
+         document.getElementById('screenshot-img').src = imageUrl;
     } else {
-        document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
+         document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
     }
     document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
     showModal('screenshot-popup');
@@ -1792,6 +1809,7 @@ function calculatePlan(isMultiplayer) {
 
 
 // --- RESULT DISPLAY ---
+// ★★★ ここからが変更箇所です ★★★
 function displayResults(plan, isMultiplayer) {
     lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
@@ -1861,7 +1879,7 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-    // Add a warning at the very beginning
+    // 注意書きを一番最初に追加
     let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲(かんうん)のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
 
     if (dayData.mode === 'ソロ') {
@@ -1904,7 +1922,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
     
     const actions = actionData.name.split(' + ');
     const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => 
-        `「${eliteGroups[key].name}」` // Removed the 'key' part here as requested
+        `「${key}: ${eliteGroups[key].name}」`
     ).join('、');
 
     let html = `
@@ -1943,10 +1961,10 @@ function generateActionDetailsHTML(actionData, playerRole) {
                     const timestamp = url.searchParams.get('t') || url.searchParams.get('si');
                     let embedUrl = `https://www.youtube.com/embed/${videoId}`;
                     if (timestamp) {
-                        const timeParts = timestamp.split('t=');
-                        if(timeParts.length > 1) {
+                         const timeParts = timestamp.split('t=');
+                         if(timeParts.length > 1) {
                             embedUrl += `?start=${timeParts[1].replace('s', '')}`;
-                        }
+                         }
                     }
 
                     html += `
@@ -1969,8 +1987,9 @@ function generateActionDetailsHTML(actionData, playerRole) {
     html += '</ul>';
     return html;
 }
+// ★★★ ここまでが変更箇所です ★★★
 
 </script>
 </body>
 </html>
-
+```

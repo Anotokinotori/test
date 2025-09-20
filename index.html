@@ -1,4 +1,4 @@
-05
+13
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -168,16 +168,11 @@
         }
 
         /* --- Start Page --- */
-        /* === [修正] スタートページ中央揃え === */
         #start-page .page-content-wrapper {
-            /* 内部の要素を上下中央に配置するために変更 */
             justify-content: center;
-            /* 要素間のスペースを確保 */
             gap: 2vh;
-            /* 高さを自動にして、親要素(#start-page)が中央揃えできるようにする */
             height: auto;
         }
-        /* === [修正ここまで] === */
 
         #start-page h1 {
             font-size: clamp(2.5em, 5vw, 4.5em);
@@ -512,11 +507,17 @@
         #result-page .page-content-wrapper {
             display: block; /* Use block to allow children to layout normally */
         }
-        .result-layout-container {
+        /* === [NEW] Main grid for result page layout === */
+        .result-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Mobile first */
+            grid-template-columns: 1fr; /* Mobile First: single column */
             gap: 20px;
-            align-items: center;
+            width: 100%;
+        }
+        .result-layout-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             width: 100%;
         }
         .result-map-container {
@@ -544,7 +545,6 @@
         }
 
         .result-details-container {
-            grid-column: 1 / -1; /* Span full width on mobile */
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -799,18 +799,17 @@
 
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
+             /* === [MODIFIED] Apply two-column layout to the new grid container === */
+            .result-grid {
+                grid-template-columns: minmax(350px, 4fr) 6fr; /* Left column for map, right for table */
+                gap: 40px; /* Wider gap on desktop */
+                align-items: flex-start;
+            }
+
+            /* Make the left panel (map + buttons) sticky */
             .result-layout-container {
-                grid-template-columns: minmax(auto, 400px) 1fr;
-                align-items: center;
-            }
-            .result-map-container {
-                justify-self: start;
-                margin: 0;
-            }
-            .result-actions-container {
-                justify-content: center;
-                align-items: center;
-                height: 100%;
+                position: sticky;
+                top: 20px;
             }
         }
         
@@ -1141,33 +1140,35 @@
                         </div>
                         <div class="header-placeholder"></div>
                     </div>
-
-                    <div class="result-layout-container">
-                        <div class="result-map-container">
-                            <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                    <!-- === [MODIFIED] Added result-grid wrapper === -->
+                    <div class="result-grid">
+                        <div class="result-layout-container">
+                            <div class="result-map-container">
+                                <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                            </div>
+                            <div class="result-actions-container">
+                                <button id="recalculate-alternate-mode-btn" class="btn"></button>
+                                <button id="reset-btn" class="btn btn-secondary">最初からやり直す</button>
+                            </div>
                         </div>
-                        <div class="result-actions-container">
-                            <button id="recalculate-alternate-mode-btn" class="btn"></button>
-                            <button id="reset-btn" class="btn btn-secondary">最初からやり直す</button>
-                        </div>
-                    </div>
 
-                    <div id="result-details" class="result-details-container">
-                         <h2 id="result-title">計算結果</h2>
-                         <div id="solo-mode-note">
-                            <p>周期ホールドを使わない方法です。使用したら期間を短縮できるかもしれません。<br>
-                            <a href="https://youtu.be/2xqllaCTP5c?si=-jzSEDAzIkSjZ87P&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a></p>
-                         </div>
-                         <div id="result-summary"></div>
-                         <div class="result-table-container">
-                            <table class="result-table">
-                                <thead>
-                                    <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)の行動</th> <th>1P(ホスト)の行動</th> <th>詳細</th> </tr>
-                                </thead>
-                                <tbody id="result-tbody"></tbody>
-                            </table>
-                         </div>
-                    </div>
+                        <div id="result-details" class="result-details-container">
+                             <h2 id="result-title">計算結果</h2>
+                             <div id="solo-mode-note">
+                                <p>周期ホールドを使わない方法です。使用したら期間を短縮できるかもしれません。<br>
+                                <a href="https://youtu.be/2xqllaCTP5c?si=-jzSEDAzIkSjZ87P&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a></p>
+                             </div>
+                             <div id="result-summary"></div>
+                             <div class="result-table-container">
+                                <table class="result-table">
+                                    <thead>
+                                        <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)の行動</th> <th>1P(ホスト)の行動</th> <th>詳細</th> </tr>
+                                    </thead>
+                                    <tbody id="result-tbody"></tbody>
+                                </table>
+                             </div>
+                        </div>
+                    </div> <!-- === [MODIFIED] End of result-grid wrapper === -->
                 </div>
                 <a href="#result-details" id="scroll-indicator" class="scroll-indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
@@ -2017,3 +2018,5 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+
+

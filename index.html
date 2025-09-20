@@ -1,4 +1,4 @@
-0:30
+0:36
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -864,9 +864,10 @@
                 min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
             .input-views-container {
-                flex-grow: 1;
-                /* スマホ表示でマップ周りの余白が大きすぎたため、最小高さを少し縮小 */
-                min-height: 10vh;
+                /* 柔軟に伸びる設定をやめ、高さを直接指定できるように変更 */
+                flex-grow: 0;
+                /* min-heightからheightに変更し、高さを固定 */
+                height: 35vh;
             }
             .input-views-container .map-container {
                 height: 100%;
@@ -1995,4 +1996,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+
+
+
 

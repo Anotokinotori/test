@@ -811,7 +811,7 @@
             body {
                 overflow: auto;
                 height: auto;
-                min-height: 100%;
+                min-height: 100vh;
             }
             main {
                  padding: 0;
@@ -832,6 +832,7 @@
             .page { 
                 padding: 20px; 
                 height: auto;
+                min-height: calc(100vh - 80px); /* Adjust for header (~40px) + footer (~40px) */
                 position: relative;
                 opacity: 1;
                 visibility: visible;
@@ -858,11 +859,12 @@
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
             
             .page-content-wrapper {
-                height: auto; 
+                height: auto;
+                min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
             .input-views-container {
                 flex-grow: 1;
-                min-height: calc(100vh - 260px); /* Adjusted for header (~50px), info-banner (~50px), page-header (~80px), view-switcher (~30px), page-footer (~50px) */
+                min-height: 50vh; /* Increased min-height for better visibility */
             }
             .input-views-container .map-container {
                 height: 100%;

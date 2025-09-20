@@ -808,34 +808,38 @@
         @media (max-width: 768px) {
             body {
                 overflow: auto;
-                height: 100%; /* Changed from auto */
+                height: auto;
             }
             main {
                 padding: 0;
-                min-height: 0; /* Changed */
+                height: auto;
+                flex-grow: 1;
             }
             .container { 
                 width: 100%; 
-                height: 100%; /* Changed from auto */
+                height: auto;
+                min-height: 100%;
                 max-height: none; 
                 border-radius: 0; 
-                overflow: hidden; /* Changed */
-            }
-            body {
-                padding-bottom: 50px; /* Space for the footer */
+                overflow: visible;
             }
             .page { 
                 padding: 20px; 
-                height: 100%; /* Changed */
-                position: absolute; /* Changed */
+                height: auto;
+                position: relative;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
                 display: none; 
-                justify-content: flex-start; /* Changed */
+                justify-content: flex-start;
+                min-height: calc(100vh - 65px - 50px - 40px); /* VP height - header - footer - padding */
             }
             .page.active {
                 display: flex;
             }
             #start-page {
                 justify-content: center;
+                min-height: 0;
             }
             
             .site-header, .site-credit-footer { padding: 10px 20px; }
@@ -850,24 +854,18 @@
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
             
             .page-content-wrapper {
-                height: 100%; /* Changed */
+                height: auto;
             }
             .input-views-container {
                 flex-grow: 1;
-                min-height: 250px;
-            }
-            .input-views-container .map-container {
-                height: 100%;
-                aspect-ratio: unset;
+                min-height: 350px;
             }
             .config-list {
-                height: 100%; 
-                max-height: 100%; /* Changed */
+                height: auto; 
+                max-height: none;
             }
             .site-credit-footer {
-                position: fixed;
-                bottom: 0;
-                left: 0;
+                position: static;
             }
         }
 

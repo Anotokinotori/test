@@ -35,6 +35,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Prevent body scroll on desktop */
         }
 
         .backdrop-blur {
@@ -379,7 +380,40 @@
              display: flex;
              justify-content: flex-end;
              gap: 15px;
+             position: relative; /* For validation message */
         }
+        
+        .validation-message {
+            color: #ef4444; /* red-500 */
+            font-weight: bold;
+            font-size: 0.9em;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            position: absolute;
+            bottom: 110%; /* Position above the button */
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .validation-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes shake {
+          10%, 90% { transform: translateX(-1px); }
+          20%, 80% { transform: translateX(2px); }
+          30%, 50%, 70% { transform: translateX(-3px); }
+          40%, 60% { transform: translateX(3px); }
+        }
+        .shake {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
 
         /* Tab UI for Input Pages */
         .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
@@ -717,6 +751,43 @@
             padding-bottom: 8px;
         }
 
+        .scroll-indicator {
+            display: none; /* Hidden by default */
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .scroll-indicator.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
             .result-layout-container {
@@ -735,38 +806,36 @@
         }
         
         @media (max-width: 768px) {
-            html, body {
-                height: auto; /* allow body to grow with content */
-                min-height: 100vh;
+            body {
+                overflow: auto;
+                height: 100%; /* Changed from auto */
             }
             main {
-                 padding: 0;
-                 flex-grow: 1; /* allow main to take available space */
+                padding: 0;
+                min-height: 0; /* Changed */
             }
             .container { 
                 width: 100%; 
-                height: auto; /* auto height for container */
-                min-height: calc(100vh - 58px); /* Full viewport height minus header */
+                height: 100%; /* Changed from auto */
                 max-height: none; 
                 border-radius: 0; 
+                overflow: hidden; /* Changed */
             }
             body {
-                padding-bottom: 40px; /* Add space for fixed footer */
+                padding-bottom: 50px; /* Space for the footer */
             }
             .page { 
                 padding: 20px; 
-                height: auto; /* allow page to grow */
-                position: relative; /* change from absolute */
-                opacity: 1;
-                visibility: visible;
-                transform: none;
-                display: none; /* hide pages by default */
+                height: 100%; /* Changed */
+                position: absolute; /* Changed */
+                display: none; 
+                justify-content: flex-start; /* Changed */
             }
             .page.active {
-                display: flex; /* show active page */
+                display: flex;
             }
             #start-page {
-                justify-content: center; /* Keep start page centered */
+                justify-content: center;
             }
             
             .site-header, .site-credit-footer { padding: 10px 20px; }
@@ -779,17 +848,27 @@
             .config-list { grid-template-columns: 1fr; }
             .modal-content { width: 90%; padding: 20px; }
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
+            
+            .page-content-wrapper {
+                height: 100%; /* Changed */
+            }
+            .input-views-container {
+                flex-grow: 1;
+                min-height: 250px;
+            }
+            .input-views-container .map-container {
+                height: 100%;
+                aspect-ratio: unset;
+            }
+            .config-list {
+                height: 100%; 
+                max-height: 100%; /* Changed */
+            }
             .site-credit-footer {
                 position: fixed;
                 bottom: 0;
                 left: 0;
             }
-            
-            /* ★★★ ここからが変更箇所です (スマホ/タブレット向け) ★★★ */
-            .input-views-container {
-                flex-grow: 0; /* これが余分なスペースをなくし、コンテンツの高さに合わせます */
-            }
-            /* ★★★ ここまでが変更箇所です ★★★ */
         }
 
         @media (max-width: 480px) {
@@ -836,35 +915,43 @@
         
         @media (max-height: 800px) and (min-width: 769px) {
             .page {
-                padding-top: 1.5vw;
-                padding-bottom: 1.5vw;
+                padding-top: 1vw;
+                padding-bottom: 1vw;
             }
             .page-header {
-                margin-bottom: 10px;
+                margin-bottom: 8px;
+            }
+            .btn-back, .header-placeholder {
+                width: 32px;
+                height: 32px;
             }
             .steps-container {
-                gap: 15px;
+                gap: 10px;
             }
             .step-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2em;
+                width: 40px;
+                height: 40px;
+                font-size: 1.1em;
             }
             .step-label {
-                margin-top: 8px;
-                font-size: 0.9em;
+                margin-top: 5px;
+                font-size: 0.8em;
             }
             .step-arrow {
-                font-size: 1.8em;
+                font-size: 1.5em;
             }
             .view-switcher {
-                margin-bottom: 10px;
+                margin-bottom: 8px;
             }
             .view-tab {
-                padding: 8px 16px;
+                padding: 6px 12px;
+                font-size: 0.9em;
             }
             .page-footer {
-                margin-top: 15px;
+                margin-top: 10px;
+            }
+            #result-page #scroll-indicator {
+                display: flex;
             }
         }
     </style>
@@ -953,6 +1040,7 @@
                             <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
                         </div>
                         <div class="right-action">
+                            <div id="validation-message" class="validation-message"></div>
                             <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
                         </div>
                    </div>
@@ -1031,7 +1119,7 @@
                         </div>
                     </div>
 
-                    <div class="result-details-container">
+                    <div id="result-details" class="result-details-container">
                          <h2 id="result-title">計算結果</h2>
                          <div id="solo-mode-note">
                             <p>周期ホールドを使わない調整方法です。周期ホールドを使ったらもっと調整期間を短縮できるかもしれません。<br>
@@ -1048,6 +1136,9 @@
                          </div>
                     </div>
                 </div>
+                <a href="#result-details" id="scroll-indicator" class="scroll-indicator">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </a>
             </div>
         </div>
     </main>
@@ -1111,10 +1202,10 @@
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-              <span class="modal-close" data-target="day-detail-modal">&times;</span>
-              <h2 id="day-detail-title"></h2>
-              <div id="day-detail-content"></div>
-       </div>
+               <span class="modal-close" data-target="day-detail-modal">&times;</span>
+               <h2 id="day-detail-title"></h2>
+               <div id="day-detail-content"></div>
+        </div>
     </div>
 
     <div id="credit-modal" class="modal backdrop-blur">
@@ -1264,14 +1355,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoBanner = document.getElementById('info-banner');
     const closeBannerBtn = document.getElementById('close-banner-btn');
     
-    // localStorageをチェックして、バナーが以前に閉じられたか確認
+    // Check localStorage to see if the banner was closed before
     if (localStorage.getItem('tsurumiBannerClosed') === 'true') {
-        infoBanner.style.display = 'none'; // 最初から非表示にする
+        infoBanner.style.display = 'none'; // Hide it from the start
     }
 
     closeBannerBtn.addEventListener('click', () => {
         infoBanner.classList.add('hidden');
-        // localStorageに状態を保存
+        // Save the state to localStorage
         localStorage.setItem('tsurumiBannerClosed', 'true');
     });
 
@@ -1280,7 +1371,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('credit-modal-trigger').addEventListener('click', () => showModal('credit-modal'));
     document.querySelectorAll('.modal-close').forEach(el => el.addEventListener('click', () => closeModal(el.dataset.target)));
     
-    document.getElementById('go-to-ideal-btn').addEventListener('click', () => showPage('ideal-config-page'));
+    document.getElementById('go-to-ideal-btn').addEventListener('click', (e) => {
+        if (e.currentTarget.disabled) {
+            const validationMessage = document.getElementById('validation-message');
+            const button = e.currentTarget;
+            
+            validationMessage.textContent = 'すべての配置を入力してください。';
+            validationMessage.classList.add('show');
+            button.classList.add('shake');
+            
+            setTimeout(() => {
+                validationMessage.classList.remove('show');
+            }, 2000); // Message disappears after 2 seconds
+
+            setTimeout(() => {
+                button.classList.remove('shake');
+            }, 600); // Animation duration
+        } else {
+            showPage('ideal-config-page');
+        }
+    });
+
     document.getElementById('set-recommended-btn').addEventListener('click', setRecommendedConfig);
     document.getElementById('calculate-plan-btn').addEventListener('click', () => {
         const isMultiplayer = document.getElementById('multiplayer-mode-checkbox').checked;
@@ -1296,6 +1407,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('current-list-tab').addEventListener('click', () => switchInputView('current', 'list'));
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
+
+    const resultPage = document.getElementById('result-page');
+    const scrollIndicator = document.getElementById('scroll-indicator');
+
+    resultPage.addEventListener('scroll', () => {
+        if (resultPage.scrollTop > 50) {
+            scrollIndicator.classList.add('hidden');
+        } else {
+            scrollIndicator.classList.remove('hidden');
+        }
+    });
+
+    scrollIndicator.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
+    });
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1425,9 +1552,9 @@ function selectPatternForConfirmation(pattern) {
     document.getElementById('screenshot-title').textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
     const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
      if (imageUrl) {
-         document.getElementById('screenshot-img').src = imageUrl;
+        document.getElementById('screenshot-img').src = imageUrl;
     } else {
-         document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
+        document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
     }
     document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
     showModal('screenshot-popup');
@@ -1711,6 +1838,22 @@ function displayResults(plan, isMultiplayer) {
             tbody.appendChild(tr);
         });
     }
+
+    // Scroll indicator logic
+    const resultPage = document.getElementById('result-page');
+    resultPage.scrollTop = 0; // Reset scroll position
+    const scrollIndicator = document.getElementById('scroll-indicator');
+    if (scrollIndicator) {
+        // Show indicator initially if content is scrollable
+        setTimeout(() => {
+            if (resultPage.scrollHeight > resultPage.clientHeight) {
+                 scrollIndicator.classList.remove('hidden');
+            } else {
+                 scrollIndicator.classList.add('hidden');
+            }
+        }, 100);
+    }
+
     showPage('result-page');
 }
 
@@ -1720,7 +1863,7 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-    // 注意書きを一番最初に追加
+    // Add a warning at the very beginning
     let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲(かんうん)のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
 
     if (dayData.mode === 'ソロ') {
@@ -1763,7 +1906,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
     
     const actions = actionData.name.split(' + ');
     const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => 
-        `「${key}: ${eliteGroups[key].name}」`
+        `「${eliteGroups[key].name}」` // Removed the 'key' part here as requested
     ).join('、');
 
     let html = `
@@ -1799,10 +1942,13 @@ function generateActionDetailsHTML(actionData, playerRole) {
                 
                 if (videoId) {
                     // Extract timestamp if available
-                    const timestamp = url.searchParams.get('t') || url.hash.substring(1).split('&').find(p => p.startsWith('t='))?.split('=')[1];
+                    const timestamp = url.searchParams.get('t') || url.searchParams.get('si');
                     let embedUrl = `https://www.youtube.com/embed/${videoId}`;
                     if (timestamp) {
-                        embedUrl += `?start=${timestamp.replace('s', '')}`;
+                        const timeParts = timestamp.split('t=');
+                        if(timeParts.length > 1) {
+                            embedUrl += `?start=${timeParts[1].replace('s', '')}`;
+                        }
                     }
 
                     html += `
@@ -1829,3 +1975,4 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+

@@ -1,4 +1,3 @@
-39
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -169,8 +168,8 @@
 
         /* --- Start Page --- */
         #start-page .page-content-wrapper {
-             height: auto;
-             justify-content: center;
+            height: auto;
+            justify-content: center;
         }
         #start-page h1 {
             font-size: clamp(2.5em, 5vw, 4.5em);
@@ -247,7 +246,7 @@
             font-size: 1.1em;
             font-weight: bold;
             color: var(--secondary-text-color);
-             transition: all 0.3s ease;
+            transition: all 0.3s ease;
         }
         .step-arrow {
             font-size: 2.5em;
@@ -366,22 +365,22 @@
             color: var(--secondary-text-color);
         }
         .page-footer .left-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: flex-start;
+            flex: 1 1 0%;
+            display: flex;
+            justify-content: flex-start;
         }
         .page-footer .center-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: center;
-             gap: 15px;
+            flex: 1 1 0%;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
-         .page-footer .right-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: flex-end;
-             gap: 15px;
-             position: relative; /* For validation message */
+        .page-footer .right-action {
+            flex: 1 1 0%;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            position: relative; /* For validation message */
         }
         
         .validation-message {
@@ -751,7 +750,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
         }
-
+        
         /* Scroll Down Indicator */
         .scroll-indicator {
             display: none; /* Hidden by default, enabled via media queries */
@@ -814,9 +813,9 @@
                 min-height: 100vh;
             }
             main {
-                 padding: 0;
-                 height: auto;
-                 flex-grow: 1;
+                padding: 0;
+                height: auto;
+                flex-grow: 1;
             }
             .container { 
                 width: 100%; 
@@ -827,12 +826,12 @@
                 overflow: visible; /* Let content determine height */
             }
             body {
-                 padding-bottom: 50px; /* Space for the footer */
+                padding-bottom: 50px; /* Space for the footer */
             }
             .page { 
                 padding: 20px; 
                 height: auto;
-                /* ページ全体に適用されていた最小の高さを削除 */
+                /* ★★★ [根本修正] 全ページ共通の最小の高さを削除 ★★★ */
                 /* min-height: calc(100vh - 80px); */
                 position: relative;
                 opacity: 1;
@@ -844,24 +843,19 @@
             .page.active {
                 display: flex;
             }
+            
+            /* ★★★ [根本修正] スタートページの高さを自然にし、paddingで余白を調整 ★★★ */
             #start-page {
                 justify-content: center;
-                /* スタートページの高さを自然にし、paddingで余白を調整 */
-                padding-top: 2vh;
-                padding-bottom: 2vh;
+                /* ↓↓↓ ここで上下の余白を調整できます ↓↓↓ */
+                padding-top: 5vh;
+                padding-bottom: 5vh;
             }
-
-            /* 最小の高さが必要な入力ページにのみ、スタイルを適用 */
+            
+            /* ★★★ [根本修正] 最小の高さが必要な入力ページにのみ、スタイルを適用 ★★★ */
             #current-config-page, #ideal-config-page {
                 min-height: calc(100vh - 80px);
             }
-
-            /* 古い、不要なスタイルを削除 */
-            /*
-            #start-page .page-content-wrapper { ... }
-            #start-page .subtitle { ... }
-            .start-buttons { ... }
-            */
 
             .site-header, .site-credit-footer { padding: 10px 20px; }
             #start-page h1 { font-size: 2.5em; }
@@ -876,13 +870,11 @@
             
             .page-content-wrapper {
                 height: auto;
-                min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
+                /* ★★★ [根本修正] ここにあった最小の高さ指定を削除 ★★★ */
             }
             .input-views-container {
-                /* 柔軟に伸びる設定をやめ、高さを直接指定できるように変更 */
-                flex-grow: 0;
-                /* min-heightからheightに変更し、高さを固定。ユーザー指定の43vhに調整 */
-                height: 43vh;
+                flex-grow: 1;
+                /* 高さをvhで固定するのをやめ、flex-growで自然に伸びるように戻します */
             }
             .input-views-container .map-container {
                 height: 100%;
@@ -898,7 +890,7 @@
                 left: 0;
             }
             
-            /* === [修正] スマホ表示でもスクロール矢印を表示 === */
+            /* ★★★ [根本修正] スマホ表示でスクロール矢印を常に表示 ★★★ */
             #result-page #scroll-indicator {
                 display: flex;
             }
@@ -912,9 +904,9 @@
             .step-arrow { font-size: 1.5em; }
             .btn { font-size: 1em; padding: 12px 24px; }
              #go-to-current-btn {
-                 padding: 18px 36px;
-                 font-size: 1.3em;
-             }
+                padding: 18px 36px;
+                font-size: 1.3em;
+            }
             .page { padding: 15px; }
             .config-item-label { font-size: 1em; }
             .pattern-buttons button { width: 40px; height: 40px; padding: 5px; font-size: 0.9em;}
@@ -945,10 +937,7 @@
                 padding: 10px;
             }
 
-            /* === [修正] スマホ表示(幅480px以下)でもスクロール矢印を表示 === */
-            #result-page #scroll-indicator {
-                display: flex;
-            }
+            /* ★★★ [整理] こちらの矢印設定は上の768pxに統合されたため不要 ★★★ */
         }
         
         @media (max-height: 800px) and (min-width: 769px) {
@@ -1035,7 +1024,7 @@
                     </div>
 
                     <div class="start-footer">
-                         <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
+                        <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
                     </div>
                 </div>
             </div>
@@ -1063,8 +1052,8 @@
                     <div class="input-views-container">
                         <div id="current-map-view" class="input-view active">
                             <div class="map-container" id="current-map-container">
-                                 <div class="map-guide-text">アイコンをタップして選択</div>
-                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
+                                <div class="map-guide-text">アイコンをタップして選択</div>
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
                         <div id="current-list-view" class="input-view">
@@ -1089,7 +1078,7 @@
             <!-- Page 3: Ideal Configuration Input -->
             <div id="ideal-config-page" class="page">
                 <div class="page-content-wrapper">
-                     <div class="page-header">
+                    <div class="page-header">
                         <button id="back-to-current-btn" class="btn-back" aria-label="戻る"></button>
                         <div class="steps-container">
                             <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
@@ -1109,8 +1098,8 @@
                     <div class="input-views-container">
                         <div id="ideal-map-view" class="input-view active">
                             <div class="map-container" id="ideal-map-container">
-                                 <div class="map-guide-text">アイコンをタップして選択</div>
-                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
+                                <div class="map-guide-text">アイコンをタップして選択</div>
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
                         <div id="ideal-list-view" class="input-view">
@@ -1119,7 +1108,7 @@
                         </div>
                     </div>
 
-                     <div class="page-footer">
+                    <div class="page-footer">
                         <div class="left-action">
                              <button class="btn btn-secondary-link" id="set-recommended-btn">環境配置を自動入力</button>
                         </div>
@@ -1136,9 +1125,9 @@
             <!-- Page 4: Result Page -->
             <div id="result-page" class="page">
                 <div class="page-content-wrapper">
-                     <div class="page-header">
+                    <div class="page-header">
                         <button id="back-to-ideal-btn" class="btn-back" aria-label="戻る"></button>
-                         <div class="steps-container">
+                        <div class="steps-container">
                             <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
                             <div class="step-arrow">→</div>
                             <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
@@ -1175,11 +1164,9 @@
                          </div>
                     </div>
                 </div>
-                <!-- ★★★ ここからが変更箇所です ★★★ -->
                 <a href="#result-details" id="scroll-indicator" class="scroll-indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                 </a>
-                <!-- ★★★ ここまでが変更箇所です ★★★ -->
             </div>
         </div>
     </main>
@@ -1225,27 +1212,27 @@
 
     <div id="screenshot-popup" class="modal backdrop-blur">
         <div class="modal-content">
-             <span class="modal-close" data-target="screenshot-popup">&times;</span>
-             <h3 id="screenshot-title"></h3>
-             <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット" style="width: 100%; height: auto; border-radius: 10px; margin: 15px 0;">
-             <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
+            <span class="modal-close" data-target="screenshot-popup">&times;</span>
+            <h3 id="screenshot-title"></h3>
+            <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット" style="width: 100%; height: auto; border-radius: 10px; margin: 15px 0;">
+            <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
         </div>
     </div>
     
     <div id="loading-modal" class="modal">
-         <div class="modal-content" style="text-align: center;">
+        <div class="modal-content" style="text-align: center;">
             <h2>計算中...</h2>
             <p>最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
             <div class="loader"></div>
             <div id="calculation-progress"></div>
-         </div>
+        </div>
     </div>
     
     <div id="day-detail-modal" class="modal backdrop-blur">
-         <div class="modal-content">
-               <span class="modal-close" data-target="day-detail-modal">&times;</span>
-               <h2 id="day-detail-title"></h2>
-               <div id="day-detail-content"></div>
+        <div class="modal-content">
+            <span class="modal-close" data-target="day-detail-modal">&times;</span>
+            <h2 id="day-detail-title"></h2>
+            <div id="day-detail-content"></div>
        </div>
     </div>
 
@@ -1449,7 +1436,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
 
-    // ★★★ ここからが変更箇所です ★★★
     const resultPage = document.getElementById('result-page');
     const scrollIndicator = document.getElementById('scroll-indicator');
 
@@ -1465,7 +1451,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
     });
-    // ★★★ ここまでが変更箇所です ★★★
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1504,7 +1489,6 @@ function showPage(pageId) {
     
     document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => stepEl.classList.add('active-step'));
 
-    // ★★★ アイコンの重なり問題を修正するため、以下の処理を追加 ★★★
     // ページが表示された直後にマップのレイアウトを更新し、アイコンを正しい位置に再配置します。
     if (pageId === 'current-config-page') {
         setTimeout(() => updateMapLayout('current-map-container'), 50);
@@ -1513,11 +1497,7 @@ function showPage(pageId) {
     }
 }
 
-function showModal(modalId) { 
-    document.getElementById(modalId).classList.add('active'); 
-}
-
-// ★★★ 誤ったコメントを修正 ★★★
+function showModal(modalId) { document.getElementById(modalId).classList.add('active'); }
 function closeModal(modalId) { 
     if (modalId === 'loading-modal' && calculationTask) {
         clearTimeout(calculationTask);
@@ -1606,11 +1586,11 @@ function selectPatternForConfirmation(pattern) {
     const groupName = eliteGroups[activeSelection.groupId].name;
     document.getElementById('screenshot-title').textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
     const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
-     if (imageUrl) {
-         document.getElementById('screenshot-img').src = imageUrl;
-     } else {
-         document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
-     }
+    if (imageUrl) {
+        document.getElementById('screenshot-img').src = imageUrl;
+    } else {
+        document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
+    }
     document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
     showModal('screenshot-popup');
 }
@@ -1813,7 +1793,7 @@ function calculatePlan(isMultiplayer) {
                         
                         let nextConfigArr = config.split('').map(Number);
                         for (const group of effectiveAdvance) {
-                             nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
+                            nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
                         }
                         const nextConfigStr = nextConfigArr.join('');
                         if (nextConfigStr === endConfigStr) {
@@ -1849,7 +1829,6 @@ function calculatePlan(isMultiplayer) {
 
 
 // --- RESULT DISPLAY ---
-// ★★★ ここからが変更箇所です ★★★
 function displayResults(plan, isMultiplayer) {
     lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
@@ -1933,7 +1912,7 @@ function showDayDetail(dayData, dayNumber) {
         
         contentHTML += `<h4>Step 1: 2P (ゲスト) の行動</h4>`;
         if (dayData.holdAction.name === '何もしない' || dayData.holdAction.name === '---') {
-             contentHTML += `<p><strong>行動:</strong> なし</p><p>ゲストは何もしません。ホストの世界に入ったら、鶴見以外の場所（例えば塵歌壺など）で待機してください。</p>`;
+            contentHTML += `<p><strong>行動:</strong> なし</p><p>ゲストは何もしません。ホストの世界に入ったら、鶴見以外の場所（例えば塵歌壺など）で待機してください。</p>`;
         } else {
             contentHTML += `<p><strong>目的:</strong> 下記グループの周期を<strong>ホールド(固定)</strong>します。</p>`;
             contentHTML += generateActionDetailsHTML(dayData.holdAction, "2P (ゲスト)");
@@ -2001,10 +1980,10 @@ function generateActionDetailsHTML(actionData, playerRole) {
                     const timestamp = url.searchParams.get('t') || url.searchParams.get('si');
                     let embedUrl = `https://www.youtube.com/embed/${videoId}`;
                     if (timestamp) {
-                         const timeParts = timestamp.split('t=');
-                         if(timeParts.length > 1) {
-                             embedUrl += `?start=${timeParts[1].replace('s', '')}`;
-                         }
+                        const timeParts = timestamp.split('t=');
+                        if(timeParts.length > 1) {
+                            embedUrl += `?start=${timeParts[1].replace('s', '')}`;
+                        }
                     }
 
                     html += `
@@ -2027,15 +2006,8 @@ function generateActionDetailsHTML(actionData, playerRole) {
     html += '</ul>';
     return html;
 }
-// ★★★ ここまでが変更箇所です ★★★
 
 </script>
 </body>
 </html>
-
-
-
-
-
-
 

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -811,7 +812,7 @@
             body {
                 overflow: auto;
                 height: auto;
-                min-height: 100vh;
+                min-height: 100%;
             }
             main {
                  padding: 0;
@@ -832,7 +833,6 @@
             .page { 
                 padding: 20px; 
                 height: auto;
-                min-height: calc(100vh - 80px); /* Adjust for header (~40px) + footer (~40px) */
                 position: relative;
                 opacity: 1;
                 visibility: visible;
@@ -859,12 +859,11 @@
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
             
             .page-content-wrapper {
-                height: auto;
-                min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
+                height: auto; 
             }
             .input-views-container {
                 flex-grow: 1;
-                min-height: 50vh; /* Increased min-height for better visibility */
+                min-height: calc(100vh - 240px); /* Adjusted for no info-banner: header (~40px), page-header (~60px), view-switcher (~40px), page-footer (~60px), footer (~40px) */
             }
             .input-views-container .map-container {
                 height: 100%;
@@ -1993,3 +1992,4 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+```

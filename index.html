@@ -11,7 +11,7 @@
         :root {
             --bg-color: #f0f2f5;
             --panel-bg-color: rgba(255, 255, 255, 0.85);
-            --header-bg-color: #1a202c;
+            --header-bg-color: rgba(26, 32, 44, 0.85);
             --primary-text-color: #333;
             --secondary-text-color: #555;
             --accent-color: #3B82F6; /* Blue accent */
@@ -20,6 +20,8 @@
             --multiplayer-accent-hover-color: #DB2777;
             --border-color: #e0e0e0;
             --shadow-color: rgba(0, 0, 0, 0.1);
+            --btn-secondary-bg: #f3f4f6;
+            --btn-secondary-bg-hover: #e5e7eb;
         }
 
         body {
@@ -31,9 +33,9 @@
             background-position: center;
             background-attachment: fixed;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Prevent body scroll on desktop */
         }
 
         .backdrop-blur {
@@ -55,6 +57,50 @@
             margin: 0;
             font-size: clamp(1.2em, 2vw, 1.5em);
             color: white;
+        }
+
+        /* --- Info Banner --- */
+        .info-banner {
+            background-color: rgba(229, 231, 235, 0.95); /* Light gray */
+            color: var(--secondary-text-color);
+            text-align: center;
+            padding: 12px 50px; /* Add space for close button */
+            position: relative;
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.4s ease-in-out;
+            overflow: hidden;
+        }
+        .info-banner.hidden {
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            opacity: 0;
+        }
+        .info-banner p {
+            margin: 0;
+        }
+        .info-banner a {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .close-banner-btn {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            line-height: 1;
+            cursor: pointer;
+            color: #a0aec0;
+            padding: 5px;
+        }
+        .close-banner-btn:hover {
+            color: var(--primary-text-color);
         }
         
         /* --- Main Content Area --- */
@@ -103,6 +149,10 @@
             justify-content: center;
             text-align: center;
             pointer-events: none;
+        }
+        #result-page {
+            overflow-y: auto;
+            justify-content: flex-start;
         }
 
         .page.active {
@@ -245,16 +295,54 @@
             font-size: 1em;
             cursor: pointer;
         }
-        
+        .help-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-left: 5px;
+            transition: background-color 0.2s;
+        }
+        .help-icon:hover {
+            background-color: #999;
+        }
+
         /* General Button Styles */
         .btn { border: none; padding: 14px 28px; border-radius: 50px; font-size: clamp(1em, 1.5vw, 1.2em); cursor: pointer; transition: all 0.3s ease; font-weight: bold; text-decoration: none; display: inline-block; }
         .btn-primary { background-color: var(--accent-color); color: white; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
         .btn-primary:hover { background-color: var(--accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+        .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--secondary-text-color);
+            box-shadow: none;
+            text-decoration: none;
+        }
+        .btn-secondary:hover {
+            background: var(--btn-secondary-bg-hover);
+            transform: translateY(-2px);
+            color: var(--primary-text-color);
+        }
+        .btn-secondary-link {
+            background: none; color: var(--secondary-text-color); font-size: 1em; text-decoration: underline; padding: 10px 20px; box-shadow: none;
+        }
+        .btn-secondary-link:hover {
+            background: none; transform: none; box-shadow: none; color: var(--primary-text-color);
+        }
+
+        #go-to-current-btn {
+            padding: 21px 42px;
+            font-size: clamp(1.5em, 2.25vw, 1.8em);
+        }
         .btn-multi { background-color: var(--multiplayer-accent-color); color: white; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
         .btn-multi:hover { background-color: var(--multiplayer-accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.5); }
         .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-secondary { background: none; color: var(--secondary-text-color); font-size: 1em; text-decoration: underline; padding: 10px 20px; box-shadow: none; }
-        .btn-secondary:hover { background: none; transform: none; box-shadow: none; color: var(--primary-text-color); }
         .btn-details { background-color: #6b7280; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9em; }
         .btn-details:hover { background-color: #4b5563; }
 
@@ -268,6 +356,7 @@
             align-items: center;
             margin-top: 20px;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         .page-footer .progress-text {
             text-align: center;
@@ -291,7 +380,40 @@
              display: flex;
              justify-content: flex-end;
              gap: 15px;
+             position: relative; /* For validation message */
         }
+        
+        .validation-message {
+            color: #ef4444; /* red-500 */
+            font-weight: bold;
+            font-size: 0.9em;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            position: absolute;
+            bottom: 110%; /* Position above the button */
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .validation-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes shake {
+          10%, 90% { transform: translateX(-1px); }
+          20%, 80% { transform: translateX(2px); }
+          30%, 50%, 70% { transform: translateX(-3px); }
+          40%, 60% { transform: translateX(3px); }
+        }
+        .shake {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
 
         /* Tab UI for Input Pages */
         .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
@@ -346,8 +468,8 @@
         }
         .map-marker { 
             position: absolute; 
-            width: 40px;
-            height: 40px;
+            width: clamp(28px, 5vw, 40px);
+            height: clamp(28px, 5vw, 40px);
             background-color: rgba(59, 130, 246, 0.7); 
             background-size: cover;
             background-position: center;
@@ -379,35 +501,67 @@
         .pattern-buttons button.selected { background: var(--accent-color); color: white; border-color: var(--accent-color); }
         
         /* --- Result Page Styles --- */
+        #result-page .page-content-wrapper {
+            display: block; /* Use block to allow children to layout normally */
+        }
+        .result-layout-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile first */
+            gap: 20px;
+            align-items: center;
+            width: 100%;
+        }
         .result-map-container {
             width: 100%;
-            height: 250px;
-            flex-shrink: 0;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: auto;
+            max-width: 450px;
+            margin: 0 auto;
         }
         .result-map-container img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: auto;
             border-radius: 10px;
-            object-fit: contain;
         }
-        .result-details-container {
-            flex-grow: 1;
+        .result-actions-container {
             display: flex;
             flex-direction: column;
-            min-height: 0; /* Important for flex children to scroll */
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .result-actions-container .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .result-details-container {
+            grid-column: 1 / -1; /* Span full width on mobile */
+            display: flex;
+            flex-direction: column;
             width: 100%;
             max-width: 1200px;
+            margin-top: 20px;
+        }
+        #solo-mode-note {
+            display: none; 
+            font-size: 0.9em; 
+            color: var(--secondary-text-color); 
+            margin-top: -10px; 
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #solo-mode-note p {
+            margin: 0;
         }
 
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
-        .result-table-container { flex-grow: 1; overflow-y: auto; width: 100%;}
+        .result-table-container { 
+            width: 100%;
+        }
         .result-table { width: 100%; border-collapse: collapse; }
         .result-table th, .result-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        .result-table th { background-color: #f9f9f9; position: sticky; top: 0; }
+        .result-table th { background-color: #f9f9f9; position: sticky; top: 0; z-index: 1; }
         .mode-solo { color: var(--accent-color); font-weight: bold; }
         .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
 
@@ -441,15 +595,15 @@
 
         .pattern-marker { 
             position: absolute; 
-            width: 50px; 
-            height: 50px; 
+            width: clamp(25px, 4vw, 35px); 
+            height: clamp(25px, 4vw, 35px);
             background-color: rgba(59, 130, 246, 0.8); 
-            border: 3px solid var(--accent-color); 
+            border: 2px solid var(--accent-color); 
             animation: glowing 2s infinite; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            font-size: 1.5em; 
+            font-size: 1.1em; 
             color: white; 
             font-weight: bold; 
             cursor: pointer; 
@@ -460,8 +614,8 @@
         }
         .pattern-marker .pattern-label {
             background-color: rgba(0,0,0,0.5);
-            padding: 2px 5px;
-            border-radius: 4px;
+            padding: 1px 4px;
+            border-radius: 3px;
         }
         .pattern-marker.completed {
             background-color: #10B981;
@@ -479,6 +633,12 @@
             height: 60px;
             animation: spin 1.5s linear infinite;
             margin: 20px auto;
+        }
+        #calculation-progress {
+            margin-top: 15px;
+            color: var(--secondary-text-color);
+            font-weight: bold;
+            height: 2em; /* Reserve space to prevent layout shift */
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -518,13 +678,128 @@
             margin: 10px auto 0;
             border: 1px solid var(--border-color);
         }
+        #day-detail-content .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        #day-detail-content .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Site Credit Footer */
+        .site-credit-footer {
+            width: 100%;
+            padding: 8px 40px;
+            background-color: var(--header-bg-color);
+            color: #ccc;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            z-index: 10;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .site-credit-footer p {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        #credit-modal-trigger {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        #credit-modal-trigger:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .credit-separator {
+            margin: 0 10px;
+        }
+        .site-credit-footer a {
+            color: #fff;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .site-credit-footer a:hover {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        /* Credit Modal */
+        #credit-modal .modal-content p {
+            text-align: left;
+            line-height: 1.8;
+        }
+        #credit-modal .modal-content h4 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
 
         /* --- RESPONSIVE STYLES --- */
+        @media (min-width: 992px) {
+            .result-layout-container {
+                grid-template-columns: minmax(auto, 400px) 1fr;
+                align-items: center;
+            }
+            .result-map-container {
+                justify-self: start;
+                margin: 0;
+            }
+            .result-actions-container {
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+        }
+        
+        /* ★★★ ここからが変更箇所です (スマホ/タブレット向け) ★★★ */
         @media (max-width: 768px) {
-            .site-header { padding: 10px 20px; }
-            main { padding: 0; }
-            .container { width: 100%; height: 100%; max-height: none; border-radius: 0; }
-            .page { padding: 20px; }
+            body {
+                overflow-y: auto;
+                height: auto;
+                min-height: 100%;
+            }
+            main {
+                 padding: 0;
+                 flex-grow: 1;
+            }
+            .container { 
+                width: 100%; 
+                height: 100%;
+                max-height: none; 
+                border-radius: 0; 
+                overflow: hidden; /* Prevent container from scrolling */
+            }
+            
+            .page { 
+                padding: 20px; 
+                height: 100%; 
+                position: absolute; /* Revert to absolute for single-page view feel */
+                overflow-y: auto; /* Allow scrolling WITHIN the page */
+                justify-content: flex-start; 
+            }
+            #start-page {
+                justify-content: center; /* Keep start page centered */
+                overflow-y: hidden;
+            }
+            
+            .site-header, .site-credit-footer { padding: 10px 20px; }
             #start-page h1 { font-size: 2.5em; }
             .steps-container { gap: 10px; }
             .step-icon { width: 50px; height: 50px; font-size: 1.2em;}
@@ -534,9 +809,26 @@
             .config-list { grid-template-columns: 1fr; }
             .modal-content { width: 90%; padding: 20px; }
             .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
-            .map-marker {
-                width: 35px;
-                height: 35px;
+            
+            .page-content-wrapper {
+                height: auto; 
+            }
+            .input-views-container {
+                flex-grow: 0; 
+                min-height: auto; 
+            }
+            .input-views-container .map-container {
+                height: auto;
+                aspect-ratio: 1.6; 
+                min-height: 200px; 
+            }
+            .config-list {
+                height: auto; 
+                max-height: 300px;
+                overflow-y: auto;
+            }
+             .site-credit-footer {
+                position: relative;
             }
         }
 
@@ -547,6 +839,10 @@
             .step-label { font-size: 0.7em; margin-top: 8px; }
             .step-arrow { font-size: 1.5em; }
             .btn { font-size: 1em; padding: 12px 24px; }
+             #go-to-current-btn {
+                padding: 18px 36px;
+                font-size: 1.3em;
+            }
             .page { padding: 15px; }
             .config-item-label { font-size: 1em; }
             .pattern-buttons button { width: 40px; height: 40px; padding: 5px; font-size: 0.9em;}
@@ -555,6 +851,7 @@
                 flex-direction: row; 
                 flex-wrap: wrap;
                 gap: 10px;
+                padding-bottom: 15px; /* Add some bottom padding */
             }
             .page-footer .left-action, .page-footer .right-action {
                 flex-basis: auto;
@@ -571,14 +868,48 @@
                 font-size: 0.9em;
                 padding: 10px 20px;
             }
-             .page-footer .btn-secondary {
+             .page-footer .btn-secondary-link {
                 font-size: 0.9em;
                 padding: 10px;
             }
-            .map-marker {
-                width: 28px;
-                height: 28px;
-                border-width: 2px;
+        }
+        
+        @media (max-height: 800px) and (min-width: 769px) {
+            .page {
+                padding-top: 1vw;
+                padding-bottom: 1vw;
+            }
+            .page-header {
+                margin-bottom: 8px;
+            }
+            .btn-back, .header-placeholder {
+                width: 32px;
+                height: 32px;
+            }
+            .steps-container {
+                gap: 10px;
+            }
+            .step-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1em;
+            }
+            .step-label {
+                margin-top: 5px;
+                font-size: 0.8em;
+            }
+            .step-arrow {
+                font-size: 1.5em;
+            }
+            .view-switcher {
+                margin-bottom: 8px;
+            }
+            .view-tab {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+            .page-footer {
+                margin-top: 10px;
             }
         }
     </style>
@@ -587,6 +918,12 @@
     <header class="site-header backdrop-blur">
         <h1>鶴観配置調整ツール (マルチ対応版)</h1>
     </header>
+
+    <div id="info-banner" class="info-banner">
+        <p>鶴観の精鋭の仕組みについて詳しく知りたい方は、<a href="https://youtu.be/2xqllaCTP5c?si=m9yyxXo5GS0rwFG9" target="_blank" rel="noopener noreferrer">こちらの解説動画</a>をご覧ください。</p>
+        <button id="close-banner-btn" class="close-banner-btn" title="閉じる">&times;</button>
+    </div>
+
     <main>
         <div class="container backdrop-blur">
 
@@ -613,10 +950,11 @@
                     <div class="multi-mode-toggle">
                         <input type="checkbox" id="multiplayer-mode-checkbox">
                         <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
+                        <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
                     </div>
 
                     <div class="start-footer">
-                         <button id="guide-btn" class="btn btn-secondary">使い方ガイド</button>
+                         <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
                     </div>
                 </div>
             </div>
@@ -660,6 +998,7 @@
                             <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
                         </div>
                         <div class="right-action">
+                            <div id="validation-message" class="validation-message"></div>
                             <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
                         </div>
                    </div>
@@ -701,7 +1040,7 @@
 
                      <div class="page-footer">
                         <div class="left-action">
-                            <button class="btn btn-secondary" id="set-recommended-btn">環境配置を自動入力</button>
+                             <button class="btn btn-secondary-link" id="set-recommended-btn">環境配置を自動入力</button>
                         </div>
                         <div class="center-action">
                             <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
@@ -728,12 +1067,22 @@
                         <div class="header-placeholder"></div>
                     </div>
 
-                    <div class="result-map-container">
-                        <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                    <div class="result-layout-container">
+                        <div class="result-map-container">
+                            <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                        </div>
+                        <div class="result-actions-container">
+                            <button id="recalculate-alternate-mode-btn" class="btn"></button>
+                            <button id="reset-btn" class="btn btn-secondary">最初からやり直す</button>
+                        </div>
                     </div>
 
                     <div class="result-details-container">
                          <h2 id="result-title">計算結果</h2>
+                         <div id="solo-mode-note">
+                            <p>周期ホールドを使わない調整方法です。周期ホールドを使ったらもっと調整期間を短縮できるかもしれません。<br>
+                            <a href="https://youtu.be/2xqllaCTP5c?si=-jzSEDAzIkSjZ87P&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a></p>
+                         </div>
                          <div id="result-summary"></div>
                          <div class="result-table-container">
                             <table class="result-table">
@@ -744,11 +1093,6 @@
                             </table>
                          </div>
                     </div>
-
-                      <div class="page-footer" style="justify-content: center; gap: 20px;">
-                         <button class="btn btn-secondary" onclick="showPage('ideal-config-page')">再計算する</button>
-                         <button class="btn btn-secondary" onclick="resetApp()">最初からやり直す</button>
-                   </div>
                 </div>
             </div>
         </div>
@@ -796,7 +1140,7 @@
     <div id="screenshot-popup" class="modal backdrop-blur">
         <div class="modal-content">
              <span class="modal-close" data-target="screenshot-popup">&times;</span>
-             <h3 id="screenshot-title">この配置で合っていますか？</h3>
+             <h3 id="screenshot-title"></h3>
              <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット" style="width: 100%; height: auto; border-radius: 10px; margin: 15px 0;">
              <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
         </div>
@@ -807,16 +1151,49 @@
             <h2>計算中...</h2>
             <p>最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
             <div class="loader"></div>
+            <div id="calculation-progress"></div>
          </div>
     </div>
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-               <span class="modal-close" data-target="day-detail-modal">&times;</span>
-               <h2 id="day-detail-title"></h2>
-               <div id="day-detail-content"></div>
+              <span class="modal-close" data-target="day-detail-modal">&times;</span>
+              <h2 id="day-detail-title"></h2>
+              <div id="day-detail-content"></div>
+       </div>
+    </div>
+
+    <div id="credit-modal" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="credit-modal">&times;</span>
+            <h2>Special Thanks</h2>
+            <p>このツールの開発にあたり、「ねこした」さんより多大なるご協力をいただきました。<br>心より感謝申し上げます。</p>
+            
+            <hr style="margin: 20px 0;">
+            
+            <h4>■ 画像・情報提供</h4>
+            <p>ツール内で使用している各配置の画像や、精鋭エネミーの出現パターンに関する情報は、以下のnote記事を参考にさせていただきました。非常に分かりやすくまとめられており、開発の大きな助けとなりました。</p>
+            <p style="padding-left: 1em;"><strong>note記事:</strong> <a href="https://note.com/nekoshita_g/n/nba4aff6a13ff" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法</a></p>
+            
+            <h4>■ 調整方法の解説</h4>
+            <p>本ツールの計算ロジックは、以下の動画で解説されている調整方法を基にプログラムとして実装したものです。鶴観調整の仕組みそのものについて、大変分かりやすく解説されていますので、ぜひご覧ください。</p>
+            <p style="padding-left: 1em;"><strong>解説動画:</strong> <a href="https://youtu.be/2xqllaCTP5c?si=jY3Vn64mj6y91Vte" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法 (YouTube)</a></p>
+            
+            <hr style="margin: 20px 0;">
+            
+            <p style="text-align: center;">
+                <a href="https://www.youtube.com/@nekoshita_g" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none;">ねこしたさんのYouTubeチャンネルはこちら</a>
+            </p>
         </div>
     </div>
+
+    <footer class="site-credit-footer backdrop-blur">
+        <p>
+            <span id="credit-modal-trigger">Special Thanks: ねこしたさん (詳細はこちら)</span>
+            <span class="credit-separator">|</span>
+            <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
+        </p>
+    </footer>
 
 <script>
 // --- DATA DEFINITION ---
@@ -836,22 +1213,51 @@ const groupKeys = Object.keys(eliteGroups);
 const totalGroups = groupKeys.length;
 
 const actionsData = [
-    {id: 2, name: 'ワープ(2)', affectedGroups: ['A', 'D']},
-    {id: 3, name: 'ワープ(3)', affectedGroups: ['A', 'B', 'C', 'D', 'E', 'J']},
-    {id: 4, name: 'ワープ(4)', affectedGroups: ['B', 'C', 'D', 'E', 'F']},
-    {id: 5, name: 'ワープ(5)', affectedGroups: ['B', 'E', 'F', 'G', 'H', 'I']},
-    {id: 6, name: 'ワープ(6)', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I']},
-    {id: 7, name: 'ワープ(7)', affectedGroups: ['A', 'J']},
-    {id: 8, name: 'ワープ(8)', affectedGroups: ['J']},
-    {id: 9, name: 'ボート(1から/A)', affectedGroups: ['A']},
-    {id: 10, name: 'ボート(1から/CD)', affectedGroups: ['C', 'D']},
-    {id: 13, name: '歩き(8から/ABCJ)', affectedGroups: ['A', 'B', 'C', 'J']},
-    {id: 15, name: '歩き(18から/EG)', affectedGroups: ['E', 'G']},
-    {id: 17, name: '歩き(7から/AHJ)', affectedGroups: ['A', 'H', 'J']},
-    {id: 18, name: 'ワープ(ボート)', affectedGroups: ['E']},
-    {id: 19, name: '歩き(18から/EFGI)', affectedGroups: ['E', 'F', 'G', 'I']},
-    {id: 20, name: 'ボート(ヤシオリから)', affectedGroups: ['H', 'I']},
+    {id: 2, name: 'ワープ②', affectedGroups: ['A', 'D']},
+    {id: 3, name: 'ワープ③', affectedGroups: ['A', 'B', 'C', 'D', 'E', 'J']},
+    {id: 4, name: 'ワープ④', affectedGroups: ['B', 'C', 'D', 'E', 'F']},
+    {id: 5, name: 'ワープ⑤', affectedGroups: ['B', 'E', 'F', 'G', 'H', 'I']},
+    {id: 6, name: 'ワープ⑥', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I']},
+    {id: 7, name: 'ワープ⑦', affectedGroups: ['A', 'J']},
+    {id: 8, name: 'ワープ⑧', affectedGroups: ['J']},
+    {id: 9, name: 'ボート⑨', affectedGroups: ['A']},
+    {id: 10, name: 'ボート⑩', affectedGroups: ['C', 'D']},
+    {id: 11, name: 'ボート⑪', affectedGroups: ['B', 'C', 'D']},
+    {id: 12, name: 'ボート⑫', affectedGroups: ['D']},
+    {id: 13, name: '歩き⑬', affectedGroups: ['A', 'B', 'C', 'J']},
+    {id: 14, name: '歩き⑭', affectedGroups: ['A', 'B', 'J']},
+    {id: 15, name: '歩き⑮', affectedGroups: ['E', 'G']},
+    {id: 16, name: '歩き⑯', affectedGroups: ['E', 'F', 'G']},
+    {id: 17, name: '歩き⑰', affectedGroups: ['A', 'H', 'J']},
+    {id: 18, name: 'ポケワ⑱', affectedGroups: ['E']},
+    {id: 19, name: '歩き⑲', affectedGroups: ['E', 'F', 'G', 'I']},
+    {id: 20, name: 'ボート⑳', affectedGroups: ['H', 'I']},
+    {id: 21, name: 'ボート㉑', affectedGroups: ['I']},
 ];
+
+const actionDetails = {
+    2:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202210.png?raw=true'], videoUrl: null, note: null },
+    3:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202231.png?raw=true'], videoUrl: null, note: null },
+    4:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202321.png?raw=true'], videoUrl: null, note: null },
+    5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: null },
+    6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: null },
+    7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: null },
+    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    12: { images: ['https://assets.st-note.com/img/1740718519-C5t0WKmVepqoji19Rc2GZduf.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    13: { images: ['https://assets.st-note.com/img/1740019544-fjJrv5VwbpUgatR0FLMODEPG.png?width=1200', 'https://assets.st-note.com/img/1740019502-2BkCqL4znrixluRm7FpjvhOQ.png?width=1200'], videoUrl: 'https://youtu.be/2_xN2PYjrO4?si=0K03Yr1tl74NQ0MF', note: 'モシリ炎アビス + モシリ雷アビス + モシリ暴徒 ロード位置' },
+    14: { images: ['https://assets.st-note.com/img/1739947858-im8E9AtCjsr501YZnHWuKxNJ.png?width=1200 ', 'https://assets.st-note.com/img/1739947867-yxzY23VinFgkLKrCtmXqvG0B.png?width=1200'], videoUrl: 'https://youtu.be/fDn-IKfIL-A?si=92PmIUWw-Vgvg34m', note: 'ワープ8にワープした段階でワクカウもロードされます。その後、移動し、モシリ炎アビスとモシリ雷アビスもロードします。目印は杭です。' },
+    15: { images: ['https://assets.st-note.com/img/1738380135-LlcU0487Xtbjduk9KzqT6sDa.png?width=1200', 'https://assets.st-note.com/img/1740114869-zBxEZO2v3dAeQusnTYJ0WkNb.png?width=1200'], videoUrl: 'https://youtu.be/FRZu8bq3SEY?si=Ra81bAbgAKu_DGqb', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）\n目印はミントです。' },
+    16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーです。' },
+    17: { images: ['https://assets.st-note.com/img/1738916671-ORDvWIt8zi692QxAJVKb1rlS.png?width=1200', 'https://assets.st-note.com/img/1738916711-VnxAvW1qJdrGXlOzoHe8Mshk.png?width=1200'], videoUrl: 'https://youtu.be/x8Zcoz0VjzY?si=42_j7YWlgBPT_zR3', note: 'ワープ7にワープした段階でモシリ炎アビスとワクカウもロードされます。その後、移動し、アウタケ東もロードします。目標は雷石です。' },
+    18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はミント' },
+    19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置' },
+    20: { images: ['https://assets.st-note.com/img/1740887637-KEB38rW94bPpH2YI6whCcQ7x.jpg?width=1200'], videoUrl: null, note: 'ヤシオリ島からボートで向かいます。' },
+    21: { images: ['https://assets.st-note.com/img/1740464299-tWJOErwCv4B1cnPI57XmoMY3.jpg?width=1200'], videoUrl: null, note: 'ヤシオリ島からボートで向かいます。' },
+};
+
 const recommendedConfig = {
     'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C',
     'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B'
@@ -896,20 +1302,57 @@ let idealConfig = {};
 let possibleDailyActions = [];
 let activeSelection = { configType: null, groupId: null, pattern: null };
 let lastCalculatedPlan = null; // Store the last calculated plan
+let calculationTask = null; // For async calculation
 const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
 
 // --- SCRIPT START ---
 document.addEventListener('DOMContentLoaded', () => {
+    const infoBanner = document.getElementById('info-banner');
+    const closeBannerBtn = document.getElementById('close-banner-btn');
+    
+    // localStorageをチェックして、バナーが以前に閉じられたか確認
+    if (localStorage.getItem('tsurumiBannerClosed') === 'true') {
+        infoBanner.style.display = 'none'; // 最初から非表示にする
+    }
+
+    closeBannerBtn.addEventListener('click', () => {
+        infoBanner.classList.add('hidden');
+        // localStorageに状態を保存
+        localStorage.setItem('tsurumiBannerClosed', 'true');
+    });
+
     document.getElementById('go-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
     document.getElementById('guide-btn').addEventListener('click', () => showModal('guide-modal'));
+    document.getElementById('credit-modal-trigger').addEventListener('click', () => showModal('credit-modal'));
     document.querySelectorAll('.modal-close').forEach(el => el.addEventListener('click', () => closeModal(el.dataset.target)));
     
-    document.getElementById('go-to-ideal-btn').addEventListener('click', () => showPage('ideal-config-page'));
+    document.getElementById('go-to-ideal-btn').addEventListener('click', (e) => {
+        if (e.currentTarget.disabled) {
+            const validationMessage = document.getElementById('validation-message');
+            const button = e.currentTarget;
+            
+            validationMessage.textContent = 'すべての配置を入力してください。';
+            validationMessage.classList.add('show');
+            button.classList.add('shake');
+            
+            setTimeout(() => {
+                validationMessage.classList.remove('show');
+            }, 2000); // Message disappears after 2 seconds
+
+            setTimeout(() => {
+                button.classList.remove('shake');
+            }, 600); // Animation duration
+        } else {
+            showPage('ideal-config-page');
+        }
+    });
+
     document.getElementById('set-recommended-btn').addEventListener('click', setRecommendedConfig);
     document.getElementById('calculate-plan-btn').addEventListener('click', () => {
         const isMultiplayer = document.getElementById('multiplayer-mode-checkbox').checked;
         calculatePlan(isMultiplayer);
     });
+    document.getElementById('reset-btn').addEventListener('click', resetApp);
     
     document.getElementById('back-to-start-btn').addEventListener('click', () => showPage('start-page'));
     document.getElementById('back-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
@@ -920,7 +1363,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
 
-    // Add event listener for details buttons on the result table
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
             const dayIndex = parseInt(e.target.dataset.dayIndex, 10);
@@ -960,7 +1402,13 @@ function showPage(pageId) {
 }
 
 function showModal(modalId) { document.getElementById(modalId).classList.add('active'); }
-function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+function closeModal(modalId) { 
+    if (modalId === 'loading-modal' && calculationTask) {
+        clearTimeout(calculationTask);
+        calculationTask = null;
+    }
+    document.getElementById(modalId).classList.remove('active'); 
+}
 
 function initInputPage(configType) {
     const mapContainer = document.getElementById(`${configType}-map-container`);
@@ -980,7 +1428,7 @@ function initInputPage(configType) {
 
         const item = document.createElement('div');
         item.className = 'config-item';
-        item.innerHTML = `<span class="config-item-label">${groupId}: ${group.name}</span>`;
+        item.innerHTML = `<span class="config-item-label">${group.name}</span>`;
         const buttons = document.createElement('div');
         buttons.className = 'pattern-buttons';
         buttons.id = `${configType}-buttons-${groupId}`;
@@ -1006,7 +1454,7 @@ function switchInputView(configType, viewType) {
 
 function openGroupSelector(configType, groupId) {
     activeSelection = { configType, groupId };
-    document.getElementById('zoom-title').textContent = `${groupId}: ${eliteGroups[groupId].name} のパターンを選択`;
+    document.getElementById('zoom-title').textContent = `${eliteGroups[groupId].name} のパターンを選択`;
     const zoomContainer = document.getElementById('zoom-map-container');
     const zoomMapImage = zoomContainer.querySelector('img');
     if (zoomMapImage && eliteGroups[groupId].zoomMapUrl) zoomMapImage.src = eliteGroups[groupId].zoomMapUrl;
@@ -1039,12 +1487,13 @@ function openGroupSelector(configType, groupId) {
         
 function selectPatternForConfirmation(pattern) {
     activeSelection.pattern = pattern;
-    document.getElementById('screenshot-title').textContent = `${activeSelection.groupId} - パターン ${pattern} で合っていますか？`;
+    const groupName = eliteGroups[activeSelection.groupId].name;
+    document.getElementById('screenshot-title').textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
     const imageUrl = screenshotImageUrls[activeSelection.groupId]?.[activeSelection.pattern];
      if (imageUrl) {
-        document.getElementById('screenshot-img').src = imageUrl;
+         document.getElementById('screenshot-img').src = imageUrl;
     } else {
-        document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
+         document.getElementById('screenshot-img').src = `https://placehold.co/500x300/ff0000/ffffff?text=Image+Not+Found`;
     }
     document.getElementById('confirm-pattern-btn').onclick = confirmPatternSelection;
     showModal('screenshot-popup');
@@ -1124,8 +1573,6 @@ function updateMapLayout(containerId) {
             offsetY = 0;
         }
         
-        const markerSize = Math.min(containerRect.width, containerRect.height) * 0.05;
-
         markers.forEach(marker => {
             const groupId = marker.id.split('-')[2];
             const pos = markerPositions[groupId];
@@ -1133,8 +1580,8 @@ function updateMapLayout(containerId) {
                 const newLeft = offsetX + (renderedWidth * (parseFloat(pos.left) / 100));
                 const newTop = offsetY + (renderedHeight * (parseFloat(pos.top) / 100));
                 
-                marker.style.left = `${newLeft - (marker.offsetWidth || markerSize) / 2}px`;
-                marker.style.top = `${newTop - (marker.offsetHeight || markerSize) / 2}px`;
+                marker.style.left = `${newLeft - marker.offsetWidth / 2}px`;
+                marker.style.top = `${newTop - marker.offsetHeight / 2}px`;
             }
         });
     }
@@ -1189,27 +1636,37 @@ function calculatePlan(isMultiplayer) {
         alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
         return;
     }
+    const progressEl = document.getElementById('calculation-progress');
+    progressEl.textContent = '調整パターンの検証を開始...';
     showModal('loading-modal');
     
-    setTimeout(() => {
-        const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
-        const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
+    if (calculationTask) clearTimeout(calculationTask);
 
-        if (startConfigStr === endConfigStr) {
+    const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
+    const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
+
+    if (startConfigStr === endConfigStr) {
+        setTimeout(() => {
             displayResults([], isMultiplayer);
             closeModal('loading-modal');
-            return;
-        }
+        }, 100);
+        return;
+    }
 
-        const queue = [{ config: startConfigStr, path: [] }];
-        const visited = new Set([startConfigStr]);
-        let solutionPath = null;
+    const queue = [{ config: startConfigStr, path: [] }];
+    const visited = new Set([startConfigStr]);
+    let verifiedCount = 0;
 
-        while (queue.length > 0) {
+    const processChunk = () => {
+        const startTime = Date.now();
+        while(queue.length > 0 && (Date.now() - startTime < 50)) { // Process for max 50ms
             const { config, path } = queue.shift();
-            if (path.length >= 10) continue; // Safety break
+            verifiedCount++;
 
-            // Solo Mode (always available)
+            if (path.length >= 8) continue;
+
+            let solutionPath = null;
+            // Solo Mode
             for (const soloAction of possibleDailyActions) {
                 let nextConfigArr = config.split('').map(Number);
                 for (const group of soloAction.affectedGroups) {
@@ -1225,14 +1682,18 @@ function calculatePlan(isMultiplayer) {
                     queue.push({ config: nextConfigStr, path: [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }] });
                 }
             }
-            if (solutionPath) break;
+            if (solutionPath) {
+                displayResults(solutionPath, isMultiplayer);
+                closeModal('loading-modal');
+                return;
+            }
 
-            // Multiplayer Mode (only if enabled)
+            // Multiplayer Mode
             if (isMultiplayer) {
                 for (const holdAction of possibleDailyActions) {
                     for (const advanceAction of possibleDailyActions) {
                         const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(x => !holdAction.affectedGroups.has(x)));
-                        if (effectiveAdvance.size === 0) continue; // Skip if no effective change
+                        if (effectiveAdvance.size === 0) continue;
                         
                         let nextConfigArr = config.split('').map(Number);
                         for (const group of effectiveAdvance) {
@@ -1251,30 +1712,58 @@ function calculatePlan(isMultiplayer) {
                     if (solutionPath) break;
                 }
             }
-            if (solutionPath) break;
+            if (solutionPath) {
+                displayResults(solutionPath, isMultiplayer);
+                closeModal('loading-modal');
+                return;
+            }
         }
-        
-        displayResults(solutionPath, isMultiplayer);
-        closeModal('loading-modal');
-    }, 50);
+
+        if (queue.length > 0) {
+            progressEl.textContent = `調整パターンを検証中... [${verifiedCount}]`;
+            calculationTask = setTimeout(processChunk, 0);
+        } else {
+            displayResults(null, isMultiplayer);
+            closeModal('loading-modal');
+        }
+    };
+    
+    calculationTask = setTimeout(processChunk, 0);
 }
 
 
 // --- RESULT DISPLAY ---
 function displayResults(plan, isMultiplayer) {
-    lastCalculatedPlan = plan; // Store the plan for the details modal listener
+    lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
     
-    document.getElementById('result-title').textContent = isMultiplayer ? "計算結果 (マルチモード)" : "計算結果 (ソロモード)";
+    document.getElementById('result-title').textContent = isMultiplayer ? "計算結果 (周期ホールドON)" : "計算結果 (周期ホールドOFF)";
     const summaryEl = document.getElementById('result-summary');
+    const soloNoteEl = document.getElementById('solo-mode-note');
+    
+    const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
+    if (isMultiplayer) {
+        soloNoteEl.style.display = 'none';
+        alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
+        alternateCalcBtn.onclick = () => calculatePlan(false);
+        alternateCalcBtn.className = 'btn btn-primary';
+    } else {
+        soloNoteEl.style.display = 'block';
+        alternateCalcBtn.textContent = '周期ホールドONで再計算';
+        alternateCalcBtn.onclick = () => calculatePlan(true);
+        alternateCalcBtn.className = 'btn btn-multi';
+    }
 
     if (plan === null) {
-        summaryEl.textContent = '調整プランが見つかりませんでした。';
+        summaryEl.textContent = '8日以内に完了する調整プランは見つかりませんでした。';
+        alternateCalcBtn.style.display = 'block';
     } else if (plan.length === 0) {
         summaryEl.textContent = '調整は不要です！';
+        alternateCalcBtn.style.display = 'none';
     } else {
         summaryEl.textContent = `最短 ${plan.length} 日で調整が完了します！`;
+        alternateCalcBtn.style.display = 'block';
         plan.forEach((day, index) => {
             const tr = document.createElement('tr');
             const modeClass = day.mode === 'ソロ' ? 'mode-solo' : 'mode-multi';
@@ -1297,28 +1786,37 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-    let contentHTML = '';
+    // 注意書きを一番最初に追加
+    let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲(かんうん)のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
-        contentHTML += `<p>以下の行動で影響範囲内のエネミーの配置を1つ進めます。</p>`;
-        contentHTML += generateActionDetailsHTML(dayData.advanceAction.name, "ソロ");
+        contentHTML += `<p>以下の行動で、影響範囲内のエネミーの周期を1つ進めます。ワープポイントに飛んだら、移動せずにすぐ別の場所にワープしてOKです。</p>`;
+        contentHTML += generateActionDetailsHTML(dayData.advanceAction, "1P (ホスト)");
     } else { // multi
-        contentHTML += `<h3>マルチモードでの行動</h3>`;
-        contentHTML += `<h4>2P (ホールド役) の行動</h4>`;
+        const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(x => !dayData.holdAction.affectedGroups.has(x)));
+
+        contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
+        
+        contentHTML += `<h4>Step 1: 2P (ゲスト) の行動</h4>`;
         if (dayData.holdAction.name === '何もしない' || dayData.holdAction.name === '---') {
-             contentHTML += `<p>何もしません。ログイン後、その場で待機してください。</p>`;
+             contentHTML += `<p><strong>行動:</strong> なし</p><p>ゲストは何もしません。ホストの世界に入ったら、鶴見以外の場所（例えば塵歌壺など）で待機してください。</p>`;
         } else {
-            contentHTML += `<p>以下の行動で、ホールド対象のエネミーの周期を固定します。</p>`;
-            contentHTML += generateActionDetailsHTML(dayData.holdAction.name, "2P");
+            contentHTML += `<p><strong>目的:</strong> 下記グループの周期を<strong>ホールド(固定)</strong>します。</p>`;
+            contentHTML += generateActionDetailsHTML(dayData.holdAction, "2P (ゲスト)");
+            contentHTML += `<p><strong>[重要]</strong> ゲストは上記行動を終えたら、ホストが次の行動を完了するまで、<strong>鶴見以外の場所（塵歌壺など）</strong>に移動して待機してください。</p>`;
         }
-       
-        contentHTML += `<h4 style="margin-top: 20px;">1P (ホスト) の行動</h4>`;
-        if (dayData.advanceAction.name === '何もしない' || dayData.advanceAction.name === '---') {
-            contentHTML += `<p>特別な行動は不要です。</p>`;
+        
+        contentHTML += `<h4 style="margin-top: 25px;">Step 2: 1P (ホスト) の行動</h4>`;
+        if (dayData.advanceAction.name === '何もしない' || dayData.advanceAction.name === '---' || effectiveAdvanceGroups.size === 0) {
+            contentHTML += `<p><strong>行動:</strong> なし</p><p>ホストの特別な行動は不要です。日付が変わるのを待ってください。</p>`;
         } else {
-            contentHTML += `<p>2Pがホールドした後、以下の行動でターゲットのエネミーの配置を1つ進めます。</p>`;
-            contentHTML += generateActionDetailsHTML(dayData.advanceAction.name, "1P");
+            contentHTML += `<p><strong>目的:</strong> ゲストがホールドしなかった、下記グループの周期を1つ<strong>進めます</strong>。</p>`;
+            const effectiveAdvanceAction = {
+                name: dayData.advanceAction.name,
+                affectedGroups: effectiveAdvanceGroups
+            };
+            contentHTML += generateActionDetailsHTML(effectiveAdvanceAction, "1P (ホスト)");
         }
     }
 
@@ -1326,21 +1824,69 @@ function showDayDetail(dayData, dayNumber) {
     showModal('day-detail-modal');
 }
 
-function generateActionDetailsHTML(actionString, playerRole) {
-    if (!actionString || actionString === '---' || actionString === '何もしない') return '<p>特別な行動は不要です。</p>';
+function generateActionDetailsHTML(actionData, playerRole) {
+    if (!actionData || !actionData.name || actionData.name === '---' || actionData.name === '何もしない') return '<p>特別な行動は不要です。</p>';
     
-    const actions = actionString.split(' + ');
-    let html = '<ul>';
+    const actions = actionData.name.split(' + ');
+    const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => 
+        `「${key}: ${eliteGroups[key].name}」`
+    ).join('、');
+
+    let html = `
+        <p><strong>実行する行動:</strong> ${actions.join(', ')}</p>
+        <p><strong>影響を受けるグループ:</strong> ${affectedGroupsList}</p>
+        <ul>`;
+
     actions.forEach(actionName => {
-        // This is a placeholder for actual details.
-        const detailText = `「${actionName}」を実行します。影響を受ける敵グループを確認し、ルートに沿って移動してください。`;
-        const imageUrl = `https://placehold.co/400x250/e9e9e9/333?text=${encodeURIComponent(actionName.replace(/\//g, ''))}`;
-        html += `
-            <li>
-                <strong>${actionName}</strong>
-                <p>${detailText}</p>
-                <img src="${imageUrl}" alt="${actionName} のルート図" >
-            </li>`;
+        const action = actionsData.find(a => a.name === actionName);
+        if (!action) return;
+
+        const details = actionDetails[action.id] || {};
+        const detailText = details.note || 'ワープポイントに移動し、ロードが完了したらすぐ他の場所に移動します。影響範囲を広げないよう、ロード後の移動は不要です。';
+        
+        html += `<li><strong>${actionName}</strong><p>${detailText}</p>`;
+        
+        // Handle images
+        if (details.images && details.images.length > 0) {
+            details.images.forEach(imgUrl => {
+                html += `<img src="${imgUrl}" alt="${actionName} のルート図" >`;
+            });
+        }
+
+        // Handle YouTube video
+        if (details.videoUrl && details.videoUrl.startsWith('https://')) {
+            try {
+                const url = new URL(details.videoUrl);
+                let videoId = url.searchParams.get('v');
+                if (!videoId && (url.hostname === 'youtu.be' || url.hostname === 'www.youtu.be')) {
+                    const pathParts = url.pathname.split('/');
+                    videoId = pathParts[pathParts.length - 1];
+                }
+                
+                if (videoId) {
+                    // Extract timestamp if available
+                    const timestamp = url.searchParams.get('t') || url.hash.substring(1).split('&').find(p => p.startsWith('t='))?.split('=')[1];
+                    let embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    if (timestamp) {
+                        embedUrl += `?start=${timestamp.replace('s', '')}`;
+                    }
+
+                    html += `
+                        <p style="margin-top:15px;"><strong>参考動画:</strong></p>
+                        <div class="video-container">
+                            <iframe 
+                                src="${embedUrl}" 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>`;
+                }
+            } catch(e) { console.error("Invalid video URL:", details.videoUrl); }
+        }
+
+        html += `</li>`;
     });
     html += '</ul>';
     return html;

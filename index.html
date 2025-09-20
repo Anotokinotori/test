@@ -1,4 +1,4 @@
-２９
+３２
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1161,10 +1161,6 @@
 
                         <div id="result-details" class="result-details-container">
                              <h2 id="result-title">計算結果</h2>
-                             <div id="solo-mode-note">
-                                <p>周期ホールドを使わない方法です。使用したら期間を短縮できるかもしれません。<br>
-                                <a href="https://youtu.be/2xqllaCTP5c?si=-jzSEDAzIkSjZ87P&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a></p>
-                             </div>
                              <div id="result-summary"></div>
                              <div class="result-table-container">
                                 <table class="result-table">
@@ -1844,18 +1840,15 @@ function displayResults(plan, isMultiplayer) {
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
     
-    document.getElementById('result-title').textContent = isMultiplayer ? "計算結果 (周期ホールドON)" : "計算結果 (周期ホールドOFF)";
+    document.getElementById('result-title').textContent = "計算結果";
     const summaryEl = document.getElementById('result-summary');
-    const soloNoteEl = document.getElementById('solo-mode-note');
     
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
-        soloNoteEl.style.display = 'none';
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
         alternateCalcBtn.onclick = () => calculatePlan(false);
         alternateCalcBtn.className = 'btn btn-primary';
     } else {
-        soloNoteEl.style.display = 'block';
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
         alternateCalcBtn.onclick = () => calculatePlan(true);
         alternateCalcBtn.className = 'btn btn-multi';
@@ -2031,5 +2024,9 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
+
+
+
+
 
 

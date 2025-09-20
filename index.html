@@ -1,4 +1,4 @@
-13
+25
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1442,21 +1442,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
 
-    const resultPage = document.getElementById('result-page');
-    const scrollIndicator = document.getElementById('scroll-indicator');
-
-    resultPage.addEventListener('scroll', () => {
-        if (resultPage.scrollTop > 50) {
-            scrollIndicator.classList.add('hidden');
-        } else {
-            scrollIndicator.classList.remove('hidden');
-        }
-    });
-
-    scrollIndicator.addEventListener('click', function(e) {
+    // スクロールインジケーターのクリックイベント
+    document.getElementById('scroll-indicator').addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
     });
+
+    // スクロールとリサイズを監視して、インジケーターの表示を制御
+    const resultPage = document.getElementById('result-page');
+    resultPage.addEventListener('scroll', updateScrollIndicator);
+    window.addEventListener('resize', updateScrollIndicator);
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1882,22 +1877,13 @@ function displayResults(plan, isMultiplayer) {
         });
     }
 
-    // Scroll indicator logic
-    const resultPage = document.getElementById('result-page');
-    resultPage.scrollTop = 0; // Reset scroll position
-    const scrollIndicator = document.getElementById('scroll-indicator');
-    if (scrollIndicator) {
-        // Show indicator initially if content is scrollable
-        setTimeout(() => {
-            if (resultPage.scrollHeight > resultPage.clientHeight) {
-                 scrollIndicator.classList.remove('hidden');
-            } else {
-                 scrollIndicator.classList.add('hidden');
-            }
-        }, 100);
-    }
-
     showPage('result-page');
+    
+    const resultPage = document.getElementById('result-page');
+    resultPage.scrollTop = 0; // ページ表示時にスクロール位置を一番上に戻す
+
+    // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
+    setTimeout(updateScrollIndicator, 150); 
 }
 
 function showDayDetail(dayData, dayNumber) {
@@ -2015,8 +2001,30 @@ function generateActionDetailsHTML(actionData, playerRole) {
     return html;
 }
 
+/**
+ * スクロールインジケーターの表示/非表示を制御する関数
+ */
+function updateScrollIndicator() {
+    const resultPage = document.getElementById('result-page');
+    const scrollIndicator = document.getElementById('scroll-indicator');
+    if (!resultPage || !scrollIndicator) return;
+
+    // ページがスクロール可能か、かつユーザーがページ上部にいるかを確認
+    const isScrollable = resultPage.scrollHeight > resultPage.clientHeight;
+    const isAtTop = resultPage.scrollTop < 50;
+
+    // スクロール可能で、かつページ上部にいる場合のみ矢印を表示
+    if (isScrollable && isAtTop) {
+        scrollIndicator.classList.remove('hidden');
+    } else {
+        scrollIndicator.classList.add('hidden');
+    }
+}
+
 </script>
 </body>
 </html>
+
+
 
 

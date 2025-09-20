@@ -1,10 +1,9 @@
-３２
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鶴観配置調整ツール (マルチ対応版)</title>
+    <title>鶴観調整ツール</title>
     <style>
         /* General Styles */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
@@ -169,11 +168,12 @@
 
         /* --- Start Page --- */
         #start-page .page-content-wrapper {
-            justify-content: center;
-            gap: 2vh;
-            height: auto;
+             height: auto;
+             justify-content: center;
+             display: flex;
+             flex-direction: column;
+             gap: 2vh;
         }
-
         #start-page h1 {
             font-size: clamp(2.5em, 5vw, 4.5em);
             font-weight: 700;
@@ -184,7 +184,7 @@
             font-size: clamp(1em, 1.5vw, 1.2em);
             color: var(--secondary-text-color);
             max-width: 600px;
-            margin: 0 auto 20px; /* Reduced bottom margin */
+            margin: 0 auto 40px;
         }
         
         /* --- Step Indicator --- */
@@ -249,7 +249,7 @@
             font-size: 1.1em;
             font-weight: bold;
             color: var(--secondary-text-color);
-              transition: all 0.3s ease;
+             transition: all 0.3s ease;
         }
         .step-arrow {
             font-size: 2.5em;
@@ -278,7 +278,7 @@
         }
 
         .start-buttons {
-            margin-top: 20px; /* Reduced margin */
+            margin-top: 50px;
         }
         
         .multi-mode-toggle {
@@ -368,22 +368,22 @@
             color: var(--secondary-text-color);
         }
         .page-footer .left-action {
-              flex: 1 1 0%;
-              display: flex;
-              justify-content: flex-start;
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: flex-start;
         }
         .page-footer .center-action {
-              flex: 1 1 0%;
-              display: flex;
-              justify-content: center;
-              gap: 15px;
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: center;
+             gap: 15px;
         }
          .page-footer .right-action {
-              flex: 1 1 0%;
-              display: flex;
-              justify-content: flex-end;
-              gap: 15px;
-              position: relative; /* For validation message */
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: flex-end;
+             gap: 15px;
+             position: relative; /* For validation message */
         }
         
         .validation-message {
@@ -507,19 +507,23 @@
         #result-page .page-content-wrapper {
             display: block; /* Use block to allow children to layout normally */
         }
-        /* === [NEW] Main grid for result page layout === */
+        
+        /* === [NEW] Grid container for 2-column layout on desktop === */
         .result-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Mobile First: single column */
+            grid-template-columns: 1fr; /* Mobile first */
             gap: 20px;
+            align-items: flex-start; /* Align items to the top of their grid area */
             width: 100%;
         }
+
         .result-layout-container {
             display: flex;
             flex-direction: column;
             gap: 20px;
             width: 100%;
         }
+
         .result-map-container {
             width: 100%;
             height: auto;
@@ -548,19 +552,6 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 1200px;
-            margin-top: 20px;
-        }
-        #solo-mode-note {
-            display: none; 
-            font-size: 0.9em; 
-            color: var(--secondary-text-color); 
-            margin-top: -10px; 
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        #solo-mode-note p {
-            margin: 0;
         }
 
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
@@ -761,7 +752,7 @@
 
         /* Scroll Down Indicator */
         .scroll-indicator {
-            display: none; /* Hidden by default, enabled via media queries */
+            display: none; /* Hidden by default, shown via JS */
             position: absolute;
             bottom: 20px;
             left: 50%;
@@ -859,14 +850,12 @@
                 justify-content: center;
                 padding-top: 2vh;
                 padding-bottom: 2vh;
-                min-height: calc(100vh - 120px); /* Adjust height considering header/footer */
             }
 
-            /* 最小の高さが必要な入力ページにのみ、スタイルを適用 */
             #current-config-page, #ideal-config-page {
                 min-height: calc(100vh - 80px);
             }
-            
+
             .site-header, .site-credit-footer { padding: 10px 20px; }
             #start-page h1 { font-size: 2.5em; }
             .steps-container { gap: 10px; }
@@ -900,7 +889,7 @@
                 left: 0;
             }
             
-            #result-page #scroll-indicator {
+            #result-page .scroll-indicator {
                 display: flex;
             }
         }
@@ -946,7 +935,7 @@
                 padding: 10px;
             }
 
-            #result-page #scroll-indicator {
+            #result-page .scroll-indicator {
                 display: flex;
             }
         }
@@ -989,7 +978,7 @@
                 margin-top: 10px;
             }
             
-            #result-page #scroll-indicator {
+            #result-page .scroll-indicator {
                 display: flex;
             }
         }
@@ -997,7 +986,7 @@
 </head>
 <body>
     <header class="site-header backdrop-blur">
-        <h1>鶴観配置調整ツール (マルチ対応版)</h1>
+        <h1>鶴観調整ツール</h1>
     </header>
 
     <div id="info-banner" class="info-banner">
@@ -1012,8 +1001,8 @@
             <div id="start-page" class="page active">
                 <div class="page-content-wrapper">
                     <div class="start-header">
-                        <h1>鶴観配置調整ツール</h1>
-                        <p class="subtitle">※PCでの使用をおすすめします<br>現在と理想の配置を入力すると、最短の調整スケジュールを計算します。</p>
+                        <h1>鶴観調整ツール</h1>
+                        <p class="subtitle">※PCでの使用をおすすめします<br>現在と理想の配置を入力すると、最短調整スケジュールを計算します</p>
                     </div>
                     
                     <div class="steps-container">
@@ -1147,7 +1136,7 @@
                         </div>
                         <div class="header-placeholder"></div>
                     </div>
-                    <!-- === [MODIFIED] Added result-grid wrapper === -->
+
                     <div class="result-grid">
                         <div class="result-layout-container">
                             <div class="result-map-container">
@@ -1160,7 +1149,6 @@
                         </div>
 
                         <div id="result-details" class="result-details-container">
-                             <h2 id="result-title">計算結果</h2>
                              <div id="result-summary"></div>
                              <div class="result-table-container">
                                 <table class="result-table">
@@ -1171,9 +1159,9 @@
                                 </table>
                              </div>
                         </div>
-                    </div> <!-- === [MODIFIED] End of result-grid wrapper === -->
+                    </div>
                 </div>
-                <a href="#result-details" id="scroll-indicator" class="scroll-indicator">
+                <a href="#result-details" id="scroll-indicator" class="scroll-indicator hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                 </a>
             </div>
@@ -1324,7 +1312,7 @@ const actionDetails = {
     5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: null },
     6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: null },
     7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: null },
-    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
+    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動し、ロードが完了したらすぐ他の場所に移動します。影響範囲を広げないよう、ロード後の移動は不要です。' },
     9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
     10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
     11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
@@ -1840,7 +1828,6 @@ function displayResults(plan, isMultiplayer) {
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
     
-    document.getElementById('result-title').textContent = "計算結果";
     const summaryEl = document.getElementById('result-summary');
     
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
@@ -1893,7 +1880,7 @@ function showDayDetail(dayData, dayNumber) {
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
     // 注意書きを一番最初に追加
-    let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲(かんうん)のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
+    let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
@@ -2024,6 +2011,8 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
+
+
 
 
 

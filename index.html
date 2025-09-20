@@ -831,7 +831,8 @@
             .page { 
                 padding: 20px; 
                 height: auto;
-                min-height: calc(100vh - 80px); /* Adjust for header (~40px) + footer (~40px) */
+                /* ページ全体に適用されていた最小の高さを削除 */
+                /* min-height: calc(100vh - 80px); */
                 position: relative;
                 opacity: 1;
                 visibility: visible;
@@ -844,10 +845,14 @@
             }
             #start-page {
                 justify-content: center;
-                /* === [修正] スマホ表示で高さが引き伸ばされるのをやめ、paddingで余白を調整 === */
-                min-height: unset;
-                padding-top: 1vh;
-                padding-bottom: 1vh;
+                /* スタートページの高さを自然にし、paddingで余白を調整 */
+                padding-top: 10vh;
+                padding-bottom: 10vh;
+            }
+
+            /* 最小の高さが必要な入力ページにのみ、スタイルを適用 */
+            #current-config-page, #ideal-config-page {
+                min-height: calc(100vh - 80px);
             }
 
             /* 古い、不要なスタイルを削除 */
@@ -2021,6 +2026,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
 </script>
 </body>
 </html>
+
 
 
 

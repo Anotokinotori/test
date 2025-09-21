@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鶴観調整ツール</title>
+    <title>鶴観調整プラン計算ツール（周期ホールド対応）</title>
     <style>
         /* General Styles */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
@@ -52,11 +52,30 @@
             box-sizing: border-box;
             flex-shrink: 0;
             z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .site-header h1 {
             margin: 0;
             font-size: clamp(1.2em, 2vw, 1.5em);
             color: white;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: clamp(0.8em, 1.5vw, 0.9em);
+            color: #ccc;
+        }
+        .header-info a {
+            color: #fff;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .header-info a:hover {
+            color: #ccc;
         }
 
         /* --- Info Banner --- */
@@ -167,12 +186,13 @@
         }
 
         /* --- Start Page --- */
+        /* [MODIFIED] 修正案の意図を汲み取り、よりコンテンツ間の余白を確保 */
         #start-page .page-content-wrapper {
              height: auto;
              justify-content: center;
              display: flex;
              flex-direction: column;
-             gap: 2vh;
+             gap: 3vh; /* 余白を少し広げました */
         }
         #start-page h1 {
             font-size: clamp(2.5em, 5vw, 4.5em);
@@ -414,7 +434,7 @@
          40%, 60% { transform: translateX(3px); }
         }
         .shake {
-            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+             animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
         }
 
 
@@ -508,7 +528,7 @@
             display: block; /* Use block to allow children to layout normally */
         }
         
-        /* === [NEW] Grid container for 2-column layout on desktop === */
+        /* === Grid container for 2-column layout on desktop === */
         .result-grid {
             display: grid;
             grid-template-columns: 1fr; /* Mobile first */
@@ -555,6 +575,7 @@
         }
 
         #result-summary { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; padding: 15px; background-color: #eef2ff; border-radius: 10px; color: #312e81; flex-shrink: 0;}
+        
         .result-table-container { 
             width: 100%;
         }
@@ -803,7 +824,7 @@
                 top: 20px;
             }
 
-            /* === [NEW] Increase zoom map icon size on large screens === */
+            /* === Increase zoom map icon size on large screens === */
             .pattern-marker {
                 width: 50px;
                 height: 50px;
@@ -922,7 +943,7 @@
              .page-footer .center-action {
                 flex-basis: 100%;
                 order: 3;
-            }
+             }
             .page-footer .right-action {
                 margin-left: auto;
             }
@@ -933,7 +954,7 @@
              .page-footer .btn-secondary-link {
                 font-size: 0.9em;
                 padding: 10px;
-            }
+             }
 
             #result-page .scroll-indicator {
                 display: flex;
@@ -986,7 +1007,12 @@
 </head>
 <body>
     <header class="site-header backdrop-blur">
-        <h1>鶴観調整ツール</h1>
+        <h1>鶴観調整ツール（周期ホールド対応）</h1>
+        <div class="header-info">
+            <span>Ver. 1.0.0</span>
+            <span class="credit-separator">|</span>
+            <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
+        </div>
     </header>
 
     <div id="info-banner" class="info-banner">
@@ -1218,8 +1244,8 @@
     
     <div id="loading-modal" class="modal">
          <div class="modal-content" style="text-align: center;">
-            <h2>計算中...</h2>
-            <p>最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
+            <h2 style="font-size: 2.5em; margin-bottom: 10px;">計算中...</h2>
+            <p id="loading-text">最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
             <div class="loader"></div>
             <div id="calculation-progress"></div>
          </div>
@@ -1261,7 +1287,7 @@
         <p>
             <span id="credit-modal-trigger">Special Thanks: ねこしたさん (詳細はこちら)</span>
             <span class="credit-separator">|</span>
-            <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
+            <span>鶴観を研究してくださった先人の方々</span>
         </p>
     </footer>
 
@@ -1312,7 +1338,7 @@ const actionDetails = {
     5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: null },
     6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: null },
     7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: null },
-    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動し、ロードが完了したらすぐ他の場所に移動します。影響範囲を広げないよう、ロード後の移動は不要です。' },
+    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: null },
     9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
     10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
     11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '鶴観の七天神像の近くのボートポイントから向かってください' },
@@ -1334,8 +1360,8 @@ const recommendedConfig = {
 };
 
 const markerPositions = {
-    'A': { top: '52%', left: '60%' }, 'B': { top: '48%', left: '56%' }, 'C': { top: '43%', left: '58%' },
-    'D': { top: '35%', left: '59%' }, 'E': { top: '34%', left: '43%' }, 'F': { top: '40%', left: '38%' },
+    'A': { top: '52%', left: '61%' }, 'B': { top: '48%', left: '54%' }, 'C': { top: '43%', left: '59%' },
+    'D': { top: '34%', left: '59%' }, 'E': { top: '34%', left: '44%' }, 'F': { top: '41%', left: '38%' },
     'G': { top: '32%', left: '35%' }, 'H': { top: '50%', left: '32%' }, 'I': { top: '48%', left: '23%' },
     'J': { top: '69%', left: '43%' }
 };
@@ -1728,6 +1754,7 @@ function calculatePlan(isMultiplayer) {
     }
     const progressEl = document.getElementById('calculation-progress');
     progressEl.textContent = '調整パターンの検証を開始...';
+    document.getElementById('loading-text').innerHTML = `<span style="display: block; font-size: 1.1em; font-weight: bold; margin-bottom: 15px;">このツールは、<a href="https://youtu.be/2xqllaCTP5c?si=m9yyxXo5GS0rwFG9" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color); font-weight: bold;">ねこしたさんの解説</a>に基づき、プログラムされました！<br>ぜひ解説動画もご覧ください。</span><span style="font-size: 0.9em; color: var(--secondary-text-color);">計算には数分かかる場合がありますので、しばらくお待ちください。</span>`;
     showModal('loading-modal');
     
     if (calculationTask) clearTimeout(calculationTask);
@@ -1810,7 +1837,7 @@ function calculatePlan(isMultiplayer) {
         }
 
         if (queue.length > 0) {
-            progressEl.textContent = `調整パターンを検証中... [${verifiedCount}]`;
+            progressEl.textContent = `検証済みパターン: ${verifiedCount} / 59049`;
             calculationTask = setTimeout(processChunk, 0);
         } else {
             displayResults(null, isMultiplayer);
@@ -1841,15 +1868,19 @@ function displayResults(plan, isMultiplayer) {
         alternateCalcBtn.className = 'btn btn-multi';
     }
 
+    let summaryText = '';
     if (plan === null) {
-        summaryEl.textContent = '8日以内に完了する調整プランは見つかりませんでした。';
-        alternateCalcBtn.style.display = 'block';
+        summaryText = '8日以内に完了する調整プランは見つかりませんでした。';
     } else if (plan.length === 0) {
-        summaryEl.textContent = '調整は不要です！';
-        alternateCalcBtn.style.display = 'none';
+        summaryText = '調整は不要です！';
     } else {
-        summaryEl.textContent = `最短 ${plan.length} 日で調整が完了します！`;
-        alternateCalcBtn.style.display = 'block';
+        summaryText = `最短 ${plan.length} 日で調整が完了します！`;
+    }
+    
+    summaryEl.innerHTML = summaryText;
+    alternateCalcBtn.style.display = 'block';
+
+    if (plan !== null && plan.length > 0) {
         plan.forEach((day, index) => {
             const tr = document.createElement('tr');
             const modeClass = day.mode === 'ソロ' ? 'mode-solo' : 'mode-multi';
@@ -1862,7 +1893,13 @@ function displayResults(plan, isMultiplayer) {
             `;
             tbody.appendChild(tr);
         });
+    } else {
+        alternateCalcBtn.style.display = 'none';
+        if(plan === null) {
+            alternateCalcBtn.style.display = 'block';
+        }
     }
+
 
     showPage('result-page');
     
@@ -2011,11 +2048,3 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-

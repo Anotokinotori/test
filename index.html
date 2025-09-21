@@ -186,13 +186,12 @@
         }
 
         /* --- Start Page --- */
-        /* [MODIFIED] 修正案の意図を汲み取り、よりコンテンツ間の余白を確保 */
         #start-page .page-content-wrapper {
              height: auto;
              justify-content: center;
              display: flex;
              flex-direction: column;
-             gap: 3vh; /* 余白を少し広げました */
+             gap: 2vh;
         }
         #start-page h1 {
             font-size: clamp(2.5em, 5vw, 4.5em);
@@ -434,7 +433,7 @@
          40%, 60% { transform: translateX(3px); }
         }
         .shake {
-             animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
         }
 
 
@@ -528,7 +527,7 @@
             display: block; /* Use block to allow children to layout normally */
         }
         
-        /* === Grid container for 2-column layout on desktop === */
+        /* === [NEW] Grid container for 2-column layout on desktop === */
         .result-grid {
             display: grid;
             grid-template-columns: 1fr; /* Mobile first */
@@ -824,7 +823,7 @@
                 top: 20px;
             }
 
-            /* === Increase zoom map icon size on large screens === */
+            /* === [NEW] Increase zoom map icon size on large screens === */
             .pattern-marker {
                 width: 50px;
                 height: 50px;
@@ -867,11 +866,35 @@
             .page.active {
                 display: flex;
             }
+
+            /* * [修正箇所] 
+             * スマートフォン表示（横幅768px以下）の場合のタイトルページのレイアウトを調整します。
+             * 他のページに影響が出ないように、#start-pageに限定したスタイルを適用します。
+             */
             #start-page {
+                /* ページの最小の高さを確保し、Flexboxによる垂直中央揃えを有効にします */
+                min-height: calc(100vh - 120px); 
                 justify-content: center;
-                padding-top: 2vh;
-                padding-bottom: 2vh;
+                padding-top: 20px;
+                padding-bottom: 20px;
             }
+
+            #start-page .page-content-wrapper {
+                /* 要素間の垂直方向の間隔をvh（可変）から固定値に変更し、バランスを整えます */
+                gap: 30px;
+            }
+
+            #start-page .subtitle {
+                 /* 個別に設定されていた大きなマージンをリセットし、gapでの管理に統一します */
+                margin: 0 auto;
+            }
+
+            .start-buttons {
+                /* 個別に設定されていた大きなマージンをリセットし、gapでの管理に統一します */
+                margin-top: 0;
+            }
+            /* --- 修正ここまで --- */
+
 
             #current-config-page, #ideal-config-page {
                 min-height: calc(100vh - 80px);
@@ -943,7 +966,7 @@
              .page-footer .center-action {
                 flex-basis: 100%;
                 order: 3;
-             }
+            }
             .page-footer .right-action {
                 margin-left: auto;
             }
@@ -954,7 +977,7 @@
              .page-footer .btn-secondary-link {
                 font-size: 0.9em;
                 padding: 10px;
-             }
+            }
 
             #result-page .scroll-indicator {
                 display: flex;
@@ -2048,3 +2071,4 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
+

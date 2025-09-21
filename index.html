@@ -22,6 +22,8 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
             --btn-secondary-bg: #f3f4f6;
             --btn-secondary-bg-hover: #e5e7eb;
+            --danger-color: #ef4444;
+            --danger-hover-color: #dc2626;
         }
 
         body {
@@ -302,10 +304,27 @@
 
         .start-buttons {
             margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+        .start-buttons .btn {
+            width: 100%;
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+
+        .start-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
         }
         
         .multi-mode-toggle {
-            margin-top: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -371,6 +390,11 @@
         .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-details { background-color: #6b7280; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9em; }
         .btn-details:hover { background-color: #4b5563; }
+        .btn-small {
+            padding: 5px 15px;
+            font-size: 0.9em;
+            border-radius: 20px;
+        }
 
         /* --- Input Pages (Current & Ideal) --- */
         .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
@@ -394,6 +418,7 @@
              flex: 1 1 0%;
              display: flex;
              justify-content: flex-start;
+             gap: 10px;
         }
         .page-footer .center-action {
              flex: 1 1 0%;
@@ -440,6 +465,23 @@
             animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
         }
 
+        .show-on-desktop {
+            display: none;
+        }
+        .show-flex-on-desktop {
+            display: none;
+        }
+
+        .quick-fill-buttons {
+            align-items: center;
+            gap: 5px;
+        }
+        .quick-fill-label {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            margin-right: 5px;
+            font-weight: bold;
+        }
 
         /* Tab UI for Input Pages */
         .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
@@ -516,7 +558,7 @@
             animation: none; 
             background-image: none !important;
         }
-        @keyframes glowing { 0% { box-shadow: 0 0 5px var(--accent-color); } 50% { box-shadow: 0 0 20px var(--accent-color); } 100% { box-shadow: 0 0 5px var(--accent-color); } }
+        @keyframes glowing { 0% { box-shadow: 0 0 8px var(--accent-color); } 50% { box-shadow: 0 0 55px var(--accent-color); } 100% { box-shadow: 0 0 8px var(--accent-color); } }
         
         /* List View Styles */
         .config-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; overflow-y: auto; padding: 15px; height: 100%;}
@@ -571,6 +613,16 @@
             max-width: 300px;
         }
 
+        .result-actions-row {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .result-actions-row .btn {
+            flex: 1;
+        }
+
         .result-details-container {
             display: flex;
             flex-direction: column;
@@ -594,6 +646,25 @@
         .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; position: relative; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 95vh; overflow-y: auto;}
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
         .modal-close:hover { color: #333; }
+        
+        #guide-modal .modal-content h2 {
+            font-size: 2.2em; /* メインタイトルを大きく */
+            margin-bottom: 15px;
+        }
+
+        #guide-modal .modal-content h3 {
+            font-size: 1.6em; /* ステップの見出しを大きく */
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        #guide-modal .modal-content hr {
+            border: none;
+            height: 4px; /* 境界線を太く */
+            background-color: #adb5bd; /* 少し濃い色に変更 */
+            border-radius: 2px; /* 角を丸く */
+            margin: 30px 0; /* 上下の余白を調整 */
+        }
         
         #zoom-view .modal-content {
             overflow: hidden; /* Prevent modal's own scrollbar */
@@ -645,6 +716,26 @@
             border-color: white;
             animation: none;
             background-image: none !important;
+        }
+        
+        .solo-notice {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            background-color: var(--btn-secondary-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-width: 300px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .solo-notice a {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: underline;
         }
         
         /* Loading Modal Spinner */
@@ -811,6 +902,54 @@
                 transform: translateY(-5px);
             }
         }
+        
+        /* Saved Plans Modal Styles */
+        #saved-plans-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .saved-plan-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--btn-secondary-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .saved-plan-item-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-text-color);
+        }
+        .saved-plan-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+        .btn-delete:hover {
+            background-color: var(--danger-hover-color);
+        }
+        .btn-load {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+        #no-saved-plans {
+            text-align: center;
+            color: var(--secondary-text-color);
+            margin-top: 30px;
+            font-size: 1.1em;
+        }
+
 
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
@@ -832,6 +971,13 @@
                 width: 50px;
                 height: 50px;
                 font-size: 1.3em;
+            }
+
+            .show-on-desktop {
+                display: block;
+            }
+            .show-flex-on-desktop {
+                display: flex;
             }
         }
         
@@ -1076,15 +1222,15 @@
 
                     <div class="start-buttons">
                         <button id="go-to-current-btn" class="btn btn-primary">調整を始める</button>
-                    </div>
-
-                    <div class="multi-mode-toggle">
-                        <input type="checkbox" id="multiplayer-mode-checkbox">
-                        <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
-                        <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
+                        <button id="load-plan-btn" class="btn btn-secondary">保存したプランを読み込む</button>
                     </div>
 
                     <div class="start-footer">
+                        <div class="multi-mode-toggle">
+                            <input type="checkbox" id="multiplayer-mode-checkbox">
+                            <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
+                            <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
+                        </div>
                          <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
                     </div>
                 </div>
@@ -1124,7 +1270,14 @@
                     </div>
                     
                     <div class="page-footer">
-                        <div class="left-action"></div>
+                        <div class="left-action">
+                            <div class="quick-fill-buttons show-flex-on-desktop">
+                                <span class="quick-fill-label">一括入力:</span>
+                                <button id="fill-all-a-btn" class="btn btn-secondary btn-small">A</button>
+                                <button id="fill-all-b-btn" class="btn btn-secondary btn-small">B</button>
+                                <button id="fill-all-c-btn" class="btn btn-secondary btn-small">C</button>
+                            </div>
+                        </div>
                         <div class="center-action">
                             <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
                         </div>
@@ -1171,7 +1324,8 @@
 
                      <div class="page-footer">
                         <div class="left-action">
-                             <button class="btn btn-secondary-link" id="set-recommended-btn">環境配置を自動入力</button>
+                             <button class="btn btn-secondary" id="set-recommended-btn">環境配置</button>
+                             <button class="btn btn-secondary show-on-desktop" id="copy-current-btn">現在配置をコピー</button>
                         </div>
                         <div class="center-action">
                             <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
@@ -1201,11 +1355,17 @@
                     <div class="result-grid">
                         <div class="result-layout-container">
                             <div class="result-map-container">
-                                <img src="https://github.com/Anotokinotori/test/blob/main/result.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-21%20161308.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
                             </div>
                             <div class="result-actions-container">
+                                <div id="solo-mode-notice" class="solo-notice show-on-desktop">
+周期ホールドを使わない調整方法です。使用すると期間をもっと短縮できるかもしれません。<a href="https://youtu.be/2xqllaCTP5c?si=UyMkRCct-Z1Pp5HI&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a>
+                                </div>
                                 <button id="recalculate-alternate-mode-btn" class="btn"></button>
-                                <button id="reset-btn" class="btn btn-secondary">最初からやり直す</button>
+                                <div class="result-actions-row">
+                                    <button id="save-plan-btn" class="btn btn-secondary">結果を保存</button>
+                                    <button id="reset-btn" class="btn btn-secondary">リセット</button>
+                                </div>
                             </div>
                         </div>
 
@@ -1235,26 +1395,26 @@
             <h2>使い方ガイド</h2>
             <p>このツールは、鶴観の精鋭エネミーの配置を、最短日数で理想の配置に調整するためのスケジュールを計算します。</p>
             
-            <hr style="margin: 20px 0;">
+            <hr>
 
             <h3>Step 1: 現在の配置を入力</h3>
             <p>まず、あなたの世界の現在のエネミー配置を10ヶ所すべて入力します。「マップ表示」または「リスト表示」で入力できます。</p>
-            <img src="https://placehold.co/600x350/eef2ff/312e81?text=1.+Input+via+Map+View" alt="マップ入力画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%8F%BE%E5%9C%A8.gif?raw=true" alt="マップ入力画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
             <p style="margin-top: 10px;">マップ上のアイコンをタップすると、詳細なマップが表示され、A/B/Cのパターンを選択できます。選択に迷ったら、スクリーンショットで実際のゲーム画面を確認できます。</p>
             
-            <hr style="margin: 20px 0;">
+            <hr>
 
             <h3>Step 2: 理想の配置を入力</h3>
             <p>次に、目標とする理想の配置を入力します。すべて入力する必要はなく、変更したい場所だけ入力すればOKです。</p>
             <p>便利な「環境配置を自動入力」ボタンも活用してください。</p>
-            <img src="https://placehold.co/600x350/eef2ff/312e81?text=2.+Input+Ideal+Configuration" alt="理想配置の入力" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%90%86%E6%83%B3.gif?raw=true" alt="理想配置の入力" style="width:100%; border-radius: 8px; margin-top: 10px;">
             
-            <hr style="margin: 20px 0;">
+            <hr>
             
             <h3>Step 3: スケジュールを計算・確認</h3>
             <p>入力が終わったら、「調整プランを計算」ボタンを押します。</p>
             <p>スタートページで「周期ホールドを有効にする」にチェックを入れていると、マルチプレイを前提とした最短ルートを計算します。</p>
-            <img src="https://placehold.co/600x350/eef2ff/312e81?text=3.+Check+Result+Schedule" alt="結果表示画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%B5%90%E6%9E%9C.gif?raw=true" alt="結果表示画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
         </div>
     </div>
     
@@ -1317,6 +1477,18 @@
             </p>
         </div>
     </div>
+    
+    <div id="load-plan-modal" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="load-plan-modal">&times;</span>
+            <h2>保存したプランを読み込む</h2>
+            <ul id="saved-plans-list">
+                <!-- Saved plans will be dynamically inserted here -->
+            </ul>
+            <p id="no-saved-plans">保存されたプランはありません。</p>
+        </div>
+    </div>
+
 
     <footer class="site-credit-footer backdrop-blur">
         <p>
@@ -1332,8 +1504,8 @@ const eliteGroups = {
     'A': { name: 'モシリ炎アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Pyro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738372090-i0Dg36tAbTaRjEHlpQhPr5NY.jpg?width=1200' },
     'B': { name: 'モシリ雷アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Electro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419313-vIRa5KkjYBwznp1OSoUMZCLG.jpg?width=1200' },
     'C': { name: 'モシリ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419512-Zn6ERGTQCwgakSrmVHjWztFY.jpg?width=1200' },
-    'D': { name: 'チライ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/image.png?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419554-5Vfy0paPscJjSACn4DTvY3Mr.jpg?width=1200' },
-    'E': { name: 'オイナ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/image.png?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419603-5ULFDgf1RN86dZQHnMJoSX3e.jpg?width=1200' },
+    'D': { name: 'チライ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419554-5Vfy0paPscJjSACn4DTvY3Mr.jpg?width=1200' },
+    'E': { name: 'オイナ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419603-5ULFDgf1RN86dZQHnMJoSX3e.jpg?width=1200' },
     'F': { name: 'オイナ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419733-GNO1jErQmFh9p5yP423WgLaH.jpg?width=1200' },
     'G': { name: 'シリコロ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419775-yxGHB6uJZpdh7VDzT2n85osX.jpg?width=1200' },
     'H': { name: 'アウタケ東', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/f98aad8ddb6a41ae54eb9b81c63f58da_8280051482592802504.png', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E6%9D%B1.png?raw=true' },
@@ -1455,6 +1627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('go-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
     document.getElementById('guide-btn').addEventListener('click', () => showModal('guide-modal'));
     document.getElementById('credit-modal-trigger').addEventListener('click', () => showModal('credit-modal'));
+    document.getElementById('load-plan-btn').addEventListener('click', openLoadModal);
     document.querySelectorAll('.modal-close').forEach(el => el.addEventListener('click', () => closeModal(el.dataset.target)));
     
     document.getElementById('go-to-ideal-btn').addEventListener('click', (e) => {
@@ -1479,11 +1652,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('set-recommended-btn').addEventListener('click', setRecommendedConfig);
+    document.getElementById('copy-current-btn').addEventListener('click', copyCurrentConfigToIdeal);
     document.getElementById('calculate-plan-btn').addEventListener('click', () => {
         const isMultiplayer = document.getElementById('multiplayer-mode-checkbox').checked;
         calculatePlan(isMultiplayer);
     });
     document.getElementById('reset-btn').addEventListener('click', resetApp);
+    document.getElementById('save-plan-btn').addEventListener('click', savePlan);
     
     document.getElementById('back-to-start-btn').addEventListener('click', () => showPage('start-page'));
     document.getElementById('back-to-current-btn').addEventListener('click', () => showPage('current-config-page'));
@@ -1493,6 +1668,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('current-list-tab').addEventListener('click', () => switchInputView('current', 'list'));
     document.getElementById('ideal-map-tab').addEventListener('click', () => switchInputView('ideal', 'map'));
     document.getElementById('ideal-list-tab').addEventListener('click', () => switchInputView('ideal', 'list'));
+
+    document.getElementById('fill-all-a-btn').addEventListener('click', () => fillAllConfigs('A'));
+    document.getElementById('fill-all-b-btn').addEventListener('click', () => fillAllConfigs('B'));
+    document.getElementById('fill-all-c-btn').addEventListener('click', () => fillAllConfigs('C'));
 
     // スクロールインジケーターのクリックイベント
     document.getElementById('scroll-indicator').addEventListener('click', function(e) {
@@ -1687,6 +1866,15 @@ function setRecommendedConfig() {
     for (const groupId in recommendedConfig) updateConfig('ideal', groupId, recommendedConfig[groupId]);
 }
 
+function copyCurrentConfigToIdeal() {
+    for (const groupId in currentConfig) {
+        if (Object.hasOwnProperty.call(currentConfig, groupId)) {
+            const pattern = currentConfig[groupId];
+            updateConfig('ideal', groupId, pattern);
+        }
+    }
+}
+
 function resetApp() {
     currentConfig = {};
     idealConfig = {};
@@ -1747,6 +1935,12 @@ function updateGuideTextVisibility() {
 function updateIdealProgress() {
     const completedCount = Object.keys(idealConfig).length;
     document.getElementById('ideal-progress-text').textContent = `入力完了: ${completedCount} / ${totalGroups}`;
+}
+
+function fillAllConfigs(pattern) {
+    for (const groupId of groupKeys) {
+        updateConfig('current', groupId, pattern);
+    }
 }
 
 
@@ -1891,16 +2085,19 @@ function displayResults(plan, isMultiplayer) {
     tbody.innerHTML = '';
     
     const summaryEl = document.getElementById('result-summary');
+    const soloNoticeEl = document.getElementById('solo-mode-notice');
     
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
         alternateCalcBtn.onclick = () => calculatePlan(false);
         alternateCalcBtn.className = 'btn btn-primary';
+        soloNoticeEl.style.display = 'none';
     } else {
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
         alternateCalcBtn.onclick = () => calculatePlan(true);
         alternateCalcBtn.className = 'btn btn-multi';
+        soloNoticeEl.style.display = '';
     }
 
     let summaryText = '';
@@ -1916,6 +2113,7 @@ function displayResults(plan, isMultiplayer) {
     alternateCalcBtn.style.display = 'block';
 
     if (plan !== null && plan.length > 0) {
+        document.getElementById('save-plan-btn').style.display = '';
         plan.forEach((day, index) => {
             const tr = document.createElement('tr');
             const modeClass = day.mode === 'ソロ' ? 'mode-solo' : 'mode-multi';
@@ -1929,6 +2127,7 @@ function displayResults(plan, isMultiplayer) {
             tbody.appendChild(tr);
         });
     } else {
+        document.getElementById('save-plan-btn').style.display = 'none';
         alternateCalcBtn.style.display = 'none';
         if(plan === null) {
             alternateCalcBtn.style.display = 'block';
@@ -1956,7 +2155,6 @@ function showDayDetail(dayData, dayNumber) {
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
-        contentHTML += `<p>以下の行動で、影響範囲内のエネミーの周期を1つ進めます。ワープポイントに飛んだら、移動せずにすぐ別の場所にワープしてOKです。</p>`;
         contentHTML += generateActionDetailsHTML(dayData.advanceAction, "1P (ホスト)");
     } else { // multi
         const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(x => !dayData.holdAction.affectedGroups.has(x)));
@@ -1994,7 +2192,7 @@ function generateActionDetailsHTML(actionData, playerRole) {
     
     const actions = actionData.name.split(' + ');
     const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => 
-        `「${key}: ${eliteGroups[key].name}」`
+        `「${eliteGroups[key].name}」`
     ).join('、');
 
     let html = `
@@ -2077,6 +2275,156 @@ function updateScrollIndicator() {
         scrollIndicator.classList.remove('hidden');
     } else {
         scrollIndicator.classList.add('hidden');
+    }
+}
+
+// --- SAVE/LOAD LOGIC ---
+
+/**
+ * Reads all saved plans from localStorage.
+ * @returns {Array} An array of saved plan objects.
+ */
+function getSavedPlans() {
+    try {
+        const plansJSON = localStorage.getItem('tsurumiSavedPlans');
+        return plansJSON ? JSON.parse(plansJSON) : [];
+    } catch (e) {
+        console.error("Failed to read saved plans:", e);
+        return [];
+    }
+}
+
+/**
+ * Saves the current plan to localStorage.
+ */
+function savePlan() {
+    const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
+    if (!planName || planName.trim() === "") {
+        return; // User cancelled or entered empty name
+    }
+
+    const planData = {
+        id: Date.now().toString(), // Unique ID for the plan
+        name: planName.trim(),
+        currentConfig: currentConfig,
+        idealConfig: idealConfig,
+        plan: lastCalculatedPlan,
+        isMultiplayer: document.getElementById('multiplayer-mode-checkbox').checked,
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        const savedPlans = getSavedPlans();
+        savedPlans.push(planData);
+        localStorage.setItem('tsurumiSavedPlans', JSON.stringify(savedPlans));
+        alert(`「${planName}」を保存しました。`);
+    } catch (e) {
+        console.error("Failed to save plan:", e);
+        alert("プランの保存に失敗しました。ブラウザのストレージがいっぱいか、プライベートモードになっている可能性があります。");
+    }
+}
+
+/**
+ * Opens the 'Load Plan' modal and populates it with saved plans.
+ */
+function openLoadModal() {
+    renderSavedPlans();
+    showModal('load-plan-modal');
+}
+
+/**
+ * Renders the list of saved plans in the modal.
+ */
+function renderSavedPlans() {
+    const plans = getSavedPlans();
+    const listEl = document.getElementById('saved-plans-list');
+    const noPlansEl = document.getElementById('no-saved-plans');
+    listEl.innerHTML = '';
+
+    if (plans.length === 0) {
+        noPlansEl.style.display = 'block';
+        listEl.style.display = 'none';
+        return;
+    }
+
+    noPlansEl.style.display = 'none';
+    listEl.style.display = '';
+
+    // Sort by newest first
+    plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    plans.forEach(plan => {
+        const li = document.createElement('li');
+        li.className = 'saved-plan-item';
+        li.innerHTML = `
+            <span class="saved-plan-item-name">${plan.name}</span>
+            <div class="saved-plan-item-actions">
+                <button class="btn btn-primary btn-load" data-plan-id="${plan.id}">読込</button>
+                <button class="btn btn-delete" data-plan-id="${plan.id}">削除</button>
+            </div>
+        `;
+        listEl.appendChild(li);
+    });
+
+    // Attach event listeners after creating the buttons
+    listEl.querySelectorAll('.btn-load').forEach(btn => {
+        btn.addEventListener('click', () => loadPlan(btn.dataset.planId));
+    });
+    listEl.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => deletePlan(btn.dataset.planId));
+    });
+}
+
+/**
+ * Loads a selected plan and restores the application state.
+ * @param {string} planId - The ID of the plan to load.
+ */
+function loadPlan(planId) {
+    const plans = getSavedPlans();
+    const planToLoad = plans.find(p => p.id === planId);
+
+    if (!planToLoad) {
+        alert("プランの読み込みに失敗しました。");
+        return;
+    }
+
+    // Restore state from the loaded plan
+    currentConfig = planToLoad.currentConfig;
+    idealConfig = planToLoad.idealConfig;
+    lastCalculatedPlan = planToLoad.plan;
+    document.getElementById('multiplayer-mode-checkbox').checked = planToLoad.isMultiplayer;
+
+    // Update the input pages UI to reflect the loaded configurations
+    for (const groupId in currentConfig) {
+        updateConfig('current', groupId, currentConfig[groupId]);
+    }
+    for (const groupId in idealConfig) {
+        updateConfig('ideal', groupId, idealConfig[groupId]);
+    }
+
+    // Display the results page with the loaded plan
+    displayResults(lastCalculatedPlan, planToLoad.isMultiplayer);
+    closeModal('load-plan-modal');
+}
+
+/**
+ * Deletes a selected plan from localStorage.
+ * @param {string} planId - The ID of the plan to delete.
+ */
+function deletePlan(planId) {
+    if (!confirm("本当にこのプランを削除しますか？")) {
+        return;
+    }
+
+    let plans = getSavedPlans();
+    plans = plans.filter(p => p.id !== planId);
+
+    try {
+        localStorage.setItem('tsurumiSavedPlans', JSON.stringify(plans));
+        renderSavedPlans(); // Re-render the list in the modal
+    } catch (e) {
+        console.error("Failed to delete plan:", e);
+        alert("プランの削除に失敗しました。");
     }
 }
 

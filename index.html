@@ -866,35 +866,13 @@
             .page.active {
                 display: flex;
             }
-
-            /* * [修正箇所] 
-             * スマートフォン表示（横幅768px以下）の場合のタイトルページのレイアウトを調整します。
-             * 他のページに影響が出ないように、#start-pageに限定したスタイルを適用します。
-             */
             #start-page {
-                /* ページの最小の高さを確保し、Flexboxによる垂直中央揃えを有効にします */
-                min-height: calc(100vh - 120px); 
                 justify-content: center;
-                padding-top: 20px;
-                padding-bottom: 20px;
+                padding-top: 2vh;
+                padding-bottom: 2vh;
+                /* ページ自体が親として高さを確保するようにする */
+                flex-grow: 1; 
             }
-
-            #start-page .page-content-wrapper {
-                /* 要素間の垂直方向の間隔をvh（可変）から固定値に変更し、バランスを整えます */
-                gap: 30px;
-            }
-
-            #start-page .subtitle {
-                 /* 個別に設定されていた大きなマージンをリセットし、gapでの管理に統一します */
-                margin: 0 auto;
-            }
-
-            .start-buttons {
-                /* 個別に設定されていた大きなマージンをリセットし、gapでの管理に統一します */
-                margin-top: 0;
-            }
-            /* --- 修正ここまで --- */
-
 
             #current-config-page, #ideal-config-page {
                 min-height: calc(100vh - 80px);
@@ -915,6 +893,21 @@
                 height: auto;
                 min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
+
+            /* ===== ここからが修正箇所 ===== */
+            /*
+             * 問題点：上記の .page-content-wrapper の min-height が全ページに適用され、
+             * #start-page の要素が上下に引き伸ばされていました。
+             * * 解決策：#start-page の .page-content-wrapper のみ、min-height をリセットします。
+             * これにより、他のページ（入力・結果ページ）の「フルスクリーン表示」は維持しつつ、
+             * スタートページだけがコンテンツの高さに合わせて中央寄せになります。
+             */
+            #start-page .page-content-wrapper {
+                min-height: 0; /* min-height をリセット */
+                flex-grow: 1; /* 親要素(.page)の高さに合わせて伸縮するように */
+            }
+            /* ===== ここまでが修正箇所 ===== */
+            
             .input-views-container {
                 flex-grow: 0;
                 height: 43vh;
@@ -2071,4 +2064,5 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
+
 

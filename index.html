@@ -296,6 +296,10 @@
             color: var(--primary-text-color);
         }
 
+        .title-short {
+            display: none;
+        }
+
         .start-buttons {
             margin-top: 50px;
         }
@@ -879,6 +883,18 @@
             }
 
             .site-header, .site-credit-footer { padding: 10px 20px; }
+
+            .title-long {
+                display: none;
+            }
+            .title-short {
+                display: inline;
+            }
+            .header-version,
+            .header-version + .credit-separator {
+                display: none;
+            }
+
             #start-page h1 { font-size: 2.5em; }
             .steps-container { gap: 10px; }
             .step-icon { width: 50px; height: 50px; font-size: 1.2em;}
@@ -1023,9 +1039,12 @@
 </head>
 <body>
     <header class="site-header backdrop-blur">
-        <h1>鶴観調整ツール（周期ホールド対応）</h1>
+        <h1>
+            <span class="title-long">鶴観調整ツール（周期ホールド対応）</span>
+            <span class="title-short">鶴観調整ツール</span>
+        </h1>
         <div class="header-info">
-            <span>Ver. 1.0.0</span>
+            <span class="header-version">Ver. 1.0.0</span>
             <span class="credit-separator">|</span>
             <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
         </div>
@@ -2064,5 +2083,4 @@ function updateScrollIndicator() {
 </script>
 </body>
 </html>
-
 

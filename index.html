@@ -1,346 +1,2134 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鶴観調整プラン計算ツール（周期ホールド対応）</title>
     <style>
-        /* （省略せずにそのまま使えるCSS — ここはあなたの元のスタイルを維持） */
+        /* General Styles */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-        :root{--bg-color:#f0f2f5;--panel-bg-color:rgba(255,255,255,0.85);--header-bg-color:rgba(26,32,44,0.85);--primary-text-color:#333;--secondary-text-color:#555;--accent-color:#3B82F6;--accent-hover-color:#2563EB;--multiplayer-accent-color:#EC4899;--multiplayer-accent-hover-color:#DB2777;--border-color:#e0e0e0;--shadow-color:rgba(0,0,0,0.1);--btn-secondary-bg:#f3f4f6;--btn-secondary-bg-hover:#e5e7eb;--danger-color:#ef4444;--danger-hover-color:#dc2626}
-        body{font-family:'Noto Sans JP',sans-serif;margin:0;padding:0;background-image:url('https://api.mg-dev.net/api/v1/genshin/backgrounds/Tsurumi%20Island');background-size:cover;background-position:center;background-attachment:fixed;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-        .backdrop-blur{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
-        .site-header{width:100%;padding:10px 40px;background-color:var(--header-bg-color);color:white;box-sizing:border-box;flex-shrink:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
-        .site-header h1{margin:0;font-size:clamp(1.2em,2vw,1.5em);color:white}
-        .header-info{display:flex;align-items:center;gap:15px;font-size:clamp(0.8em,1.5vw,0.9em);color:#ccc}
-        .header-info a{color:#fff;text-decoration:underline;transition:color .2s}
-        .info-banner{background-color:rgba(229,231,235,0.95);color:var(--secondary-text-color);text-align:center;padding:12px 50px;position:relative;font-size:.95em;border-bottom:1px solid var(--border-color);transition:all .4s ease-in-out;overflow:hidden}
-        .info-banner.hidden{height:0;padding-top:0;padding-bottom:0;border-bottom:none;opacity:0}
-        .close-banner-btn{position:absolute;top:50%;right:15px;transform:translateY(-50%);background:none;border:none;font-size:1.8em;line-height:1;cursor:pointer;color:#a0aec0;padding:5px}
-        .close-banner-btn:hover{color:var(--primary-text-color)}
-        main{flex-grow:1;display:flex;justify-content:center;align-items:center;width:100%;overflow:hidden;padding:2vh 2vw;box-sizing:border-box}
-        .container{width:100%;height:100%;max-width:1600px;max-height:900px;background-color:var(--panel-bg-color);border-radius:20px;box-shadow:0 10px 40px var(--shadow-color);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.2)}
-        .page{padding:2vw 4vw;box-sizing:border-box;width:100%;height:100%;position:absolute;top:0;left:0;opacity:0;visibility:hidden;transition:opacity .35s ease;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-        #result-page{overflow-y:auto;justify-content:flex-start}
-        .page.active{opacity:1;visibility:visible;pointer-events:auto}
-        h1,h2,h3{color:var(--primary-text-color)}
-        /* 以下、元のCSSを維持（省略はしていません） */
-        /* ...（スタイルは上の長いCSSと同じものです）... */
-        /* ここでは先ほどのCSS全文をそのままコピーして保存してください。 */
+
+        :root {
+            --bg-color: #f0f2f5;
+            --panel-bg-color: rgba(255, 255, 255, 0.85);
+            --header-bg-color: rgba(26, 32, 44, 0.85);
+            --primary-text-color: #333;
+            --secondary-text-color: #555;
+            --accent-color: #3B82F6; /* Blue accent */
+            --accent-hover-color: #2563EB;
+            --multiplayer-accent-color: #EC4899; /* Pink for multi */
+            --multiplayer-accent-hover-color: #DB2777;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --btn-secondary-bg: #f3f4f6;
+            --btn-secondary-bg-hover: #e5e7eb;
+            --danger-color: #ef4444;
+            --danger-hover-color: #dc2626;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://api.mg-dev.net/api/v1/genshin/backgrounds/Tsurumi%20Island');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll on desktop */
+        }
+
+        .backdrop-blur {
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+        }
+        
+        /* --- Site Header --- */
+        .site-header {
+            width: 100%;
+            padding: 10px 40px;
+            background-color: var(--header-bg-color);
+            color: white;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .site-header h1 {
+            margin: 0;
+            font-size: clamp(1.2em, 2vw, 1.5em);
+            color: white;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: clamp(0.8em, 1.5vw, 0.9em);
+            color: #ccc;
+        }
+        .header-info a {
+            color: #fff;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .header-info a:hover {
+            color: #ccc;
+        }
+
+        /* --- Info Banner --- */
+        .info-banner {
+            background-color: rgba(229, 231, 235, 0.95); /* Light gray */
+            color: var(--secondary-text-color);
+            text-align: center;
+            padding: 12px 50px; /* Add space for close button */
+            position: relative;
+            font-size: 0.95em;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.4s ease-in-out;
+            overflow: hidden;
+        }
+        .info-banner.hidden {
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            opacity: 0;
+        }
+        .info-banner p {
+            margin: 0;
+        }
+        .info-banner a {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .close-banner-btn {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            line-height: 1;
+            cursor: pointer;
+            color: #a0aec0;
+            padding: 5px;
+        }
+        .close-banner-btn:hover {
+            color: var(--primary-text-color);
+        }
+        
+        /* --- Main Content Area --- */
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            overflow: hidden; 
+            padding: 2vh 2vw;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%; 
+            max-width: 1600px;
+            max-height: 900px;
+            background-color: var(--panel-bg-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- Page System --- */
+        .page {
+            padding: 2vw 4vw;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            pointer-events: none;
+        }
+        #result-page {
+            overflow-y: auto;
+            justify-content: flex-start;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-text-color);
+        }
+
+        /* --- Page: Start --- */
+        #start-page .page-content-wrapper {
+             height: auto;
+             justify-content: center;
+             display: flex;
+             flex-direction: column;
+             gap: 2vh;
+        }
+        #start-page h1 {
+            font-size: clamp(2.5em, 5vw, 4.5em);
+            font-weight: 700;
+            color: #1E3A8A;
+            margin-bottom: 10px;
+        }
+        #start-page .subtitle {
+            font-size: clamp(1em, 1.5vw, 1.2em);
+            color: var(--secondary-text-color);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .start-buttons {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+        .start-buttons .btn {
+            width: 100%;
+            max-width: 450px;
+            box-sizing: border-box;
+        }
+        .start-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .multi-mode-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-text-color);
+        }
+        .multi-mode-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .multi-mode-toggle label {
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .help-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-left: 5px;
+            transition: background-color 0.2s;
+        }
+        .help-icon:hover {
+            background-color: #999;
+        }
+
+        /* --- Page: Input (Current & Ideal) --- */
+        .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+        .page-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .page-footer .progress-text {
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--secondary-text-color);
+        }
+        .page-footer .left-action {
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: flex-start;
+             gap: 10px;
+        }
+        .page-footer .center-action {
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: center;
+             gap: 15px;
+        }
+         .page-footer .right-action {
+             flex: 1 1 0%;
+             display: flex;
+             justify-content: flex-end;
+             gap: 15px;
+             position: relative; /* For validation message */
+        }
+        
+        /* --- Page: Result --- */
+        #result-page .page-content-wrapper {
+            display: block; /* Use block to allow children to layout normally */
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile first */
+            gap: 20px;
+            align-items: flex-start; /* Align items to the top of their grid area */
+            width: 100%;
+        }
+        .result-layout-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+        .result-map-container {
+            width: 100%;
+            height: auto;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .result-map-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .result-actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .result-actions-container .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        .result-actions-row {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .result-actions-row .btn {
+            flex: 1;
+        }
+        .result-details-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        #result-summary { 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            background-color: #eef2ff; 
+            border-radius: 10px; 
+            color: #312e81; 
+            flex-shrink: 0;
+        }
+        .result-table-container { 
+            width: 100%;
+        }
+        .result-table { width: 100%; border-collapse: collapse; }
+        .result-table th, .result-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .result-table th { background-color: #f9f9f9; position: sticky; top: 0; z-index: 1; }
+        .mode-solo { color: var(--accent-color); font-weight: bold; }
+        .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
+
+        .result-footer-link {
+            text-align: center;
+            margin-top: 25px;
+            padding: 10px;
+            font-size: 1.1em;
+            color: var(--secondary-text-color);
+        }
+        .result-footer-link a {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .result-footer-link a:hover {
+            color: var(--accent-hover-color);
+        }
+
+        /* --- Component: Buttons --- */
+        .btn { border: none; padding: 14px 28px; border-radius: 50px; font-size: clamp(1em, 1.5vw, 1.2em); cursor: pointer; transition: all 0.3s ease; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: var(--accent-color); color: white; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        .btn-primary:hover { background-color: var(--accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+        .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--secondary-text-color);
+            box-shadow: none;
+            text-decoration: none;
+        }
+        .btn-secondary:hover {
+            background: var(--btn-secondary-bg-hover);
+            transform: translateY(-2px);
+            color: var(--primary-text-color);
+        }
+        .btn-secondary-link {
+            background: none; color: var(--secondary-text-color); font-size: 1em; text-decoration: underline; padding: 10px 20px; box-shadow: none;
+        }
+        .btn-secondary-link:hover {
+            background: none; transform: none; box-shadow: none; color: var(--primary-text-color);
+        }
+        .btn-multi { background-color: var(--multiplayer-accent-color); color: white; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
+        .btn-multi:hover { background-color: var(--multiplayer-accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.5); }
+        .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-details { background-color: #6b7280; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9em; }
+        .btn-details:hover { background-color: #4b5563; }
+        .btn-small {
+            padding: 5px 15px;
+            font-size: 0.9em;
+            border-radius: 20px;
+        }
+        #go-to-current-btn {
+            padding: 21px 42px;
+            font-size: clamp(1.5em, 2.25vw, 1.8em);
+        }
+        .btn-back {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/chevron_backward_41dp_1F1F1F_FILL0_wght400_GRAD0_opsz40.png?raw=true');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .btn-back:hover {
+            opacity: 1;
+        }
+        
+        /* --- Component: Step Indicator --- */
+        .header-placeholder {
+            width: 40px;
+            flex-shrink: 0;
+        }
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--secondary-text-color);
+            box-shadow: 0 4px 10px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+        .step-label {
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--secondary-text-color);
+             transition: all 0.3s ease;
+        }
+        .step-arrow {
+            font-size: 2.5em;
+            color: var(--border-color);
+        }
+        .step.active-step .step-icon {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            animation: glowing-step 2s infinite ease-in-out;
+        }
+        .step.active-step .step-label {
+            color: var(--primary-text-color);
+        }
+        @keyframes glowing-step {
+            0% { box-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); transform: scale(1); }
+            50% { box-shadow: 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); transform: scale(1.05); }
+            100% { box-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); transform: scale(1); }
+        }
+        #start-page .step.active-step .step-icon {
+            animation: none;
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        #start-page .step.active-step .step-label {
+            color: var(--primary-text-color);
+        }
+
+        /* --- Component: Validation & Quick Fill --- */
+        .validation-message {
+            color: #ef4444; /* red-500 */
+            font-weight: bold;
+            font-size: 0.9em;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            position: absolute;
+            bottom: 110%; /* Position above the button */
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(10px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .validation-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes shake {
+         10%, 90% { transform: translateX(-1px); }
+         20%, 80% { transform: translateX(2px); }
+         30%, 50%, 70% { transform: translateX(-3px); }
+         40%, 60% { transform: translateX(3px); }
+        }
+        .shake {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        .show-on-desktop { display: none; }
+        .show-flex-on-desktop { display: none; }
+
+        .quick-fill-buttons {
+            align-items: center;
+            gap: 5px;
+        }
+        .quick-fill-label {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        /* --- Component: Input Views (Tabs, Map, List) --- */
+        .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
+        .view-tab { padding: 10px 20px; font-size: 1em; font-weight: bold; color: var(--secondary-text-color); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s; }
+        .view-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+        .input-views-container { flex-grow: 1; position: relative; width: 100%; min-height: 200px; }
+        .input-view { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .input-view.active { opacity: 1; visibility: visible; }
+        
+        .map-container { 
+            position: relative; 
+            width: 100%; 
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .map-guide-text {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1em;
+            font-weight: bold;
+            pointer-events: none; /* So it doesn't block clicks */
+            z-index: 5;
+            opacity: 0.8;
+            transition: opacity 0.5s ease-in-out;
+            animation: pulsing-text 2.5s infinite ease-in-out;
+        }
+        @keyframes pulsing-text {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
+            100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+        }
+        .map-guide-text.hidden {
+            opacity: 0;
+            animation: none;
+        }
+        .map-container img.map-bg {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; 
+            border-radius: 10px; 
+        }
+        .map-marker { 
+            position: absolute; 
+            width: clamp(28px, 5vw, 40px);
+            height: clamp(28px, 5vw, 40px);
+            background-color: rgba(59, 130, 246, 0.7); 
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%; border: 3px solid var(--accent-color); 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-weight: bold; 
+            color: white; 
+            font-size: 1.1em; 
+            transition: all 0.3s ease; 
+        }
+        .map-marker.glowing { animation: glowing 2s infinite; }
+        .map-marker.completed { 
+            background-color: #10B981; 
+            border-color: white; 
+            animation: none; 
+            background-image: none !important;
+        }
+        @keyframes glowing { 0% { box-shadow: 0 0 8px var(--accent-color); } 50% { box-shadow: 0 0 55px var(--accent-color); } 100% { box-shadow: 0 0 8px var(--accent-color); } }
+        
+        .config-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; overflow-y: auto; padding: 15px; height: 100%;}
+        .config-item { background-color: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: left;}
+        .config-item-label { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; display: block; }
+        .pattern-buttons button { background: #fff; color: var(--secondary-text-color); border: 2px solid var(--border-color); padding: 10px; margin: 2px; border-radius: 5px; cursor: pointer; width: 50px; font-size: 1em; transition: all 0.2s; }
+        .pattern-buttons button:hover { border-color: var(--accent-hover-color); }
+        .pattern-buttons button.selected { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        
+        /* --- Component: Modals --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: none; justify-content: center; align-items: center; padding: 2vh 2vw; box-sizing: border-box; }
+        .modal.active { opacity: 1; visibility: visible; display: flex; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; position: relative; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 95vh; overflow-y: auto;}
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
+        .modal-close:hover { color: #333; }
+        
+        #guide-modal .modal-content h2 { font-size: 2.2em; margin-bottom: 15px; }
+        #guide-modal .modal-content h3 { font-size: 1.6em; margin-top: 10px; margin-bottom: 15px; }
+        #guide-modal .modal-content hr { border: none; height: 4px; background-color: #adb5bd; border-radius: 2px; margin: 30px 0; }
+        
+        #zoom-view .modal-content { overflow: hidden; }
+        #zoom-map-container { position: relative; width: 100%; margin: 20px auto 0; aspect-ratio: 16 / 9; flex-shrink: 1; min-height: 0; }
+        #zoom-map-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+        .pattern-marker { 
+            position: absolute; 
+            width: clamp(25px, 4vw, 35px); 
+            height: clamp(25px, 4vw, 35px);
+            background-color: rgba(59, 130, 246, 0.8); 
+            border: 2px solid var(--accent-color); 
+            animation: glowing 2s infinite; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 1.1em; 
+            color: white; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background-size: cover;
+            background-position: center;
+        }
+        .pattern-marker .pattern-label { background-color: rgba(0,0,0,0.5); padding: 1px 4px; border-radius: 3px; }
+        .pattern-marker.completed { background-color: #10B981; border-color: white; animation: none; background-image: none !important; }
+        
+        .solo-notice {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            background-color: var(--btn-secondary-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-width: 300px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .solo-notice a { color: var(--accent-color); font-weight: bold; text-decoration: underline; }
+        
+        .loader { border: 8px solid #f3f3f3; border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1.5s linear infinite; margin: 20px auto; }
+        #calculation-progress { margin-top: 15px; color: var(--secondary-text-color); font-weight: bold; height: 2em; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #day-detail-content ul { list-style: none; padding: 0; margin-top: 15px; text-align: left; }
+        #day-detail-content li { background-color: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--accent-color); }
+        #day-detail-content h3 { margin-bottom: 20px; text-align: center; }
+        #day-detail-content h4 { margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; text-align: left; }
+        
+        #day-detail-content .video-container { position: relative; padding-bottom: 56.25%; /* 16:9 */ height: 0; overflow: hidden; max-width: 100%; background: #000; margin-top: 10px; border-radius: 8px; }
+        #day-detail-content .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        #credit-modal .modal-content p { text-align: left; line-height: 1.8; }
+        #credit-modal .modal-content h4 { margin-top: 20px; margin-bottom: 10px; text-align: left; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+
+        #saved-plans-list { list-style: none; padding: 0; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .saved-plan-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--btn-secondary-bg); border-radius: 10px; border: 1px solid var(--border-color); }
+        .saved-plan-item-name { font-weight: bold; font-size: 1.1em; color: var(--primary-text-color); }
+        .saved-plan-item-actions { display: flex; gap: 10px; }
+        .btn-delete { background-color: var(--danger-color); color: white; padding: 8px 16px; font-size: 0.9em; }
+        .btn-delete:hover { background-color: var(--danger-hover-color); }
+        .btn-load { padding: 8px 16px; font-size: 0.9em; }
+        #no-saved-plans { text-align: center; color: var(--secondary-text-color); margin-top: 30px; font-size: 1.1em; }
+
+        /* --- Site Footer --- */
+        .site-credit-footer {
+            width: 100%;
+            padding: 8px 40px;
+            background-color: var(--header-bg-color);
+            color: #ccc;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            z-index: 10;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .site-credit-footer p { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; }
+        #credit-modal-trigger { cursor: pointer; transition: color 0.2s; }
+        #credit-modal-trigger:hover { color: #fff; text-decoration: underline; }
+        .credit-separator { margin: 0 10px; }
+        .site-credit-footer a { color: #fff; text-decoration: underline; transition: color 0.2s; }
+        .site-credit-footer a:hover { color: #ccc; text-decoration: none; }
+        
+        /* --- Utilities --- */
+        .scroll-indicator {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .scroll-indicator.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .image-container {
+            position: relative;
+            width: 100%;
+            min-height: 150px;
+            background-color: var(--btn-secondary-bg);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .image-loader {
+            color: var(--secondary-text-color);
+            font-weight: bold;
+        }
+        .image-container img {
+            display: none; /* Initially hidden */
+            width: 100%;
+            height: auto;
+        }
+        .image-container.loaded .image-loader {
+            display: none;
+        }
+        .image-container.loaded img {
+            display: block;
+        }
+        #zoom-map-container { aspect-ratio: 16 / 9; min-height: 0; }
+        #screenshot-popup .image-container { aspect-ratio: 500 / 300; min-height: 0; }
+        #day-detail-content .image-container { max-width: 450px; margin: 10px auto 0; border: 1px solid var(--border-color); }
+
+
+        /* --- Responsive Styles --- */
+        @media (min-width: 992px) {
+            .result-grid {
+                grid-template-columns: minmax(350px, 4fr) 6fr;
+                gap: 40px;
+                align-items: flex-start;
+            }
+            .result-layout-container {
+                position: sticky;
+                top: 20px;
+            }
+            .pattern-marker {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3em;
+            }
+            .show-on-desktop { display: block; }
+            .show-flex-on-desktop { display: flex; }
+        }
+        
+        @media (max-width: 768px) {
+            body { overflow: auto; height: auto; min-height: 100vh; }
+            main { padding: 0; height: auto; flex-grow: 1; }
+            .container { width: 100%; height: auto; min-height: 0; max-height: none; border-radius: 0; overflow: visible; }
+            body { padding-bottom: 50px; }
+            .page { padding: 20px; height: auto; position: relative; opacity: 1; visibility: visible; transform: none; display: none; justify-content: flex-start; }
+            .page.active { display: flex; }
+            #start-page { justify-content: center; padding-top: 2vh; padding-bottom: 2vh; flex-grow: 1; }
+            #current-config-page, #ideal-config-page { min-height: calc(100vh - 80px); }
+            .site-header, .site-credit-footer { padding: 10px 20px; }
+            
+            .title-long { display: none; }
+            .title-short { display: inline; }
+            .header-version, .header-version + .credit-separator { display: none; }
+
+            #start-page h1 { font-size: 2.5em; }
+            .steps-container { gap: 10px; }
+            .step-icon { width: 50px; height: 50px; font-size: 1.2em;}
+            .step-label { font-size: 0.9em; }
+            .step-arrow { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .config-list { grid-template-columns: 1fr; }
+            .modal-content { width: 90%; padding: 20px; }
+            .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
+            
+            .page-content-wrapper { height: auto; min-height: calc(100vh - 80px); }
+            #start-page .page-content-wrapper { min-height: 0; flex-grow: 1; }
+            
+            .input-views-container { flex-grow: 0; height: 43vh; }
+            .input-views-container .map-container { height: 100%; aspect-ratio: unset; }
+            .config-list { height: 100%; max-height: none; }
+            .site-credit-footer { position: fixed; bottom: 0; left: 0; }
+            
+            /* The original bug fix is preserved, ensuring correct scroll indicator behavior on mobile. */
+            #scroll-indicator {
+                position: fixed !important;
+                bottom: 80px !important; /* Adjust to avoid footer overlap */
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                pointer-events: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #start-page h1 { font-size: 2em; }
+            .steps-container { gap: 5px; margin-top: 15px; margin-bottom: 10px;}
+            .step-icon { width: 40px; height: 40px; font-size: 1em; }
+            .step-label { font-size: 0.7em; margin-top: 8px; }
+            .step-arrow { font-size: 1.5em; }
+            .btn { font-size: 1em; padding: 12px 24px; }
+             #go-to-current-btn { padding: 18px 36px; font-size: 1.3em; }
+            .page { padding: 15px; }
+            .config-item-label { font-size: 1em; }
+            .pattern-buttons button { width: 40px; height: 40px; padding: 5px; font-size: 0.9em;}
+            
+            .page-footer { flex-direction: row; flex-wrap: wrap; gap: 10px; padding-bottom: 15px; }
+            .page-footer .left-action, .page-footer .right-action { flex-basis: auto; flex-grow: 0; }
+             .page-footer .center-action { flex-basis: 100%; order: 3; }
+            .page-footer .right-action { margin-left: auto; }
+            .page-footer .btn { font-size: 0.9em; padding: 10px 20px; }
+             .page-footer .btn-secondary-link { font-size: 0.9em; padding: 10px; }
+        }
+        
+        @media (max-height: 800px) and (min-width: 769px) {
+            .page { padding-top: 1vw; padding-bottom: 1vw; }
+            .page-header { margin-bottom: 8px; }
+            .btn-back, .header-placeholder { width: 32px; height: 32px; }
+            .steps-container { gap: 10px; }
+            .step-icon { width: 40px; height: 40px; font-size: 1.1em; }
+            .step-label { margin-top: 5px; font-size: 0.8em; }
+            .step-arrow { font-size: 1.5em; }
+            .view-switcher { margin-bottom: 8px; }
+            .view-tab { padding: 6px 12px; font-size: 0.9em; }
+            .page-footer { margin-top: 10px; }
+            
+            #start-page .start-footer { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px; }
+        }
     </style>
 </head>
 <body>
     <header class="site-header backdrop-blur">
-        <h1>鶴観調整プラン計算ツール</h1>
+        <h1>
+            <span class="title-long">鶴観調整ツール（周期ホールド対応）</span>
+            <span class="title-short">鶴観調整ツール</span>
+        </h1>
         <div class="header-info">
-            <div class="muted">周期ホールド対応版</div>
-            <a href="#" id="open-help">使い方</a>
+            <span class="header-version">Ver. 1.1.0</span>
+            <span class="credit-separator">|</span>
+            <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
         </div>
     </header>
 
-    <div class="info-banner" id="info-banner">
-        <p>このツールは鶴観ルートの調整補助ツールです。入力を変更して「計算」ボタンを押してください。</p>
-        <button class="close-banner-btn" id="close-banner" aria-label="閉じる">×</button>
+    <div id="info-banner" class="info-banner">
+        <p>鶴観の精鋭の仕組みについて詳しく知りたい方は、<a href="https://youtu.be/2xqllaCTP5c?si=m9yyxXo5GS0rwFG9" target="_blank" rel="noopener noreferrer">こちらの解説動画</a>をご覧ください。</p>
+        <button id="close-banner-btn" class="close-banner-btn" title="閉じる">&times;</button>
     </div>
 
     <main>
-        <div class="container backdrop-blur" id="app-container">
-            <!-- Start Page -->
-            <section class="page active" id="start-page">
-                <div class="page-header">
-                    <div class="header-placeholder"></div>
-                    <div class="steps-container" aria-hidden>
-                        <div class="step active-step">
-                            <div class="step-icon">1</div>
-                            <div class="step-label">開始</div>
-                        </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step">
-                            <div class="step-icon">2</div>
-                            <div class="step-label">現在配置</div>
-                        </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step">
-                            <div class="step-icon">3</div>
-                            <div class="step-label">理想配置</div>
-                        </div>
-                    </div>
-                    <div style="width:40px"></div>
-                </div>
+        <div class="container backdrop-blur">
 
+            <!-- Page 1: Start Screen -->
+            <div id="start-page" class="page active">
                 <div class="page-content-wrapper">
-                    <h1>鶴観 - 調整プランメーカー</h1>
-                    <div class="subtitle">現在の配置と理想の配置を入力して、最適な補正案を生成します。UIや操作は既存のものと同じです。</div>
+                    <div class="start-header">
+                        <h1>鶴観調整ツール</h1>
+                        <p class="subtitle">※PCでの使用をおすすめします<br>現在と理想の配置を入力すると、最短調整スケジュールを計算します</p>
+                    </div>
+                    
+                    <div class="steps-container">
+                        <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
+                        <div class="step-arrow">→</div>
+                        <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
+                        <div class="step-arrow">→</div>
+                        <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
+                    </div>
 
                     <div class="start-buttons">
-                        <button id="go-to-current-btn" class="btn btn-primary">現在の配置を入力</button>
-                        <button id="load-sample" class="btn btn-secondary">サンプルを読み込む</button>
-                        <label class="multi-mode-toggle"><input type="checkbox" id="multi-toggle"> 複数人モード</label>
+                        <button id="go-to-current-btn" class="btn btn-primary">調整を始める</button>
+                        <button id="load-plan-btn" class="btn btn-secondary">保存したプランを読み込む</button>
                     </div>
 
                     <div class="start-footer">
-                        <div class="muted">※ 入力はページ毎に保存されます。</div>
+                        <div class="multi-mode-toggle">
+                            <input type="checkbox" id="boat-mode-checkbox">
+                            <label for="boat-mode-checkbox">ボートでの調整を許可する</label>
+                        </div>
+                        <div class="multi-mode-toggle">
+                            <input type="checkbox" id="multiplayer-mode-checkbox">
+                            <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
+                            <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
+                        </div>
+                         <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Current Configuration Page -->
-            <section class="page" id="current-page" aria-hidden="true">
-                <div class="page-header">
-                    <button class="btn-back" id="back-from-current" aria-label="戻る"></button>
-                    <div style="flex:1; text-align:center;"><h2>現在の配置を入力</h2></div>
-                    <div style="width:40px"></div>
-                </div>
-
+            <!-- Page 2: Current Configuration Input -->
+            <div id="current-config-page" class="page">
                 <div class="page-content-wrapper">
-                    <div class="view-switcher">
-                        <button class="view-tab active" data-view="map">マップ</button>
-                        <button class="view-tab" data-view="list">リスト</button>
-                    </div>
-                    <div class="input-views-container">
-                        <div class="input-view active" id="view-map">
-                            <div class="map-container">
-                                <div class="map-guide-text" id="map-guide">地図上をクリックして配置を選択</div>
-                                <img src="https://api.mg-dev.net/api/v1/genshin/maps/Tsurumi%20Island" alt="Tsurumi Map" class="map-bg" id="map-img">
-                            </div>
+                    <div class="page-header">
+                        <button id="back-to-start-btn" class="btn-back" aria-label="戻る"></button>
+                        <div class="steps-container">
+                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
                         </div>
-                        <div class="input-view" id="view-list">
-                            <div style="width:100%; max-width:900px; text-align:left;">
-                                <label>配置一覧（左から右へ）</label>
-                                <textarea id="current-list" style="width:100%; height:220px; margin-top:8px;" placeholder="例: A1,A2,A3"></textarea>
-                            </div>
-                        </div>
+                        <div class="header-placeholder"></div>
                     </div>
 
+                    <div class="view-switcher">
+                        <button id="current-map-tab" class="view-tab active" data-view="map">マップ表示</button>
+                        <button id="current-list-tab" class="view-tab" data-view="list">リスト表示</button>
+                    </div>
+
+                    <div class="input-views-container">
+                        <div id="current-map-view" class="input-view active">
+                            <div class="map-container" id="current-map-container">
+                                 <div class="map-guide-text">アイコンをタップして選択</div>
+                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
+                            </div>
+                        </div>
+                        <div id="current-list-view" class="input-view">
+                            <div class="config-list" id="current-config-list">
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="page-footer">
                         <div class="left-action">
-                            <button class="btn btn-secondary" id="quick-fill-current">クイック入力</button>
+                            <div class="quick-fill-buttons show-flex-on-desktop">
+                                <span class="quick-fill-label">一括入力:</span>
+                                <button id="fill-all-a-btn" class="btn btn-secondary btn-small">A</button>
+                                <button id="fill-all-b-btn" class="btn btn-secondary btn-small">B</button>
+                                <button id="fill-all-c-btn" class="btn btn-secondary btn-small">C</button>
+                            </div>
                         </div>
                         <div class="center-action">
-                            <div class="progress-text">ステップ 2 / 3</div>
+                            <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
                         </div>
                         <div class="right-action">
-                            <div class="validation-message" id="current-warning">入力が不十分です</div>
-                            <button class="btn btn-primary" id="to-ideal">次へ</button>
+                            <div id="validation-message" class="validation-message"></div>
+                            <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
                         </div>
-                    </div>
+                   </div>
                 </div>
-            </section>
-
-            <!-- Ideal Configuration Page -->
-            <section class="page" id="ideal-page" aria-hidden="true">
-                <div class="page-header">
-                    <button class="btn-back" id="back-from-ideal" aria-label="戻る"></button>
-                    <div style="flex:1; text-align:center;"><h2>理想の配置を入力</h2></div>
-                    <div style="width:40px"></div>
-                </div>
-
+            </div>
+            
+            <!-- Page 3: Ideal Configuration Input -->
+            <div id="ideal-config-page" class="page">
                 <div class="page-content-wrapper">
-                    <div class="view-switcher">
-                        <button class="view-tab active" data-view="map2">マップ</button>
-                        <button class="view-tab" data-view="list2">リスト</button>
+                     <div class="page-header">
+                        <button id="back-to-current-btn" class="btn-back" aria-label="戻る"></button>
+                        <div class="steps-container">
+                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
+                        </div>
+                        <div class="header-placeholder"></div>
                     </div>
+
+                    <div class="view-switcher">
+                        <button id="ideal-map-tab" class="view-tab active" data-view="map">マップ表示</button>
+                        <button id="ideal-list-tab" class="view-tab" data-view="list">リスト表示</button>
+                    </div>
+
                     <div class="input-views-container">
-                        <div class="input-view active" id="view-map2">
-                            <div class="map-container">
-                                <div class="map-guide-text" id="map-guide-ideal">理想配置を指定してください</div>
-                                <img src="https://api.mg-dev.net/api/v1/genshin/maps/Tsurumi%20Island" alt="Tsurumi Map" class="map-bg" id="map-img-ideal">
+                        <div id="ideal-map-view" class="input-view active">
+                            <div class="map-container" id="ideal-map-container">
+                                 <div class="map-guide-text">アイコンをタップして選択</div>
+                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
                             </div>
                         </div>
-                        <div class="input-view" id="view-list2">
-                            <div style="width:100%; max-width:900px; text-align:left;">
-                                <label>理想配置一覧</label>
-                                <textarea id="ideal-list" style="width:100%; height:220px; margin-top:8px;" placeholder="例: A2,A3,A1"></textarea>
+                        <div id="ideal-list-view" class="input-view">
+                            <div class="config-list" id="ideal-config-list">
                             </div>
                         </div>
                     </div>
 
-                    <div class="page-footer">
+                     <div class="page-footer">
                         <div class="left-action">
-                            <button class="btn btn-secondary" id="quick-fill-ideal">クイック入力</button>
+                             <button class="btn btn-secondary" id="set-recommended-btn">環境配置</button>
+                             <button class="btn btn-secondary show-on-desktop" id="copy-current-btn">現在配置をコピー</button>
                         </div>
                         <div class="center-action">
-                            <div class="progress-text">ステップ 3 / 3</div>
+                            <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
                         </div>
                         <div class="right-action">
-                            <div class="validation-message" id="ideal-warning">入力が不十分です</div>
-                            <button class="btn btn-primary" id="calculate">計算</button>
+                            <button id="calculate-plan-btn" class="btn btn-primary">調整プランを計算</button>
+                        </div>
+                   </div>
+                </div>
+            </div>
+
+            <!-- Page 4: Result Page -->
+            <div id="result-page" class="page">
+                <div class="page-content-wrapper">
+                     <div class="page-header">
+                        <button id="back-to-ideal-btn" class="btn-back" aria-label="戻る"></button>
+                         <div class="steps-container">
+                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
+                            <div class="step-arrow">→</div>
+                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
+                        </div>
+                        <div class="header-placeholder"></div>
+                    </div>
+
+                    <div class="result-grid">
+                        <div class="result-layout-container">
+                            <div class="result-map-container">
+                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-21%20161308.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
+                            </div>
+                            <div class="result-actions-container">
+                                <div id="solo-mode-notice" class="solo-notice show-on-desktop">
+周期ホールドを使わない調整方法です。使用すると期間をもっと短縮できるかもしれません。<a href="https://youtu.be/2xqllaCTP5c?si=UyMkRCct-Z1Pp5HI&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a>
+                                </div>
+                                <button id="recalculate-alternate-mode-btn" class="btn"></button>
+                                <div class="result-actions-row">
+                                    <button id="save-plan-btn" class="btn btn-secondary">結果を保存</button>
+                                    <button id="reset-btn" class="btn btn-secondary">リセット</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="result-details" class="result-details-container">
+                             <div id="result-summary"></div>
+                             <div class="result-table-container">
+                                 <table class="result-table">
+                                     <thead>
+                                         <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)の行動</th> <th>1P(ホスト)の行動</th> <th>詳細</th> </tr>
+                                     </thead>
+                                     <tbody id="result-tbody"></tbody>
+                                 </table>
+                             </div>
+                             <p class="result-footer-link">
+                                鶴観のロード範囲（移動ルート）について詳しく知りたい方は<a href="https://note.com/nekoshita_g/n/n485ff9b3df29" target="_blank" rel="noopener noreferrer">こちら</a>
+                             </p>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Result Page -->
-            <section class="page" id="result-page" aria-hidden="true">
-                <div class="page-header">
-                    <button class="btn-back" id="back-from-result" aria-label="戻る"></button>
-                    <div style="flex:1; text-align:center;"><h2>計算結果</h2></div>
-                    <div style="width:40px"></div>
-                </div>
-
-                <div style="padding:16px; width:100%; max-width:1200px; margin:0 auto;">
-                    <div id="result-output" style="text-align:left; background:rgba(255,255,255,0.95); padding:16px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08);">
-                        <pre id="result-pre" style="white-space:pre-wrap; word-break:break-word; margin:0"></pre>
-                    </div>
-                    <div style="display:flex; justify-content:flex-end; margin-top:12px; gap:8px;">
-                        <button class="btn btn-secondary" id="download-result">結果をダウンロード</button>
-                        <button class="btn btn-primary" id="restart">最初へ戻る</button>
-                    </div>
-                </div>
-            </section>
-
+            </div>
         </div>
     </main>
 
-    <script>
-    (function(){
-        'use strict';
+    <!-- Modals -->
+    <div id="guide-modal" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="guide-modal">&times;</span>
+            <h2>使い方ガイド</h2>
+            <p>このツールは、鶴観の精鋭エネミーの配置を、最短日数で理想の配置に調整するためのスケジュールを計算します。</p>
+            <hr>
+            <h3>Step 1: 現在の配置を入力</h3>
+            <p>まず、あなたの世界の現在のエネミー配置を10ヶ所すべて入力します。「マップ表示」または「リスト表示」で入力できます。</p>
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%8F%BE%E5%9C%A8.gif?raw=true" alt="マップ入力画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <p style="margin-top: 10px;">マップ上のアイコンをタップすると、詳細なマップが表示され、A/B/Cのパターンを選択できます。選択に迷ったら、スクリーンショットで実際のゲーム画面を確認できます。</p>
+            <hr>
+            <h3>Step 2: 理想の配置を入力</h3>
+            <p>次に、目標とする理想の配置を入力します。すべて入力する必要はなく、変更したい場所だけ入力すればOKです。</p>
+            <p>便利な「環境配置を自動入力」ボタンも活用してください。</p>
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%90%86%E6%83%B3.gif?raw=true" alt="理想配置の入力" style="width:100%; border-radius: 8px; margin-top: 10px;">
+            <hr>
+            <h3>Step 3: スケジュールを計算・確認</h3>
+            <p>入力が終わったら、「調整プランを計算」ボタンを押します。</p>
+            <p>スタートページで「周期ホールドを有効にする」にチェックを入れていると、マルチプレイを前提とした最短ルートを計算します。</p>
+            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%B5%90%E6%9E%9C.gif?raw=true" alt="結果表示画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
+        </div>
+    </div>
+    
+    <div id="zoom-view" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="zoom-view">&times;</span>
+            <h3 id="zoom-title"></h3>
+            <div id="zoom-map-container" class="image-container">
+                <div class="image-loader">読み込み中...</div>
+                <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ">
+            </div>
+        </div>
+    </div>
 
-        // helper shortcuts
-        var $ = function(sel, ctx){ return (ctx||document).querySelector(sel); };
-        var qa = function(sel, ctx){ return Array.prototype.slice.call((ctx||document).querySelectorAll(sel)); };
+    <div id="screenshot-popup" class="modal backdrop-blur">
+        <div class="modal-content">
+             <span class="modal-close" data-target="screenshot-popup">&times;</span>
+             <h3 id="screenshot-title"></h3>
+             <div class="image-container">
+                <div class="image-loader">読み込み中...</div>
+                <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット">
+             </div>
+             <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
+        </div>
+    </div>
+    
+    <div id="loading-modal" class="modal">
+         <div class="modal-content" style="text-align: center;">
+            <h2 style="font-size: 2.5em; margin-bottom: 10px;">計算中...</h2>
+            <p id="loading-text">最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
+            <div class="loader"></div>
+            <div id="calculation-progress"></div>
+         </div>
+    </div>
+    
+    <div id="day-detail-modal" class="modal backdrop-blur">
+         <div class="modal-content">
+              <span class="modal-close" data-target="day-detail-modal">&times;</span>
+              <h2 id="day-detail-title"></h2>
+              <div id="day-detail-content"></div>
+       </div>
+    </div>
 
-        // elements
-        var pages = {
-            start: $('#start-page'),
-            current: $('#current-page'),
-            ideal: $('#ideal-page'),
-            result: $('#result-page')
-        };
-        var infoBanner = $('#info-banner');
-        var closeBannerBtn = $('#close-banner');
+    <div id="credit-modal" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="credit-modal">&times;</span>
+            <h2>Special Thanks</h2>
+            <p>このツールの開発にあたり、「ねこした」さんより多大なるご協力をいただきました。<br>心より感謝申し上げます。</p>
+            <hr style="margin: 20px 0;">
+            <h4>■ 画像・情報提供</h4>
+            <p>ツール内で使用している各配置の画像や、精鋭エネミーの出現パターンに関する情報は、以下のnote記事を参考にさせていただきました。非常に分かりやすくまとめられており、開発の大きな助けとなりました。</p>
+            <p style="padding-left: 1em;"><strong>note記事:</strong> <a href="https://note.com/nekoshita_g/n/nba4aff6a13ff" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法</a></p>
+            <h4>■ 調整方法の解説</h4>
+            <p>本ツールの計算ロジックは、以下の動画で解説されている調整方法を基にプログラムとして実装したものです。鶴観調整の仕組みそのものについて、大変分かりやすく解説されていますので、ぜひご覧ください。</p>
+            <p style="padding-left: 1em;"><strong>解説動画:</strong> <a href="https://youtu.be/2xqllaCTP5c?si=jY3Vn64mj6y91Vte" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法 (YouTube)</a></p>
+            <hr style="margin: 20px 0;">
+            <p style="text-align: center;">
+                <a href="https://www.youtube.com/@nekoshita_g" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none;">ねこしたさんのYouTubeチャンネルはこちら</a>
+            </p>
+        </div>
+    </div>
+    
+    <div id="load-plan-modal" class="modal backdrop-blur">
+        <div class="modal-content">
+            <span class="modal-close" data-target="load-plan-modal">&times;</span>
+            <h2>保存したプランを読み込む</h2>
+            <ul id="saved-plans-list">
+                <!-- Saved plans will be dynamically inserted here -->
+            </ul>
+            <p id="no-saved-plans">保存されたプランはありません。</p>
+        </div>
+    </div>
 
-        var goToCurrentBtn = $('#go-to-current-btn');
-        var loadSampleBtn = $('#load-sample');
-        var multiToggle = $('#multi-toggle');
+    <footer class="site-credit-footer backdrop-blur">
+        <p>
+            <span id="credit-modal-trigger">Special Thanks: ねこしたさん (詳細はこちら)</span>
+            <span class="credit-separator">|</span>
+            <span>鶴観を研究してくださった先人の方々</span>
+        </p>
+    </footer>
 
-        var backFromCurrent = $('#back-from-current');
-        var backFromIdeal = $('#back-from-ideal');
-        var backFromResult = $('#back-from-result');
+    <!-- This element will be moved to the body tag by JavaScript to ensure correct fixed positioning. -->
+    <a href="#result-details" id="scroll-indicator" class="scroll-indicator hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </a>
 
-        var toIdealBtn = $('#to-ideal');
-        var calculateBtn = $('#calculate');
-        var restartBtn = $('#restart');
-        var resultPre = $('#result-pre');
-        var downloadResultBtn = $('#download-result');
 
-        var currentList = $('#current-list');
-        var idealList = $('#ideal-list');
-        var quickFillCurrent = $('#quick-fill-current');
-        var quickFillIdeal = $('#quick-fill-ideal');
+<script>
+/**
+ * Tsurumi Adjustment Plan Calculator
+ * Refactored for readability and maintainability.
+ * Original author: あの時の鳥です (https://x.com/PIpXlMz1tB5ASjF)
+ * Special Thanks: ねこしたさん (for research and assets)
+ */
+document.addEventListener('DOMContentLoaded', () => {
 
-        var validationCurrent = $('#current-warning');
-        var validationIdeal = $('#ideal-warning');
+    // --- 1. DATA DEFINITIONS & CONSTANTS ---
+    
+    const data = {
+        eliteGroups: {
+            'A': { name: 'モシリ炎アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Pyro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738372090-i0Dg36tAbTaRjEHlpQhPr5NY.jpg?width=1200' },
+            'B': { name: 'モシリ雷アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Electro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419313-vIRa5KkjYBwznp1OSoUMZCLG.jpg?width=1200' },
+            'C': { name: 'モシリ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419512-Zn6ERGTQCwgakSrmVHjWztFY.jpg?width=1200' },
+            'D': { name: 'チライ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419554-5Vfy0paPscJjSACn4DTvY3Mr.jpg?width=1200' },
+            'E': { name: 'オイナ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419603-5ULFDgf1RN86dZQHnMJoSX3e.jpg?width=1200' },
+            'F': { name: 'オイナ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419733-GNO1jErQmFh9p5yP423WgLaH.jpg?width=1200' },
+            'G': { name: 'シリコロ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419775-yxGHB6uJZpdh7VDzT2n85osX.jpg?width=1200' },
+            'H': { name: 'アウタケ東', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/f98aad8ddb6a41ae54eb9b81c63f58da_8280051482592802504.png', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E6%9D%B1.png?raw=true' },
+            'I': { name: 'アウタケ西', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/f98aad8ddb6a41ae54eb9b81c63f58da_8280051482592802504.png', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E8%A5%BF.png?raw=true' },
+            'J': { name: 'ワクカウ', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/c0b9fccb976922890793a88cefa44525_4478418637550120506.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419878-oLvIuKdDGVEc3RsO6UWrZFH4.jpg?width=1200' },
+        },
+        actions: [
+            {id: 2, name: 'ワープ②', affectedGroups: ['A', 'D']}, {id: 3, name: 'ワープ③', affectedGroups: ['A', 'B', 'C', 'D', 'E', 'J']}, {id: 4, name: 'ワープ④', affectedGroups: ['B', 'C', 'D', 'E', 'F']}, {id: 5, name: 'ワープ⑤', affectedGroups: ['B', 'E', 'F', 'G', 'H', 'I']}, {id: 6, name: 'ワープ⑥', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I']}, {id: 7, name: 'ワープ⑦', affectedGroups: ['A', 'J']}, {id: 8, name: 'ワープ⑧', affectedGroups: ['J']}, {id: 9, name: 'ボート⑨', affectedGroups: ['A']}, {id: 10, name: 'ボート⑩', affectedGroups: ['C', 'D']}, {id: 11, name: 'ボート⑪', affectedGroups: ['B', 'C', 'D']}, {id: 12, name: 'ボート⑫', affectedGroups: ['D']}, {id: 13, name: '歩き⑬', affectedGroups: ['A', 'B', 'C', 'J']}, {id: 14, name: '歩き⑭', affectedGroups: ['A', 'B', 'J']}, {id: 15, name: '歩き⑮', affectedGroups: ['E', 'G']}, {id: 16, name: '歩き⑯', affectedGroups: ['E', 'F', 'G']}, {id: 17, name: '歩き⑰', affectedGroups: ['A', 'H', 'J']}, {id: 18, name: 'ポケワ⑱', affectedGroups: ['E']}, {id: 19, name: '歩き⑲', affectedGroups: ['E', 'F', 'G', 'I']}, {id: 20, name: 'ボート⑳', affectedGroups: ['H', 'I']}, {id: 21, name: 'ボート㉑', affectedGroups: ['I']},
+        ],
+        actionDetails: {
+            2:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202210.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 3:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202231.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 4:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202321.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 12: { images: ['https://assets.st-note.com/img/1740718519-C5t0WKmVepqoji19Rc2GZduf.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 13: { images: ['https://assets.st-note.com/img/1740019544-fjJrv5VwbpUgatR0FLMODEPG.png?width=1200', 'https://assets.st-note.com/img/1740019502-2BkCqL4znrixluRm7FpjvhOQ.png?width=1200'], videoUrl: 'https://youtu.be/2_xN2PYjrO4?si=0K03Yr1tl74NQ0MF', note: 'ワープ8にワープした段階でワクカウもロードされます。\nその後、移動し、モシリ炎アビスとモシリ雷アビスとモシリ暴徒もロードします。\n目印は草です。\n※ワープ7からだと、アウタケ東とモシリ雷アビスのロード境界付近になり誤ロードのリスクが上がるため、8から向かってます\n極力動画と同じように移動してください。' }, 14: { images: ['https://assets.st-note.com/img/1739947858-im8E9AtCjsr501YZnHWuKxNJ.png?width=1200 ', 'https://assets.st-note.com/img/1739947867-yxzY23VinFgkLKrCtmXqvG0B.png?width=1200'], videoUrl: 'https://youtu.be/fDn-IKfIL-A?si=92PmIUWw-Vgvg34m', note: 'ワープ8にワープした段階でワクカウもロードされます。その後、移動し、モシリ炎アビスとモシリ雷アビスもロードします。目印は杭です。\n極力動画と同じように移動してください。' }, 15: { images: ['https://assets.st-note.com/img/1738380135-LlcU0487Xtbjduk9KzqT6sDa.png?width=1200', 'https://assets.st-note.com/img/1740114869-zBxEZO2v3dAeQusnTYJ0WkNb.png?width=1200'], videoUrl: 'https://youtu.be/FRZu8bq3SEY?si=Ra81bAbgAKu_DGqb', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）\n目印はミントです。\n極力動画と同じように移動してください。' }, 16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーと崖の隙間です。\n極力動画と同じように移動してください。' }, 17: { images: ['https://assets.st-note.com/img/1738916671-ORDvWIt8zi692QxAJVKb1rlS.png?width=1200', 'https://assets.st-note.com/img/1738916711-VnxAvW1qJdrGXlOzoHe8Mshk.png?width=1200'], videoUrl: 'https://youtu.be/x8Zcoz0VjzY?si=42_j7YWlgBPT_zR3', note: 'ワープ7にワープした段階でモシリ炎アビスとワクカウもロードされます。その後、移動し、アウタケ東もロードします。目標は雷石です。\n極力動画と同じように移動してください。' }, 18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: 'シリコロのボートポイントです。ポケワを置くのがおすすめですが、セイライ島やヤシオリ島から海を渡って来ても大丈夫です。' }, 19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置\n目印はミントです。\n極力動画と同じように移動してください。' }, 20: { images: ['https://assets.st-note.com/img/1740887637-KEB38rW94bPpH2YI6whCcQ7x.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' }, 21: { images: ['https://assets.st-note.com/img/1740464299-tWJOErwCv4B1cnPI57XmoMY3.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
+        },
+        recommendedConfig: {
+            'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C',
+            'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B'
+        },
+        markerPositions: {
+            'A': { top: '52%', left: '61%' }, 'B': { top: '48%', left: '54%' }, 'C': { top: '43%', left: '59%' }, 'D': { top: '34%', left: '59%' }, 'E': { top: '34%', left: '44%' }, 'F': { top: '41%', left: '38%' }, 'G': { top: '32%', left: '35%' }, 'H': { top: '50%', left: '32%' }, 'I': { top: '48%', left: '23%' }, 'J': { top: '69%', left: '43%' }
+        },
+        patternMarkerPositions: {
+            'A': { 'A': { bottom: '46%', right: '43%' }, 'B': { bottom: '54%', right: '47%' }, 'C': { bottom: '40%', right: '51%' } }, 'B': { 'A': { bottom: '62%', right: '57%' }, 'B': { bottom: '52%', right: '52%' }, 'C': { bottom: '61%', right: '48%' } }, 'C': { 'A': { bottom: '75%', right: '50%' }, 'B': { bottom: '64%', right: '54%' }, 'C': { bottom: '61%', right: '45%' } }, 'D': { 'A': { bottom: '73.5%', right: '28.6%' }, 'B': { bottom: '59.9%', right: '31.3%' }, 'C': { bottom: '57.8%', right: '27.4%' } }, 'E': { 'A': { bottom: '54.1%', right: '36.7%' }, 'B': { bottom: '51.0%', right: '43.2%' }, 'C': { bottom: '73.7%', right: '40.7%' } }, 'F': { 'A': { bottom: '42.9%', right: '49.9%' }, 'B': { bottom: '36.5%', right: '45.0%' }, 'C': { bottom: '48.3%', right: '46.0%' } }, 'G': { 'A': { bottom: '63.0%', right: '49.5%' }, 'B': { bottom: '59.5%', right: '55.4%' }, 'C': { bottom: '63.0%', right: '44.5%' } }, 'H': { 'A': { bottom: '41.3%', right: '58.7%' }, 'B': { bottom: '45.2%', right: '63.4%' }, 'C': { bottom: '47.0%', right: '57.6%' } }, 'I': { 'A': { bottom: '58.4%', right: '66.3%' }, 'B': { bottom: '61.1%', right: '61.0%' }, 'C': { bottom: '51.0%', right: '67.5%' } }, 'J': { 'A': { bottom: '58.0%', right: '40.8%' }, 'B': { bottom: '51.8%', right: '56.5%' }, 'C': { bottom: '28.5%', right: '52.6%' } }
+        },
+        screenshotImageUrls: {
+            'A': { 'A': 'https://assets.st-note.com/img/1738372100-wkRfaQDElqCepTY12bHVJszm.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738372108-Ozf8gFbjTZEaGJMDx7qHAoVN.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738420209-Vs9IFoQq3dJxwOGv5RM7Xh0C.jpg?width=1200' }, 'B': { 'A': 'https://assets.st-note.com/img/1738419367-4wCdF5eOLbmtVuDAURYSaIr1.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419379-3mOLkEy16jefW0nvGlctzK9B.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419389-Zm5ra9xD6JU2SKfNzeBHpIl1.jpg?width=1200' }, 'C': { 'A': 'https://assets.st-note.com/img/1738419522-lgzSU9nI2x6ZYhkNfHqiPXOo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419532-g9URz8f04FckmJtAseBhu7Qj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419541-1IgcObQjl3dH4rwy2LNM6SP9.jpg?width=1200' }, 'D': { 'A': 'https://assets.st-note.com/img/1738419563-xyMQ1nkuOjbpa6Dwm3KWoYh9.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419572-YuweId6SiyKDBAtWgOlojQGa.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419580-quLQMGeRlbfv0wSgmh8jCINt.jpg?width=1200' }, 'E': { 'A': 'https://assets.st-note.com/img/1738419683-Y3pzloUPmn861idxQvLaMNZy.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419695-t41JA6FX2CeViT9GB3UOdhlK.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419704-xdZlTOuatBockhDLVgsN4I3w.jpg?width=1200' }, 'F': { 'A': 'https://assets.st-note.com/img/1738419747-YfBn7iOzKVekQRAJ9DParxlv.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419755-5CmQ8u0hGFrsfRyZojIH2kpX.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419763-zFvuEZK9nYgd61OsrM5NeRAP.jpg?width=1200' }, 'G': { 'A': 'https://assets.st-note.com/img/1738586151-mkVNDUfHbGTQFJ7M9opaYRK2.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419796-1mHqF5OyP6rEAoU3YZNcuQKj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419805-MF0UpPyI6cNzqldvXADiuEwg.jpg?width=1200' }, 'H': { 'A': 'https://assets.st-note.com/img/1738419821-2VtSLA5DROoJ0wBClZIxvMTu.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419829-4evqad8bPjYEAmBfpZH9RuT1.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419837-4tSaJMW6y7BzDZQ3fRC2LXqH.jpg?width=1200' }, 'I': { 'A': 'https://assets.st-note.com/img/1738419855-V8XBf5WexFzy60psuQGvmNdY.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738586173-KCQXfOlVjNtUoBn37qg5Fcu0.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419868-YORuncAJ3DgLoZ560WwCv4Uq.jpg?width=1200' }, 'J': { 'A': 'https://assets.st-note.com/img/1738419900-C9ZW6JqmkxnVz5vBrKbAXtDo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419916-pQNEJcL0dXovR7jnTfa8qzeh.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419933-zFKX9tqVyjMilUBRdJIWNYrH.jpg?width=1200' }
+        },
+    };
+    
+    const CONSTANTS = {
+        GROUP_KEYS: Object.keys(data.eliteGroups),
+        TOTAL_GROUPS: Object.keys(data.eliteGroups).length,
+        PATTERN_MAP: { 'A': 0, 'B': 1, 'C': 2 },
+        STORAGE_KEY: 'tsurumiSavedPlans',
+        BANNER_CLOSED_KEY: 'tsurumiBannerClosed',
+    };
 
-        var state = { current:'', ideal:'', multi:false, resultText:'' };
+    // --- 2. APPLICATION STATE ---
 
-        function showPage(name){
-            Object.keys(pages).forEach(function(k){
-                var el = pages[k];
-                if(k===name){ el.classList.add('active'); el.removeAttribute('aria-hidden'); }
-                else { el.classList.remove('active'); el.setAttribute('aria-hidden','true'); }
-            });
-            toggleMapGuides(name);
+    const state = {
+        currentConfig: {},
+        idealConfig: {},
+        activeSelection: { configType: null, groupId: null, pattern: null },
+        lastCalculatedPlan: null,
+        calculationTask: null,
+        possibleDailyActions: [],
+    };
+    
+    // --- 3. DOM ELEMENT CACHE ---
+
+    const dom = {
+        infoBanner: document.getElementById('info-banner'),
+        closeBannerBtn: document.getElementById('close-banner-btn'),
+        pages: document.querySelectorAll('.page'),
+        steps: document.querySelectorAll('.step'),
+        modals: document.querySelectorAll('.modal'),
+
+        // Start Page
+        goToCurrentBtn: document.getElementById('go-to-current-btn'),
+        guideBtn: document.getElementById('guide-btn'),
+        loadPlanBtn: document.getElementById('load-plan-btn'),
+        multiplayerModeCheckbox: document.getElementById('multiplayer-mode-checkbox'),
+        boatModeCheckbox: document.getElementById('boat-mode-checkbox'),
+
+        // Current Config Page
+        goToIdealBtn: document.getElementById('go-to-ideal-btn'),
+        progressText: document.getElementById('progress-text'),
+        validationMessage: document.getElementById('validation-message'),
+        
+        // Ideal Config Page
+        idealProgressText: document.getElementById('ideal-progress-text'),
+        setRecommendedBtn: document.getElementById('set-recommended-btn'),
+        copyCurrentBtn: document.getElementById('copy-current-btn'),
+        calculatePlanBtn: document.getElementById('calculate-plan-btn'),
+        
+        // Result Page
+        resultPage: document.getElementById('result-page'),
+        resultTbody: document.getElementById('result-tbody'),
+        resultSummary: document.getElementById('result-summary'),
+        soloModeNotice: document.getElementById('solo-mode-notice'),
+        recalculateBtn: document.getElementById('recalculate-alternate-mode-btn'),
+        savePlanBtn: document.getElementById('save-plan-btn'),
+        resetBtn: document.getElementById('reset-btn'),
+        scrollIndicator: document.getElementById('scroll-indicator'),
+
+        // Modals
+        zoom: {
+            modal: document.getElementById('zoom-view'),
+            title: document.getElementById('zoom-title'),
+            mapContainer: document.getElementById('zoom-map-container'),
+            mapImage: document.querySelector('#zoom-map-container img'),
+        },
+        screenshot: {
+            modal: document.getElementById('screenshot-popup'),
+            title: document.getElementById('screenshot-title'),
+            img: document.getElementById('screenshot-img'),
+            confirmBtn: document.getElementById('confirm-pattern-btn'),
+        },
+        loading: {
+            modal: document.getElementById('loading-modal'),
+            text: document.getElementById('loading-text'),
+            progress: document.getElementById('calculation-progress'),
+        },
+        dayDetail: {
+            modal: document.getElementById('day-detail-modal'),
+            title: document.getElementById('day-detail-title'),
+            content: document.getElementById('day-detail-content'),
+        },
+        loadPlan: {
+            modal: document.getElementById('load-plan-modal'),
+            list: document.getElementById('saved-plans-list'),
+            noPlansMsg: document.getElementById('no-saved-plans'),
+        },
+        credit: {
+            modal: document.getElementById('credit-modal'),
+            trigger: document.getElementById('credit-modal-trigger'),
         }
-        function toggleMapGuides(pageName){
-            var guide = $('#map-guide'); if(guide) guide.classList.toggle('hidden', pageName !== 'current');
-            var guide2 = $('#map-guide-ideal'); if(guide2) guide2.classList.toggle('hidden', pageName !== 'ideal');
-        }
+    };
 
-        closeBannerBtn.addEventListener('click', function(){ infoBanner.classList.add('hidden'); });
-        goToCurrentBtn.addEventListener('click', function(){ showPage('current'); });
-        backFromCurrent.addEventListener('click', function(){ showPage('start'); });
-        backFromIdeal.addEventListener('click', function(){ showPage('current'); });
-        backFromResult.addEventListener('click', function(){ showPage('ideal'); });
+    // --- 4. UI HELPER FUNCTIONS ---
+    
+    const uiHelpers = {
+        showPage(pageId) {
+            dom.pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
 
-        loadSampleBtn.addEventListener('click', function(){
-            currentList.value = 'A1,A2,A3,A4';
-            idealList.value = 'A2,A3,A4,A1';
-            flash(validationCurrent,false); flash(validationIdeal,false);
-        });
-        multiToggle.addEventListener('change', function(e){ state.multi = !!e.target.checked; });
+            dom.steps.forEach(step => step.classList.remove('active-step'));
+            let activeStepNumber;
+            if (pageId.includes('current')) activeStepNumber = 1;
+            else if (pageId.includes('ideal')) activeStepNumber = 2;
+            else if (pageId.includes('result')) activeStepNumber = 3;
+            else activeStepNumber = 1;
+            
+            document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => stepEl.classList.add('active-step'));
 
-        qa('.view-tab').forEach(function(tab){
-            tab.addEventListener('click', function(){
-                var parent = tab.parentElement.parentElement;
-                var view = tab.getAttribute('data-view');
-                qa('.view-tab', parent).forEach(function(t){ t.classList.remove('active'); });
-                tab.classList.add('active');
-                qa('.input-view', parent.parentElement).forEach(function(v){ v.classList.remove('active'); });
-                var target = document.getElementById(view==='map'?'view-map': view==='list'?'view-list': view==='map2'?'view-map2':'view-list2');
-                if(target) target.classList.add('active');
-            });
-        });
-
-        quickFillCurrent.addEventListener('click', function(){ currentList.value='A1,A2,A3'; flash(validationCurrent,false); });
-        quickFillIdeal.addEventListener('click', function(){ idealList.value='A2,A3,A1'; flash(validationIdeal,false); });
-
-        toIdealBtn.addEventListener('click', function(){
-            if(!validateCurrent()){ flash(validationCurrent,true); return; }
-            state.current = currentList.value.trim();
-            showPage('ideal');
-        });
-
-        calculateBtn.addEventListener('click', function(){
-            if(!validateIdeal()){ flash(validationIdeal,true); return; }
-            state.ideal = idealList.value.trim();
-            var res = runCalculation(state.current, state.ideal, state.multi);
-            state.resultText = res;
-            resultPre.textContent = res;
-            showPage('result');
-        });
-
-        restartBtn.addEventListener('click', function(){
-            state.current=''; state.ideal=''; state.resultText=''; currentList.value=''; idealList.value=''; resultPre.textContent='';
-            showPage('start');
-        });
-
-        downloadResultBtn.addEventListener('click', function(){
-            var blob = new Blob([state.resultText || ''], {type:'text/plain'}); var url = URL.createObjectURL(blob);
-            var a = document.createElement('a'); a.href=url; a.download='tsurumi_result.txt';
-            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        });
-
-        function validateCurrent(){ return currentList.value.trim().length>0; }
-        function validateIdeal(){ return idealList.value.trim().length>0; }
-        function flash(el,shake){ if(!el) return; el.classList.add('show'); if(shake) el.classList.add('shake'); setTimeout(function(){ el.classList.remove('shake'); },700); setTimeout(function(){ el.classList.remove('show'); },2200); }
-
-        function runCalculation(currentStr, idealStr, multi){
-            try{
-                // note: regex here uses \\s in the string literal when embedding in other contexts.
-                var cur = currentStr.split(/\s*,\s*/).filter(Boolean);
-                var ide = idealStr.split(/\s*,\s*/).filter(Boolean);
-                var out = [];
-                out.push('=== 鶴観 調整プラン結果 ===');
-                out.push('作成日時: ' + (new Date()).toLocaleString());
-                out.push('複数人モード: ' + (multi ? '有効' : '無効'));
-                out.push('現在配置: ' + (cur.join(', ') || 'なし'));
-                out.push('理想配置: ' + (ide.join(', ') || 'なし'));
-                out.push('');
-                var len = Math.max(cur.length, ide.length);
-                for(var i=0;i<len;i++){
-                    var a = cur[i] || '(空)';
-                    var b = ide[i] || '(空)';
-                    if(a === b){ out.push((i+1)+'. ' + a + ' -> そのまま'); }
-                    else { out.push((i+1)+'. ' + a + ' -> ' + b + ' (補正推奨)'); }
-                }
-                if(cur.length !== ide.length){
-                    out.push('');
-                    out.push('注: 現在と理想の配置数が一致していません。配置の追加/削除が必要です。');
-                }
-                out.push('');
-                out.push('--- 終了 ---');
-                return out.join('\\n');
-            }catch(err){
-                return '計算中にエラーが発生しました: ' + (err && err.message ? err.message : String(err));
+            if (pageId === 'current-config-page') {
+                setTimeout(() => this.updateMapLayout('current-map-container'), 50);
+            } else if (pageId === 'ideal-config-page') {
+                setTimeout(() => this.updateMapLayout('ideal-map-container'), 50);
             }
+
+            this.updateScrollIndicator();
+        },
+        showModal(modalId) { 
+            document.getElementById(modalId).classList.add('active'); 
+        },
+        closeModal(modalId) { 
+            if (modalId === 'loading-modal' && state.calculationTask) {
+                clearTimeout(state.calculationTask);
+                state.calculationTask = null;
+            }
+            document.getElementById(modalId).classList.remove('active'); 
+        },
+        updateMapLayout(containerId) {
+            const mapContainer = document.getElementById(containerId);
+            if (!mapContainer || !mapContainer.offsetParent) return;
+
+            const mapImage = mapContainer.querySelector('.map-bg');
+            const markers = mapContainer.querySelectorAll('.map-marker');
+
+            if (mapImage.complete && mapImage.naturalWidth > 0) {
+                const containerRect = mapContainer.getBoundingClientRect();
+                const imageAspectRatio = mapImage.naturalWidth / mapImage.naturalHeight;
+                const containerAspectRatio = containerRect.width / containerRect.height;
+
+                let renderedWidth, renderedHeight, offsetX, offsetY;
+                if (imageAspectRatio > containerAspectRatio) {
+                    renderedWidth = containerRect.width;
+                    renderedHeight = containerRect.width / imageAspectRatio;
+                    offsetX = 0;
+                    offsetY = (containerRect.height - renderedHeight) / 2;
+                } else {
+                    renderedHeight = containerRect.height;
+                    renderedWidth = containerRect.height * imageAspectRatio;
+                    offsetX = (containerRect.width - renderedWidth) / 2;
+                    offsetY = 0;
+                }
+                
+                markers.forEach(marker => {
+                    const groupId = marker.id.split('-')[2];
+                    const pos = data.markerPositions[groupId];
+                    if (pos) {
+                        const newLeft = offsetX + (renderedWidth * (parseFloat(pos.left) / 100));
+                        const newTop = offsetY + (renderedHeight * (parseFloat(pos.top) / 100));
+                        marker.style.left = `${newLeft - marker.offsetWidth / 2}px`;
+                        marker.style.top = `${newTop - marker.offsetHeight / 2}px`;
+                    }
+                });
+            }
+        },
+        updateProgress(configType) {
+            const config = configType === 'current' ? state.currentConfig : state.idealConfig;
+            const progressEl = configType === 'current' ? dom.progressText : dom.idealProgressText;
+            const completedCount = Object.keys(config).length;
+            
+            progressEl.textContent = `入力完了: ${completedCount} / ${CONSTANTS.TOTAL_GROUPS}`;
+            
+            if (configType === 'current') {
+                dom.goToIdealBtn.disabled = completedCount !== CONSTANTS.TOTAL_GROUPS;
+            }
+        },
+        setupImageLoader(imgElement) {
+            const container = imgElement.parentElement;
+            if (!container || !container.classList.contains('image-container')) {
+                console.warn('Image is not inside an .image-container', imgElement);
+                return;
+            }
+            container.classList.remove('loaded');
+            imgElement.style.display = 'none';
+
+            imgElement.onload = () => {
+                container.classList.add('loaded');
+                imgElement.style.display = 'block';
+            };
+            imgElement.onerror = () => {
+                const loader = container.querySelector('.image-loader');
+                if (loader) loader.textContent = '画像の読込失敗';
+            };
+            // If image is already cached by the browser, trigger onload manually
+            if (imgElement.complete && imgElement.src) {
+                imgElement.onload();
+            }
+        },
+        updateScrollIndicator() {
+            if (!dom.scrollIndicator || !dom.resultPage) return;
+            if (!dom.resultPage.classList.contains('active')) {
+                dom.scrollIndicator.classList.add('hidden');
+                return;
+            }
+            const scrollContainer = dom.resultPage.scrollHeight > dom.resultPage.clientHeight 
+                ? dom.resultPage 
+                : (document.scrollingElement || document.documentElement);
+            
+            const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
+            const isAtTop = scrollContainer.scrollTop < 50;
+
+            if (isScrollable && isAtTop) {
+                dom.scrollIndicator.classList.remove('hidden');
+            } else {
+                dom.scrollIndicator.classList.add('hidden');
+            }
+        },
+    };
+    
+    // --- 5. CORE LOGIC FUNCTIONS ---
+    
+    const core = {
+        /**
+         * Initializes an input page (either 'current' or 'ideal').
+         * Creates map markers and list items for all elite groups.
+         * @param {string} configType - 'current' or 'ideal'.
+         */
+        initInputPage(configType) {
+            const mapContainer = document.getElementById(`${configType}-map-container`);
+            const listContainer = document.getElementById(`${configType}-config-list`);
+            mapContainer.querySelectorAll('.map-marker').forEach(marker => marker.remove());
+            listContainer.innerHTML = '';
+            
+            for (const groupId in data.eliteGroups) {
+                const group = data.eliteGroups[groupId];
+                
+                // Create map marker
+                const marker = document.createElement('div');
+                marker.className = 'map-marker glowing';
+                marker.id = `${configType}-marker-${groupId}`;
+                if (group.iconUrl) {
+                    marker.style.backgroundImage = `url(${group.iconUrl})`;
+                } else {
+                    marker.textContent = groupId;
+                }
+                marker.addEventListener('click', () => this.openGroupSelector(configType, groupId));
+                mapContainer.appendChild(marker);
+
+                // Create list item
+                const item = document.createElement('div');
+                item.className = 'config-item';
+                item.innerHTML = `<span class="config-item-label">${group.name}</span>`;
+                const buttons = document.createElement('div');
+                buttons.className = 'pattern-buttons';
+                buttons.id = `${configType}-buttons-${groupId}`;
+                ['A', 'B', 'C'].forEach(pattern => {
+                    const btn = document.createElement('button');
+                    btn.textContent = pattern;
+                    btn.addEventListener('click', () => this.updateConfig(configType, groupId, pattern));
+                    buttons.appendChild(btn);
+                });
+                item.appendChild(buttons);
+                listContainer.appendChild(item);
+            }
+            setTimeout(() => uiHelpers.updateMapLayout(`${configType}-map-container`), 100);
+        },
+        /**
+         * Updates the selected configuration for a specific group.
+         * @param {string} configType - 'current' or 'ideal'.
+         * @param {string} groupId - The ID of the elite group (e.g., 'A', 'B').
+         * @param {string} pattern - The selected pattern ('A', 'B', or 'C').
+         */
+        updateConfig(configType, groupId, pattern) {
+            const configToUpdate = (configType === 'current') ? state.currentConfig : state.idealConfig;
+            configToUpdate[groupId] = pattern;
+            
+            // Update UI for map view
+            const marker = document.getElementById(`${configType}-marker-${groupId}`);
+            marker.classList.remove('glowing');
+            marker.classList.add('completed');
+            marker.innerHTML = '✔';
+            
+            // Update UI for list view
+            document.getElementById(`${configType}-buttons-${groupId}`).querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('selected', btn.textContent === pattern);
+            });
+            
+            uiHelpers.updateProgress(configType);
+            
+            // Hide the initial guide text once an input is made
+            const isAnyConfigStarted = Object.keys(configToUpdate).length > 0;
+            const guideText = document.querySelector(`#${configType}-map-container .map-guide-text`);
+            if (guideText) guideText.classList.toggle('hidden', isAnyConfigStarted);
+        },
+        openGroupSelector(configType, groupId) {
+            state.activeSelection = { configType, groupId };
+            dom.zoom.title.textContent = `${data.eliteGroups[groupId].name} のパターンを選択`;
+            
+            if (dom.zoom.mapImage && data.eliteGroups[groupId].zoomMapUrl) {
+                uiHelpers.setupImageLoader(dom.zoom.mapImage);
+                dom.zoom.mapImage.src = data.eliteGroups[groupId].zoomMapUrl;
+            }
+
+            // Clear previous markers and create new ones
+            dom.zoom.mapContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
+            const selectedPattern = (configType === 'current' ? state.currentConfig : state.idealConfig)[groupId];
+
+            ['A', 'B', 'C'].forEach(pattern => {
+                const pos = data.patternMarkerPositions[groupId]?.[pattern];
+                if (!pos) return;
+
+                const marker = document.createElement('div');
+                marker.className = 'pattern-marker';
+                marker.innerHTML = `<span class="pattern-label">${pattern}</span>`;
+                if (pattern === selectedPattern) {
+                    marker.classList.add('completed');
+                    marker.innerHTML = '✔';
+                }
+
+                marker.style.top = `${100 - parseFloat(pos.bottom)}%`;
+                marker.style.left = `${100 - parseFloat(pos.right)}%`;
+
+                marker.addEventListener('click', () => this.selectPatternForConfirmation(pattern));
+                dom.zoom.mapContainer.appendChild(marker);
+            });
+            uiHelpers.showModal('zoom-view');
+        },
+        selectPatternForConfirmation(pattern) {
+            state.activeSelection.pattern = pattern;
+            const groupName = data.eliteGroups[state.activeSelection.groupId].name;
+            dom.screenshot.title.textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
+            
+            const imageUrl = data.screenshotImageUrls[state.activeSelection.groupId]?.[state.activeSelection.pattern];
+            if (imageUrl) {
+                uiHelpers.setupImageLoader(dom.screenshot.img);
+                dom.screenshot.img.src = imageUrl;
+            }
+            
+            uiHelpers.showModal('screenshot-popup');
+        },
+    };
+
+    // --- 6. CALCULATION LOGIC ---
+    const calculationLogic = {
+        /**
+         * Generates all unique combinations of daily actions.
+         * This pre-computes the possible state transitions for a single day.
+         */
+        generatePossibleDailyActions() {
+            const achievablePatterns = new Map();
+            // "Do nothing" action
+            achievablePatterns.set(JSON.stringify([]), { name: '何もしない', affectedGroups: new Set() });
+            
+            const numActions = data.actions.length;
+            // Iterate through all possible subsets of actions using bitmasking
+            for (let i = 1; i < (1 << numActions); i++) {
+                const currentActions = [];
+                const affectedGroupsSet = new Set();
+                for (let j = 0; j < numActions; j++) {
+                    if ((i >> j) & 1) {
+                        const action = data.actions[j];
+                        currentActions.push(action);
+                        action.affectedGroups.forEach(group => affectedGroupsSet.add(group));
+                    }
+                }
+                
+                // Use a sorted list of affected groups as a unique key
+                const key = JSON.stringify([...affectedGroupsSet].sort());
+                if (!achievablePatterns.has(key)) {
+                    achievablePatterns.set(key, {
+                        name: currentActions.map(a => a.name).join(' + '),
+                        affectedGroups: affectedGroupsSet
+                    });
+                }
+            }
+            state.possibleDailyActions = Array.from(achievablePatterns.values());
+            console.log(`Generated ${state.possibleDailyActions.length} unique daily actions.`);
+        },
+        /**
+         * Converts a configuration object to a string representation for easy comparison.
+         * @param {object} config - The configuration object.
+         * @returns {string} A string like "012012..."
+         */
+        configToString(config) {
+            return CONSTANTS.GROUP_KEYS.map(key => config[key] ?? '').join('');
+        },
+        /**
+         * The main calculation function. Uses a Breadth-First Search (BFS) algorithm to find the shortest path.
+         * @param {boolean} isMultiplayer - Whether to include multiplayer (period hold) logic.
+         * @param {boolean} allowBoat - Whether to include boat-based actions.
+         */
+        calculatePlan(isMultiplayer, allowBoat) {
+            // --- 1. Validation and Setup ---
+            if (Object.keys(state.currentConfig).length !== CONSTANTS.TOTAL_GROUPS || Object.keys(state.idealConfig).length === 0) {
+                alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
+                return;
+            }
+            dom.loading.progress.textContent = '調整パターンの検証を開始...';
+            dom.loading.text.innerHTML = `最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。`;
+            uiHelpers.showModal('loading-modal');
+            
+            if (state.calculationTask) clearTimeout(state.calculationTask);
+
+            // --- 2. Prepare BFS ---
+            let actionsToUse = state.possibleDailyActions;
+            if (!allowBoat) {
+                actionsToUse = state.possibleDailyActions.filter(action => !action.name.includes('ボート'));
+            }
+
+            const startConfigStr = this.configToString(Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.currentConfig[k]]])));
+            // For unspecified ideal configs, use the current config value
+            const idealWithFallbacks = Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.idealConfig[k] || state.currentConfig[k]]]));
+            const endConfigStr = this.configToString(idealWithFallbacks);
+            
+            if (startConfigStr === endConfigStr) {
+                setTimeout(() => {
+                    this.displayResults([], isMultiplayer, allowBoat);
+                    uiHelpers.closeModal('loading-modal');
+                }, 100);
+                return;
+            }
+            
+            // BFS queue: { config string, path of actions taken }
+            const queue = [{ config: startConfigStr, path: [] }];
+            // Visited set to prevent cycles and redundant computations
+            const visited = new Set([startConfigStr]);
+            let verifiedCount = 0;
+            const maxDays = 8;
+
+            // --- 3. Asynchronous BFS Processing ---
+            const processChunk = () => {
+                const startTime = Date.now();
+                // Process for a max of 50ms to keep the UI responsive
+                while(queue.length > 0 && (Date.now() - startTime < 50)) {
+                    const { config, path } = queue.shift();
+                    verifiedCount++;
+                    
+                    if (path.length >= maxDays) continue;
+
+                    let solutionPath = null;
+                    const currentConfigArr = config.split('').map(Number);
+
+                    // --- Explore Solo Mode Moves ---
+                    for (const soloAction of actionsToUse) {
+                        let nextConfigArr = [...currentConfigArr];
+                        for (const group of soloAction.affectedGroups) {
+                            const index = CONSTANTS.GROUP_KEYS.indexOf(group);
+                            nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
+                        }
+                        const nextConfigStr = nextConfigArr.join('');
+                        
+                        if (nextConfigStr === endConfigStr) {
+                            solutionPath = [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }];
+                            break;
+                        }
+                        if (!visited.has(nextConfigStr)) {
+                            visited.add(nextConfigStr);
+                            queue.push({ config: nextConfigStr, path: [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }] });
+                        }
+                    }
+                    if (solutionPath) {
+                        this.displayResults(solutionPath, isMultiplayer, allowBoat);
+                        uiHelpers.closeModal('loading-modal');
+                        return;
+                    }
+
+                    // --- Explore Multiplayer Mode Moves ---
+                    if (isMultiplayer) {
+                        for (const holdAction of actionsToUse) {
+                            for (const advanceAction of actionsToUse) {
+                                // Calculate which groups are actually affected (advance - hold)
+                                const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(g => !holdAction.affectedGroups.has(g)));
+                                if (effectiveAdvance.size === 0) continue;
+                                
+                                let nextConfigArr = [...currentConfigArr];
+                                for (const group of effectiveAdvance) {
+                                    const index = CONSTANTS.GROUP_KEYS.indexOf(group);
+                                    nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
+                                }
+                                const nextConfigStr = nextConfigArr.join('');
+                                
+                                if (nextConfigStr === endConfigStr) {
+                                    solutionPath = [...path, { holdAction, advanceAction, mode: 'マルチ' }];
+                                    break;
+                                }
+                                if (!visited.has(nextConfigStr)) {
+                                    visited.add(nextConfigStr);
+                                    queue.push({ config: nextConfigStr, path: [...path, { holdAction, advanceAction, mode: 'マルチ' }] });
+                                }
+                            }
+                            if (solutionPath) break;
+                        }
+                    }
+                    if (solutionPath) {
+                        this.displayResults(solutionPath, isMultiplayer, allowBoat);
+                        uiHelpers.closeModal('loading-modal');
+                        return;
+                    }
+                }
+
+                // --- 4. Continue or Conclude ---
+                if (queue.length > 0) {
+                    dom.loading.progress.textContent = `検証済みパターン: ${verifiedCount}`;
+                    state.calculationTask = setTimeout(processChunk, 0);
+                } else {
+                    this.displayResults(null, isMultiplayer, allowBoat);
+                    uiHelpers.closeModal('loading-modal');
+                }
+            };
+            
+            state.calculationTask = setTimeout(processChunk, 0);
+        },
+        displayResults(plan, isMultiplayer, allowBoat) {
+            state.lastCalculatedPlan = plan; 
+            dom.resultTbody.innerHTML = '';
+            
+            if (isMultiplayer) {
+                dom.recalculateBtn.textContent = '周期ホールドOFFで再計算';
+                dom.recalculateBtn.onclick = () => this.calculatePlan(false, allowBoat);
+                dom.recalculateBtn.className = 'btn btn-primary';
+                dom.soloModeNotice.style.display = 'none';
+            } else {
+                dom.recalculateBtn.textContent = '周期ホールドONで再計算';
+                dom.recalculateBtn.onclick = () => this.calculatePlan(true, allowBoat);
+                dom.recalculateBtn.className = 'btn btn-multi';
+                dom.soloModeNotice.style.display = '';
+            }
+        
+            let summaryText = '';
+            if (plan === null) {
+                summaryText = '8日以内に完了する調整プランは見つかりませんでした。';
+            } else if (plan.length === 0) {
+                summaryText = '調整は不要です！';
+            } else {
+                summaryText = `最短 ${plan.length} 日で調整が完了します！`;
+            }
+            dom.resultSummary.innerHTML = summaryText;
+        
+            dom.recalculateBtn.style.display = 'block';
+            if (plan !== null && plan.length > 0) {
+                dom.savePlanBtn.style.display = '';
+                plan.forEach((day, index) => {
+                    const tr = document.createElement('tr');
+                    const modeClass = day.mode === 'ソロ' ? 'mode-solo' : 'mode-multi';
+                    tr.innerHTML = `
+                        <td>${index + 1}日目</td>
+                        <td><span class="${modeClass}">${day.mode}</span></td>
+                        <td>${day.holdAction.name}</td>
+                        <td>${day.advanceAction.name}</td>
+                        <td><button class="btn btn-details" data-day-index="${index}">手順を確認</button></td>
+                    `;
+                    dom.resultTbody.appendChild(tr);
+                });
+            } else {
+                dom.savePlanBtn.style.display = 'none';
+                if (plan === null || plan.length === 0) {
+                    dom.recalculateBtn.style.display = 'none';
+                }
+            }
+        
+            uiHelpers.showPage('result-page');
+            dom.resultPage.scrollTop = 0;
+            setTimeout(() => uiHelpers.updateScrollIndicator(), 150); 
+        },
+    };
+
+    // --- 7. EVENT HANDLERS ---
+    
+    const eventHandlers = {
+        handleBannerClose() {
+            dom.infoBanner.classList.add('hidden');
+            localStorage.setItem(CONSTANTS.BANNER_CLOSED_KEY, 'true');
+        },
+        handleModalClose(e) {
+            if (e.target.classList.contains('modal-close')) {
+                uiHelpers.closeModal(e.target.dataset.target);
+            }
+        },
+        handleConfirmPattern() {
+            const { configType, groupId, pattern } = state.activeSelection;
+            if (configType && groupId && pattern) {
+                core.updateConfig(configType, groupId, pattern);
+            }
+            uiHelpers.closeModal('screenshot-popup');
+            uiHelpers.closeModal('zoom-view');
+        },
+        handleGoToIdeal() {
+            if (dom.goToIdealBtn.disabled) {
+                dom.validationMessage.textContent = 'すべての配置を入力してください。';
+                dom.validationMessage.classList.add('show');
+                dom.goToIdealBtn.classList.add('shake');
+                setTimeout(() => dom.validationMessage.classList.remove('show'), 2000);
+                setTimeout(() => dom.goToIdealBtn.classList.remove('shake'), 600);
+            } else {
+                uiHelpers.showPage('ideal-config-page');
+            }
+        },
+        handleCalculate() {
+            const isMulti = dom.multiplayerModeCheckbox.checked;
+            const allowBoat = dom.boatModeCheckbox.checked;
+            calculationLogic.calculatePlan(isMulti, allowBoat);
+        },
+        handleReset() {
+            state.currentConfig = {};
+            state.idealConfig = {};
+            core.initInputPage('current');
+            core.initInputPage('ideal');
+            uiHelpers.updateProgress('current');
+            uiHelpers.updateProgress('ideal');
+            uiHelpers.showPage('start-page');
+        },
+        handleResultTableClick(e) {
+            if (e.target.classList.contains('btn-details')) {
+                const dayIndex = parseInt(e.target.dataset.dayIndex, 10);
+                if (state.lastCalculatedPlan && !isNaN(dayIndex) && state.lastCalculatedPlan[dayIndex]) {
+                    storage.showDayDetail(state.lastCalculatedPlan[dayIndex], dayIndex + 1);
+                }
+            }
+        },
+        handlePlanListClick(e) {
+            const planId = e.target.dataset.planId;
+            if (!planId) return;
+
+            if (e.target.classList.contains('btn-load')) {
+                storage.loadPlan(planId);
+            } else if (e.target.classList.contains('btn-delete')) {
+                storage.deletePlan(planId);
+            }
+        },
+    };
+    
+    // --- 8. STORAGE & DETAIL VIEW LOGIC ---
+    
+    const storage = {
+        getSavedPlans() {
+            try {
+                const plansJSON = localStorage.getItem(CONSTANTS.STORAGE_KEY);
+                return plansJSON ? JSON.parse(plansJSON) : [];
+            } catch (e) {
+                console.error("Failed to read saved plans:", e);
+                return [];
+            }
+        },
+        savePlan() {
+            const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
+            if (!planName || planName.trim() === "") return;
+            
+            // Serialize Sets to Arrays for JSON compatibility
+            const serializablePlan = state.lastCalculatedPlan.map(day => ({
+                ...day,
+                holdAction: { ...day.holdAction, affectedGroups: Array.from(day.holdAction.affectedGroups || []) },
+                advanceAction: { ...day.advanceAction, affectedGroups: Array.from(day.advanceAction.affectedGroups || []) }
+            }));
+
+            const planData = {
+                id: Date.now().toString(),
+                name: planName.trim(),
+                currentConfig: state.currentConfig,
+                idealConfig: state.idealConfig,
+                plan: serializablePlan,
+                isMultiplayer: dom.multiplayerModeCheckbox.checked,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const savedPlans = this.getSavedPlans();
+                savedPlans.push(planData);
+                localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(savedPlans));
+                alert(`「${planName}」を保存しました。`);
+            } catch (e) {
+                console.error("Failed to save plan:", e);
+                alert("プランの保存に失敗しました。");
+            }
+        },
+        loadPlan(planId) {
+            const planToLoad = this.getSavedPlans().find(p => p.id === planId);
+            if (!planToLoad) {
+                alert("プランの読み込みに失敗しました。");
+                return;
+            }
+
+            // Deserialize Arrays back to Sets
+            const deserializedPlan = planToLoad.plan.map(day => ({
+                ...day,
+                holdAction: { ...day.holdAction, affectedGroups: new Set(day.holdAction.affectedGroups || []) },
+                advanceAction: { ...day.advanceAction, affectedGroups: new Set(day.advanceAction.affectedGroups || []) }
+            }));
+
+            state.currentConfig = planToLoad.currentConfig;
+            state.idealConfig = planToLoad.idealConfig;
+            state.lastCalculatedPlan = deserializedPlan;
+            dom.multiplayerModeCheckbox.checked = planToLoad.isMultiplayer;
+
+            for (const groupId in state.currentConfig) core.updateConfig('current', groupId, state.currentConfig[groupId]);
+            for (const groupId in state.idealConfig) core.updateConfig('ideal', groupId, state.idealConfig[groupId]);
+
+            calculationLogic.displayResults(state.lastCalculatedPlan, planToLoad.isMultiplayer);
+            uiHelpers.closeModal('load-plan-modal');
+        },
+        deletePlan(planId) {
+            if (!confirm("本当にこのプランを削除しますか？")) return;
+            try {
+                let plans = this.getSavedPlans().filter(p => p.id !== planId);
+                localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(plans));
+                this.renderSavedPlans();
+            } catch (e) {
+                console.error("Failed to delete plan:", e);
+                alert("プランの削除に失敗しました。");
+            }
+        },
+        openLoadModal() {
+            this.renderSavedPlans();
+            uiHelpers.showModal('load-plan-modal');
+        },
+        renderSavedPlans() {
+            const plans = this.getSavedPlans();
+            dom.loadPlan.list.innerHTML = '';
+
+            if (plans.length === 0) {
+                dom.loadPlan.noPlansMsg.style.display = 'block';
+                dom.loadPlan.list.style.display = 'none';
+                return;
+            }
+            dom.loadPlan.noPlansMsg.style.display = 'none';
+            dom.loadPlan.list.style.display = '';
+
+            plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            plans.forEach(plan => {
+                const li = document.createElement('li');
+                li.className = 'saved-plan-item';
+                li.innerHTML = `
+                    <span class="saved-plan-item-name">${plan.name}</span>
+                    <div class="saved-plan-item-actions">
+                        <button class="btn btn-primary btn-load" data-plan-id="${plan.id}">読込</button>
+                        <button class="btn btn-delete" data-plan-id="${plan.id}">削除</button>
+                    </div>
+                `;
+                dom.loadPlan.list.appendChild(li);
+            });
+        },
+        showDayDetail(dayData, dayNumber) {
+            dom.dayDetail.title.textContent = `${dayNumber}日目の手順詳細`;
+            
+            const generateActionDetailsHTML = (actionData) => {
+                if (!actionData || !actionData.name || actionData.name === '---' || actionData.name === '何もしない') return '<p>特別な行動は不要です。</p>';
+                const actions = actionData.name.split(' + ');
+                const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => `「${data.eliteGroups[key].name}」`).join('、');
+
+                let html = `<p><strong>影響を受けるグループ:</strong> ${affectedGroupsList}</p><ul>`;
+                actions.forEach(actionName => {
+                    const action = data.actions.find(a => a.name === actionName);
+                    if (!action) return;
+                    const details = data.actionDetails[action.id] || {};
+                    const detailText = details.note || '詳細不明';
+                    html += `<li><strong>${actionName}</strong><p>${detailText.replace(/\n/g, '<br>')}</p>`;
+                    if (details.images) details.images.forEach(imgUrl => {
+                        html += `<div class="image-container"><div class="image-loader">読み込み中...</div><img src="${imgUrl}" alt="${actionName} のルート図"></div>`;
+                    });
+                    if (details.videoUrl) {
+                        try {
+                            const url = new URL(details.videoUrl);
+                            let videoId = url.searchParams.get('v') || url.pathname.split('/').pop();
+                            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                            html += `<div class="video-container"><iframe src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+                        } catch (e) { console.error("Invalid video URL:", details.videoUrl); }
+                    }
+                    html += `</li>`;
+                });
+                return html + '</ul>';
+            };
+
+            let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認してください。</strong></p>';
+            if (dayData.mode === 'ソロ') {
+                contentHTML += `<h3>ソロモードでの行動</h3>${generateActionDetailsHTML(dayData.advanceAction)}`;
+            } else {
+                contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
+                contentHTML += `<h4>Step 1: 準備</h4><p>ホスト(1P)は鶴観以外の安全な場所に移動し、ゲスト(2P)を世界に招き入れます。</p>`;
+                contentHTML += `<h4>Step 2: 周期のホールド (ゲストの操作)</h4>`;
+                contentHTML += `<p><strong>[重要]</strong> まずホスト(1P)が層岩巨淵・地下鉱区など、<strong>テイワット以外のマップに移動</strong>するのを待ちます。</p>`;
+                contentHTML += `<p>ホストの移動後、ゲスト(2P)は以下の行動で周期を<strong>ホールド(固定)</strong>し、速やかに退出します。</p>${generateActionDetailsHTML(dayData.holdAction)}`;
+                contentHTML += `<h4>Step 3: 周期の進行 (ホストの操作)</h4>`;
+                const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(g => !dayData.holdAction.affectedGroups.has(g)));
+                contentHTML += `<p>ゲスト退出後、ホスト(1P)は以下の行動で、ホールドされなかったグループの周期を<strong>進めます</strong>。</p>${generateActionDetailsHTML({ ...dayData.advanceAction, affectedGroups: effectiveAdvanceGroups })}`;
+            }
+
+            dom.dayDetail.content.innerHTML = contentHTML;
+            dom.dayDetail.content.querySelectorAll('.image-container img').forEach(img => uiHelpers.setupImageLoader(img));
+            uiHelpers.showModal('day-detail-modal');
+        }
+    };
+
+    // --- 9. INITIALIZATION ---
+    
+    function init() {
+        // Correctly position the scroll indicator
+        document.body.appendChild(dom.scrollIndicator);
+
+        // Hide banner if previously closed
+        if (localStorage.getItem(CONSTANTS.BANNER_CLOSED_KEY) === 'true') {
+            dom.infoBanner.style.display = 'none';
         }
 
-        showPage('start');
+        // Pre-calculate possible actions
+        calculationLogic.generatePossibleDailyActions();
 
-        window.__tsurumi_debug = window.__tsurumi_debug || {};
-        window.__tsurumi_debug.getState = function(){ return JSON.parse(JSON.stringify(state)); };
-    })();
-    </script>
+        // Bind all event listeners
+        dom.closeBannerBtn.addEventListener('click', eventHandlers.handleBannerClose);
+        dom.goToCurrentBtn.addEventListener('click', () => uiHelpers.showPage('current-config-page'));
+        dom.guideBtn.addEventListener('click', () => uiHelpers.showModal('guide-modal'));
+        dom.loadPlanBtn.addEventListener('click', () => storage.openLoadModal());
+        dom.credit.trigger.addEventListener('click', () => uiHelpers.showModal('credit-modal'));
+        dom.modals.forEach(modal => modal.addEventListener('click', eventHandlers.handleModalClose));
+        
+        document.getElementById('back-to-start-btn').addEventListener('click', () => uiHelpers.showPage('start-page'));
+        document.getElementById('back-to-current-btn').addEventListener('click', () => uiHelpers.showPage('current-config-page'));
+        document.getElementById('back-to-ideal-btn').addEventListener('click', () => uiHelpers.showPage('ideal-config-page'));
+        
+        document.getElementById('current-map-tab').addEventListener('click', () => uiHelpers.switchInputView('current', 'map'));
+        document.getElementById('current-list-tab').addEventListener('click', () => uiHelpers.switchInputView('current', 'list'));
+        document.getElementById('ideal-map-tab').addEventListener('click', () => uiHelpers.switchInputView('ideal', 'map'));
+        document.getElementById('ideal-list-tab').addEventListener('click', () => uiHelpers.switchInputView('ideal', 'list'));
+
+        dom.goToIdealBtn.addEventListener('click', eventHandlers.handleGoToIdeal);
+        dom.calculatePlanBtn.addEventListener('click', eventHandlers.handleCalculate);
+        dom.screenshot.confirmBtn.addEventListener('click', eventHandlers.handleConfirmPattern);
+        
+        dom.setRecommendedBtn.addEventListener('click', () => {
+            for (const groupId in data.recommendedConfig) core.updateConfig('ideal', groupId, data.recommendedConfig[groupId]);
+        });
+        dom.copyCurrentBtn.addEventListener('click', () => {
+            for (const groupId in state.currentConfig) core.updateConfig('ideal', groupId, state.currentConfig[groupId]);
+        });
+        ['a', 'b', 'c'].forEach(p => {
+            document.getElementById(`fill-all-${p}-btn`).addEventListener('click', () => {
+                for (const groupId of CONSTANTS.GROUP_KEYS) core.updateConfig('current', groupId, p.toUpperCase());
+            });
+        });
+        
+        dom.resetBtn.addEventListener('click', eventHandlers.handleReset);
+        dom.savePlanBtn.addEventListener('click', () => storage.savePlan());
+        dom.resultTbody.addEventListener('click', eventHandlers.handleResultTableClick);
+        dom.loadPlan.list.addEventListener('click', eventHandlers.handlePlanListClick);
+
+        dom.scrollIndicator.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Listen for scroll/resize to manage scroll indicator visibility
+        dom.resultPage.addEventListener('scroll', uiHelpers.updateScrollIndicator);
+        window.addEventListener('scroll', uiHelpers.updateScrollIndicator, { passive: true });
+        window.addEventListener('resize', () => {
+            uiHelpers.updateScrollIndicator();
+            uiHelpers.updateMapLayout('current-map-container');
+            uiHelpers.updateMapLayout('ideal-map-container');
+        });
+
+        // Initialize input pages
+        core.initInputPage('current');
+        core.initInputPage('ideal');
+
+        // Initial map layout calculation after images are likely loaded
+        document.querySelectorAll('.map-bg').forEach(img => {
+            img.addEventListener('load', () => uiHelpers.updateMapLayout(img.closest('.map-container').id));
+        });
+    }
+
+    // Start the application
+    init();
+});
+</script>
 </body>
 </html>

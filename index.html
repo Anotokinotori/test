@@ -1,3 +1,4 @@
+ｇｐｔ
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -638,7 +639,6 @@
         .mode-solo { color: var(--accent-color); font-weight: bold; }
         .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
 
-        /* ▼▼▼ ADDED FOR TASK 1 ▼▼▼ */
         .result-footer-link {
             text-align: center;
             margin-top: 25px;
@@ -655,7 +655,6 @@
         .result-footer-link a:hover {
             color: var(--accent-hover-color);
         }
-        /* ▲▲▲ ADDED FOR TASK 1 ▲▲▲ */
 
         /* Modal Styles */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: none; justify-content: center; align-items: center; padding: 2vh 2vw; box-sizing: border-box; }
@@ -665,26 +664,26 @@
         .modal-close:hover { color: #333; }
         
         #guide-modal .modal-content h2 {
-            font-size: 2.2em; /* メインタイトルを大きく */
+            font-size: 2.2em;
             margin-bottom: 15px;
         }
 
         #guide-modal .modal-content h3 {
-            font-size: 1.6em; /* ステップの見出しを大きく */
+            font-size: 1.6em;
             margin-top: 10px;
             margin-bottom: 15px;
         }
 
         #guide-modal .modal-content hr {
             border: none;
-            height: 4px; /* 境界線を太く */
-            background-color: #adb5bd; /* 少し濃い色に変更 */
-            border-radius: 2px; /* 角を丸く */
-            margin: 30px 0; /* 上下の余白を調整 */
+            height: 4px;
+            background-color: #adb5bd;
+            border-radius: 2px;
+            margin: 30px 0;
         }
         
         #zoom-view .modal-content {
-            overflow: hidden; /* Prevent modal's own scrollbar */
+            overflow: hidden;
         }
         #zoom-map-container {
             position: relative;
@@ -719,7 +718,7 @@
             font-weight: bold; 
             cursor: pointer; 
             border-radius: 50%;
-            transform: translate(-50%, -50%); /* Center the marker on the coordinate */
+            transform: translate(-50%, -50%);
             background-size: cover;
             background-position: center;
         }
@@ -757,8 +756,8 @@
         
         /* Loading Modal Spinner */
         .loader {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid var(--accent-color); /* Blue */
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--accent-color);
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -769,7 +768,7 @@
             margin-top: 15px;
             color: var(--secondary-text-color);
             font-weight: bold;
-            height: 2em; /* Reserve space to prevent layout shift */
+            height: 2em;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -804,7 +803,7 @@
         
         #day-detail-content .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%; /* 16:9 */
             height: 0;
             overflow: hidden;
             max-width: 100%;
@@ -877,7 +876,7 @@
 
         /* Scroll Down Indicator */
         .scroll-indicator {
-            display: none; /* Hidden by default, shown via JS */
+            display: none;
             position: absolute;
             bottom: 20px;
             left: 50%;
@@ -1005,20 +1004,17 @@
 
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
-             /* === [MODIFIED] Apply two-column layout to the new grid container === */
             .result-grid {
-                grid-template-columns: minmax(350px, 4fr) 6fr; /* Left column for map, right for table */
-                gap: 40px; /* Wider gap on desktop */
+                grid-template-columns: minmax(350px, 4fr) 6fr;
+                gap: 40px;
                 align-items: flex-start;
             }
 
-            /* Make the left panel (map + buttons) sticky */
             .result-layout-container {
                 position: sticky;
                 top: 20px;
             }
 
-            /* === [NEW] Increase zoom map icon size on large screens === */
             .pattern-marker {
                 width: 50px;
                 height: 50px;
@@ -1050,10 +1046,10 @@
                 min-height: 0;
                 max-height: none; 
                 border-radius: 0; 
-                overflow: visible; /* Let content determine height */
+                overflow: visible;
             }
             body {
-                 padding-bottom: 50px; /* Space for the footer */
+                 padding-bottom: 50px;
             }
             .page { 
                 padding: 20px; 
@@ -1072,7 +1068,6 @@
                 justify-content: center;
                 padding-top: 2vh;
                 padding-bottom: 2vh;
-                /* ページ自体が親として高さを確保するようにする */
                 flex-grow: 1; 
             }
 
@@ -1105,7 +1100,7 @@
             
             .page-content-wrapper {
                 height: auto;
-                min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
+                min-height: calc(100vh - 80px);
             }
 
             #start-page .page-content-wrapper {
@@ -1132,13 +1127,14 @@
             }
             
             /* ===== ▼▼▼ ここからがバグ修正箇所 (CSS) ▼▼▼ ===== */
-            #result-page .scroll-indicator {
-                display: flex;
-                position: fixed;       /* 画面に固定して常に見えるようにする */
-                bottom: 20px;          /* 下からの位置 */
-                left: 50%;             /* 左から50%の位置へ */
-                transform: translateX(-50%); /* 中央揃え */
-                z-index: 9999;         /* 他の要素より前面に出す */
+            #scroll-indicator {
+                position: fixed !important;
+                bottom: 80px !important; /* フッターと重ならないように調整 */
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                pointer-events: auto;
             }
             /* ===== ▲▲▲ ここまでがバグ修正箇所 (CSS) ▲▲▲ ===== */
         }
@@ -1162,7 +1158,7 @@
                 flex-direction: row; 
                 flex-wrap: wrap;
                 gap: 10px;
-                padding-bottom: 15px; /* Add some bottom padding */
+                padding-bottom: 15px;
             }
             .page-footer .left-action, .page-footer .right-action {
                 flex-basis: auto;
@@ -1224,19 +1220,13 @@
                 margin-top: 10px;
             }
             
-            #result-page .scroll-indicator {
-                display: flex;
-            }
-            
-            /* ▼▼▼ ADDED FOR TASK 4 (LAYOUT FIX) ▼▼▼ */
             #start-page .start-footer {
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                flex-wrap: wrap; /* Allow wrapping if space is tight */
-                gap: 20px; /* Add space between items */
+                flex-wrap: wrap;
+                gap: 20px;
             }
-            /* ▲▲▲ ADDED FOR TASK 4 (LAYOUT FIX) ▲▲▲ */
         }
     </style>
 </head>
@@ -1440,11 +1430,9 @@
                                      <tbody id="result-tbody"></tbody>
                                  </table>
                              </div>
-                             <!-- ▼▼▼ MODIFIED FOR TASK 1 ▼▼▼ -->
                              <p class="result-footer-link">
                                 鶴観のロード範囲（移動ルート）について詳しく知りたい方は<a href="https://note.com/nekoshita_g/n/n485ff9b3df29" target="_blank" rel="noopener noreferrer">こちら</a>
                              </p>
-                             <!-- ▲▲▲ MODIFIED FOR TASK 1 ▲▲▲ -->
                         </div>
                     </div>
                 </div>
@@ -1674,23 +1662,25 @@ let currentConfig = {};
 let idealConfig = {};
 let possibleDailyActions = [];
 let activeSelection = { configType: null, groupId: null, pattern: null };
-let lastCalculatedPlan = null; // Store the last calculated plan
-let calculationTask = null; // For async calculation
+let lastCalculatedPlan = null;
+let calculationTask = null;
 const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
 
 // --- SCRIPT START ---
 document.addEventListener('DOMContentLoaded', () => {
+    // ===== ▼▼▼ ここからがバグ修正箇所 (JS) ▼▼▼ =====
+    ensureScrollIndicatorIsInBody();
+    // ===== ▲▲▲ ここまでがバグ修正箇所 (JS) ▲▲▲ =====
+
     const infoBanner = document.getElementById('info-banner');
     const closeBannerBtn = document.getElementById('close-banner-btn');
     
-    // localStorageをチェックして、バナーが以前に閉じられたか確認
     if (localStorage.getItem('tsurumiBannerClosed') === 'true') {
-        infoBanner.style.display = 'none'; // 最初から非表示にする
+        infoBanner.style.display = 'none';
     }
 
     closeBannerBtn.addEventListener('click', () => {
         infoBanner.classList.add('hidden');
-        // localStorageに状態を保存
         localStorage.setItem('tsurumiBannerClosed', 'true');
     });
 
@@ -1711,11 +1701,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => {
                 validationMessage.classList.remove('show');
-            }, 2000); // Message disappears after 2 seconds
+            }, 2000);
 
             setTimeout(() => {
                 button.classList.remove('shake');
-            }, 600); // Animation duration
+            }, 600);
         } else {
             showPage('ideal-config-page');
         }
@@ -1744,20 +1734,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fill-all-b-btn').addEventListener('click', () => fillAllConfigs('B'));
     document.getElementById('fill-all-c-btn').addEventListener('click', () => fillAllConfigs('C'));
 
-    // スクロールインジケーターのクリックイベント
     document.getElementById('scroll-indicator').addEventListener('click', function(e) {
         e.preventDefault();
         const targetElement = document.getElementById('result-details') || document.getElementById('result-page');
         targetElement.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // ===== ▼▼▼ ここからがバグ修正箇所 (JS) ▼▼▼ =====
     const resultPage = document.getElementById('result-page');
     resultPage.addEventListener('scroll', updateScrollIndicator);
-    window.addEventListener('scroll', updateScrollIndicator, { passive: true }); // windowのスクロールも監視
+    window.addEventListener('scroll', updateScrollIndicator, { passive: true });
     window.addEventListener('resize', updateScrollIndicator);
-    // ===== ▲▲▲ ここまでがバグ修正箇所 (JS) ▲▲▲ =====
-
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -2070,12 +2056,10 @@ function calculatePlan(isMultiplayer, allowBoat) {
     
     if (calculationTask) clearTimeout(calculationTask);
 
-    // ▼▼▼ MODIFIED FOR TASK 4 ▼▼▼
     let actionsToUse = possibleDailyActions;
     if (!allowBoat) {
         actionsToUse = possibleDailyActions.filter(action => !action.name.includes('ボート'));
     }
-    // ▲▲▲ MODIFIED FOR TASK 4 ▲▲▲
 
     const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
     const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
@@ -2094,7 +2078,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
     const processChunk = () => {
         const startTime = Date.now();
-        while(queue.length > 0 && (Date.now() - startTime < 50)) { // Process for max 50ms
+        while(queue.length > 0 && (Date.now() - startTime < 50)) {
             const { config, path } = queue.shift();
             verifiedCount++;
 
@@ -2102,7 +2086,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
             let solutionPath = null;
             // Solo Mode
-            for (const soloAction of actionsToUse) { // Use filtered list
+            for (const soloAction of actionsToUse) {
                 let nextConfigArr = config.split('').map(Number);
                 for (const group of soloAction.affectedGroups) {
                     nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
@@ -2125,8 +2109,8 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
             // Multiplayer Mode
             if (isMultiplayer) {
-                for (const holdAction of actionsToUse) { // Use filtered list
-                    for (const advanceAction of actionsToUse) { // Use filtered list
+                for (const holdAction of actionsToUse) {
+                    for (const advanceAction of actionsToUse) {
                         const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(x => !holdAction.affectedGroups.has(x)));
                         if (effectiveAdvance.size === 0) continue;
                         
@@ -2168,7 +2152,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
 
 // --- RESULT DISPLAY ---
-function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat state
+function displayResults(plan, isMultiplayer, allowBoat) {
     lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
@@ -2179,12 +2163,12 @@ function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat stat
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat); // Pass allowBoat state
+        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat);
         alternateCalcBtn.className = 'btn btn-primary';
         soloNoticeEl.style.display = 'none';
     } else {
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat); // Pass allowBoat state
+        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat);
         alternateCalcBtn.className = 'btn btn-multi';
         soloNoticeEl.style.display = '';
     }
@@ -2227,9 +2211,8 @@ function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat stat
     showPage('result-page');
     
     const resultPage = document.getElementById('result-page');
-    resultPage.scrollTop = 0; // ページ表示時にスクロール位置を一番上に戻す
+    resultPage.scrollTop = 0;
 
-    // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
     setTimeout(updateScrollIndicator, 150); 
 }
 
@@ -2244,7 +2227,7 @@ function showDayDetail(dayData, dayNumber) {
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
         contentHTML += generateActionDetailsHTML(dayData.advanceAction, "1P (ホスト)");
-    } else { // multi
+    } else {
         const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(x => !dayData.holdAction.affectedGroups.has(x)));
 
         contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
@@ -2357,27 +2340,26 @@ function generateActionDetailsHTML(actionData, playerRole) {
 
 // ===== ▼▼▼ ここからがバグ修正箇所 (JS Function) ▼▼▼ =====
 /**
- * スクロールインジケーターの表示/非表示を制御する関数
- * モバイルでのbodyスクロールと、デスクトップでの#result-pageスクロールの両方に対応
+ * スクロール矢印をbodyの直下に移動させる関数
  */
+function ensureScrollIndicatorIsInBody() {
+  const indicator = document.getElementById('scroll-indicator');
+  if (!indicator) return;
+  // 親がbodyでなければ、bodyの末尾に移動させる
+  if (indicator.parentElement !== document.body) {
+    document.body.appendChild(indicator);
+  }
+}
+
 function updateScrollIndicator() {
     const resultPage = document.getElementById('result-page');
     const scrollIndicator = document.getElementById('scroll-indicator');
     if (!resultPage || !scrollIndicator) return;
 
-    // まず、resultPage 自身がスクロール可能かを確認
     const resultPageCanScroll = resultPage.scrollHeight > resultPage.clientHeight;
-
-    // スクロールコンテナを決定（resultPage がスクロール可能ならそれを優先、そうでなければ document）
-    const scrollContainer = resultPageCanScroll
-        ? resultPage
-        : (document.scrollingElement || document.documentElement);
-
+    const scrollContainer = resultPageCanScroll ? resultPage : (document.scrollingElement || document.documentElement);
     const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
-    const scrollTop = (scrollContainer === resultPage) 
-        ? resultPage.scrollTop
-        : (document.scrollingElement ? document.scrollingElement.scrollTop : document.documentElement.scrollTop);
-
+    const scrollTop = (scrollContainer === resultPage) ? resultPage.scrollTop : (document.scrollingElement ? document.scrollingElement.scrollTop : document.documentElement.scrollTop);
     const isAtTop = scrollTop < 50;
 
     if (isScrollable && isAtTop) {
@@ -2390,11 +2372,6 @@ function updateScrollIndicator() {
 
 
 // --- SAVE/LOAD LOGIC ---
-
-/**
- * Reads all saved plans from localStorage.
- * @returns {Array} An array of saved plan objects.
- */
 function getSavedPlans() {
     try {
         const plansJSON = localStorage.getItem('tsurumiSavedPlans');
@@ -2405,17 +2382,12 @@ function getSavedPlans() {
     }
 }
 
-/**
- * Saves the current plan to localStorage.
- */
 function savePlan() {
     const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
     if (!planName || planName.trim() === "") {
-        return; // User cancelled or entered empty name
+        return;
     }
 
-    // ▼▼▼ MODIFIED FOR TASK 2 (BUGFIX) ▼▼▼
-    // Convert Set to Array for JSON compatibility
     const serializablePlan = lastCalculatedPlan.map(day => {
         return {
             ...day,
@@ -2429,14 +2401,13 @@ function savePlan() {
             }
         };
     });
-    // ▲▲▲ MODIFIED FOR TASK 2 (BUGFIX) ▲▲▲
 
     const planData = {
-        id: Date.now().toString(), // Unique ID for the plan
+        id: Date.now().toString(),
         name: planName.trim(),
         currentConfig: currentConfig,
         idealConfig: idealConfig,
-        plan: serializablePlan, // Use the serializable version
+        plan: serializablePlan,
         isMultiplayer: document.getElementById('multiplayer-mode-checkbox').checked,
         createdAt: new Date().toISOString()
     };
@@ -2452,17 +2423,11 @@ function savePlan() {
     }
 }
 
-/**
- * Opens the 'Load Plan' modal and populates it with saved plans.
- */
 function openLoadModal() {
     renderSavedPlans();
     showModal('load-plan-modal');
 }
 
-/**
- * Renders the list of saved plans in the modal.
- */
 function renderSavedPlans() {
     const plans = getSavedPlans();
     const listEl = document.getElementById('saved-plans-list');
@@ -2478,7 +2443,6 @@ function renderSavedPlans() {
     noPlansEl.style.display = 'none';
     listEl.style.display = '';
 
-    // Sort by newest first
     plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     plans.forEach(plan => {
@@ -2494,7 +2458,6 @@ function renderSavedPlans() {
         listEl.appendChild(li);
     });
 
-    // Attach event listeners after creating the buttons
     listEl.querySelectorAll('.btn-load').forEach(btn => {
         btn.addEventListener('click', () => loadPlan(btn.dataset.planId));
     });
@@ -2503,10 +2466,6 @@ function renderSavedPlans() {
     });
 }
 
-/**
- * Loads a selected plan and restores the application state.
- * @param {string} planId - The ID of the plan to load.
- */
 function loadPlan(planId) {
     const plans = getSavedPlans();
     const planToLoad = plans.find(p => p.id === planId);
@@ -2516,8 +2475,6 @@ function loadPlan(planId) {
         return;
     }
 
-    // ▼▼▼ MODIFIED FOR TASK 2 (BUGFIX) ▼▼▼
-    // Convert Array back to Set after loading
     const deserializedPlan = planToLoad.plan.map(day => {
         return {
             ...day,
@@ -2531,15 +2488,12 @@ function loadPlan(planId) {
             }
         };
     });
-    // ▲▲▲ MODIFIED FOR TASK 2 (BUGFIX) ▲▲▲
 
-    // Restore state from the loaded plan
     currentConfig = planToLoad.currentConfig;
     idealConfig = planToLoad.idealConfig;
-    lastCalculatedPlan = deserializedPlan; // Use the deserialized version
+    lastCalculatedPlan = deserializedPlan;
     document.getElementById('multiplayer-mode-checkbox').checked = planToLoad.isMultiplayer;
 
-    // Update the input pages UI to reflect the loaded configurations
     for (const groupId in currentConfig) {
         updateConfig('current', groupId, currentConfig[groupId]);
     }
@@ -2547,15 +2501,10 @@ function loadPlan(planId) {
         updateConfig('ideal', groupId, idealConfig[groupId]);
     }
 
-    // Display the results page with the loaded plan
     displayResults(lastCalculatedPlan, planToLoad.isMultiplayer);
     closeModal('load-plan-modal');
 }
 
-/**
- * Deletes a selected plan from localStorage.
- * @param {string} planId - The ID of the plan to delete.
- */
 function deletePlan(planId) {
     if (!confirm("本当にこのプランを削除しますか？")) {
         return;
@@ -2566,18 +2515,13 @@ function deletePlan(planId) {
 
     try {
         localStorage.setItem('tsurumiSavedPlans', JSON.stringify(plans));
-        renderSavedPlans(); // Re-render the list in the modal
+        renderSavedPlans();
     } catch (e) {
         console.error("Failed to delete plan:", e);
         alert("プランの削除に失敗しました。");
     }
 }
 
-
-/**
- * Handles the loading state for an image within a container.
- * @param {HTMLImageElement} imgElement The image to handle.
- */
 function setupImageLoader(imgElement) {
     const container = imgElement.parentElement;
     if (!container || !container.classList.contains('image-container')) {
@@ -2603,4 +2547,6 @@ function setupImageLoader(imgElement) {
 </script>
 </body>
 </html>
+
+
 

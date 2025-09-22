@@ -852,10 +852,9 @@
             .config-list { height: 100%; max-height: none; }
             .site-credit-footer { position: fixed; bottom: 0; left: 0; }
             
-            /* The original bug fix is preserved, ensuring correct scroll indicator behavior on mobile. */
             #scroll-indicator {
                 position: fixed !important;
-                bottom: 80px !important; /* Adjust to avoid footer overlap */
+                bottom: 80px !important;
                 left: 50% !important;
                 transform: translateX(-50%) !important;
                 z-index: 9999 !important;
@@ -1387,6 +1386,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.getElementById(modalId).classList.remove('active'); 
         },
+        switchInputView(configType, viewType) {
+            document.getElementById(`${configType}-map-tab`).classList.toggle('active', viewType === 'map');
+            document.getElementById(`${configType}-list-tab`).classList.toggle('active', viewType === 'list');
+            document.getElementById(`${configType}-map-view`).classList.toggle('active', viewType === 'map');
+            document.getElementById(`${configType}-list-view`).classList.toggle('active', viewType === 'list');
+            if (viewType === 'map') {
+                setTimeout(() => this.updateMapLayout(`${configType}-map-container`), 50);
+            }
+        },
         updateMapLayout(containerId) {
             const mapContainer = document.getElementById(containerId);
             if (!mapContainer || !mapContainer.offsetParent) return;
@@ -1452,7 +1460,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loader = container.querySelector('.image-loader');
                 if (loader) loader.textContent = '画像の読込失敗';
             };
-            // If image is already cached by the browser, trigger onload manually
             if (imgElement.complete && imgElement.src) {
                 imgElement.onload();
             }
@@ -1481,11 +1488,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 5. CORE LOGIC FUNCTIONS ---
     
     const core = {
-        /**
-         * Initializes an input page (either 'current' or 'ideal').
-         * Creates map markers and list items for all elite groups.
-         * @param {string} configType - 'current' or 'ideal'.
-         */
         initInputPage(configType) {
             const mapContainer = document.getElementById(`${configType}-map-container`);
             const listContainer = document.getElementById(`${configType}-config-list`);
@@ -1495,7 +1497,6 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const groupId in data.eliteGroups) {
                 const group = data.eliteGroups[groupId];
                 
-                // Create map marker
                 const marker = document.createElement('div');
                 marker.className = 'map-marker glowing';
                 marker.id = `${configType}-marker-${groupId}`;
@@ -1507,7 +1508,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 marker.addEventListener('click', () => this.openGroupSelector(configType, groupId));
                 mapContainer.appendChild(marker);
 
-                // Create list item
                 const item = document.createElement('div');
                 item.className = 'config-item';
                 item.innerHTML = `<span class="config-item-label">${group.name}</span>`;
@@ -1525,30 +1525,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             setTimeout(() => uiHelpers.updateMapLayout(`${configType}-map-container`), 100);
         },
-        /**
-         * Updates the selected configuration for a specific group.
-         * @param {string} configType - 'current' or 'ideal'.
-         * @param {string} groupId - The ID of the elite group (e.g., 'A', 'B').
-         * @param {string} pattern - The selected pattern ('A', 'B', or 'C').
-         */
         updateConfig(configType, groupId, pattern) {
             const configToUpdate = (configType === 'current') ? state.currentConfig : state.idealConfig;
             configToUpdate[groupId] = pattern;
             
-            // Update UI for map view
             const marker = document.getElementById(`${configType}-marker-${groupId}`);
             marker.classList.remove('glowing');
             marker.classList.add('completed');
             marker.innerHTML = '✔';
             
-            // Update UI for list view
             document.getElementById(`${configType}-buttons-${groupId}`).querySelectorAll('button').forEach(btn => {
                 btn.classList.toggle('selected', btn.textContent === pattern);
             });
             
             uiHelpers.updateProgress(configType);
             
-            // Hide the initial guide text once an input is made
             const isAnyConfigStarted = Object.keys(configToUpdate).length > 0;
             const guideText = document.querySelector(`#${configType}-map-container .map-guide-text`);
             if (guideText) guideText.classList.toggle('hidden', isAnyConfigStarted);
@@ -1562,7 +1553,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.zoom.mapImage.src = data.eliteGroups[groupId].zoomMapUrl;
             }
 
-            // Clear previous markers and create new ones
             dom.zoom.mapContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
             const selectedPattern = (configType === 'current' ? state.currentConfig : state.idealConfig)[groupId];
 
@@ -1603,17 +1593,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. CALCULATION LOGIC ---
     const calculationLogic = {
-        /**
-         * Generates all unique combinations of daily actions.
-         * This pre-computes the possible state transitions for a single day.
-         */
         generatePossibleDailyActions() {
             const achievablePatterns = new Map();
-            // "Do nothing" action
             achievablePatterns.set(JSON.stringify([]), { name: '何もしない', affectedGroups: new Set() });
             
             const numActions = data.actions.length;
-            // Iterate through all possible subsets of actions using bitmasking
             for (let i = 1; i < (1 << numActions); i++) {
                 const currentActions = [];
                 const affectedGroupsSet = new Set();
@@ -1625,7 +1609,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                // Use a sorted list of affected groups as a unique key
                 const key = JSON.stringify([...affectedGroupsSet].sort());
                 if (!achievablePatterns.has(key)) {
                     achievablePatterns.set(key, {
@@ -1635,23 +1618,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             state.possibleDailyActions = Array.from(achievablePatterns.values());
-            console.log(`Generated ${state.possibleDailyActions.length} unique daily actions.`);
         },
-        /**
-         * Converts a configuration object to a string representation for easy comparison.
-         * @param {object} config - The configuration object.
-         * @returns {string} A string like "012012..."
-         */
         configToString(config) {
             return CONSTANTS.GROUP_KEYS.map(key => config[key] ?? '').join('');
         },
-        /**
-         * The main calculation function. Uses a Breadth-First Search (BFS) algorithm to find the shortest path.
-         * @param {boolean} isMultiplayer - Whether to include multiplayer (period hold) logic.
-         * @param {boolean} allowBoat - Whether to include boat-based actions.
-         */
         calculatePlan(isMultiplayer, allowBoat) {
-            // --- 1. Validation and Setup ---
             if (Object.keys(state.currentConfig).length !== CONSTANTS.TOTAL_GROUPS || Object.keys(state.idealConfig).length === 0) {
                 alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
                 return;
@@ -1662,14 +1633,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (state.calculationTask) clearTimeout(state.calculationTask);
 
-            // --- 2. Prepare BFS ---
             let actionsToUse = state.possibleDailyActions;
             if (!allowBoat) {
                 actionsToUse = state.possibleDailyActions.filter(action => !action.name.includes('ボート'));
             }
 
             const startConfigStr = this.configToString(Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.currentConfig[k]]])));
-            // For unspecified ideal configs, use the current config value
             const idealWithFallbacks = Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.idealConfig[k] || state.currentConfig[k]]]));
             const endConfigStr = this.configToString(idealWithFallbacks);
             
@@ -1681,17 +1650,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // BFS queue: { config string, path of actions taken }
             const queue = [{ config: startConfigStr, path: [] }];
-            // Visited set to prevent cycles and redundant computations
             const visited = new Set([startConfigStr]);
             let verifiedCount = 0;
             const maxDays = 8;
 
-            // --- 3. Asynchronous BFS Processing ---
             const processChunk = () => {
                 const startTime = Date.now();
-                // Process for a max of 50ms to keep the UI responsive
                 while(queue.length > 0 && (Date.now() - startTime < 50)) {
                     const { config, path } = queue.shift();
                     verifiedCount++;
@@ -1701,7 +1666,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     let solutionPath = null;
                     const currentConfigArr = config.split('').map(Number);
 
-                    // --- Explore Solo Mode Moves ---
                     for (const soloAction of actionsToUse) {
                         let nextConfigArr = [...currentConfigArr];
                         for (const group of soloAction.affectedGroups) {
@@ -1725,11 +1689,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    // --- Explore Multiplayer Mode Moves ---
                     if (isMultiplayer) {
                         for (const holdAction of actionsToUse) {
                             for (const advanceAction of actionsToUse) {
-                                // Calculate which groups are actually affected (advance - hold)
                                 const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(g => !holdAction.affectedGroups.has(g)));
                                 if (effectiveAdvance.size === 0) continue;
                                 
@@ -1759,7 +1721,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // --- 4. Continue or Conclude ---
                 if (queue.length > 0) {
                     dom.loading.progress.textContent = `検証済みパターン: ${verifiedCount}`;
                     state.calculationTask = setTimeout(processChunk, 0);
@@ -1906,7 +1867,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
             if (!planName || planName.trim() === "") return;
             
-            // Serialize Sets to Arrays for JSON compatibility
             const serializablePlan = state.lastCalculatedPlan.map(day => ({
                 ...day,
                 holdAction: { ...day.holdAction, affectedGroups: Array.from(day.holdAction.affectedGroups || []) },
@@ -1940,7 +1900,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Deserialize Arrays back to Sets
             const deserializedPlan = planToLoad.plan.map(day => ({
                 ...day,
                 holdAction: { ...day.holdAction, affectedGroups: new Set(day.holdAction.affectedGroups || []) },
@@ -2053,18 +2012,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 9. INITIALIZATION ---
     
     function init() {
-        // Correctly position the scroll indicator
         document.body.appendChild(dom.scrollIndicator);
 
-        // Hide banner if previously closed
         if (localStorage.getItem(CONSTANTS.BANNER_CLOSED_KEY) === 'true') {
             dom.infoBanner.style.display = 'none';
         }
 
-        // Pre-calculate possible actions
         calculationLogic.generatePossibleDailyActions();
 
-        // Bind all event listeners
         dom.closeBannerBtn.addEventListener('click', eventHandlers.handleBannerClose);
         dom.goToCurrentBtn.addEventListener('click', () => uiHelpers.showPage('current-config-page'));
         dom.guideBtn.addEventListener('click', () => uiHelpers.showModal('guide-modal'));
@@ -2107,7 +2062,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
         });
         
-        // Listen for scroll/resize to manage scroll indicator visibility
         dom.resultPage.addEventListener('scroll', uiHelpers.updateScrollIndicator);
         window.addEventListener('scroll', uiHelpers.updateScrollIndicator, { passive: true });
         window.addEventListener('resize', () => {
@@ -2116,17 +2070,14 @@ document.addEventListener('DOMContentLoaded', () => {
             uiHelpers.updateMapLayout('ideal-map-container');
         });
 
-        // Initialize input pages
         core.initInputPage('current');
         core.initInputPage('ideal');
 
-        // Initial map layout calculation after images are likely loaded
         document.querySelectorAll('.map-bg').forEach(img => {
             img.addEventListener('load', () => uiHelpers.updateMapLayout(img.closest('.map-container').id));
         });
     }
 
-    // Start the application
     init();
 });
 </script>

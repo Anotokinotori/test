@@ -1281,6 +1281,10 @@
 
                     <div class="start-footer">
                         <div class="multi-mode-toggle">
+                            <input type="checkbox" id="boat-mode-checkbox" checked>
+                            <label for="boat-mode-checkbox">ボートでの調整を許可する</label>
+                        </div>
+                        <div class="multi-mode-toggle">
                             <input type="checkbox" id="multiplayer-mode-checkbox">
                             <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
                             <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
@@ -1616,10 +1620,10 @@ const actionDetails = {
     13: { images: ['https://assets.st-note.com/img/1740019544-fjJrv5VwbpUgatR0FLMODEPG.png?width=1200', 'https://assets.st-note.com/img/1740019502-2BkCqL4znrixluRm7FpjvhOQ.png?width=1200'], videoUrl: 'https://youtu.be/2_xN2PYjrO4?si=0K03Yr1tl74NQ0MF', note: 'ワープ8にワープした段階でワクカウもロードされます。\nその後、移動し、モシリ炎アビスとモシリ雷アビスとモシリ暴徒もロードします。\n目印は草です。\n※ワープ7からだと、アウタケ東とモシリ雷アビスのロード境界付近になり誤ロードのリスクが上がるため、8から向かってます\n極力動画と同じように移動してください。' },
     14: { images: ['https://assets.st-note.com/img/1739947858-im8E9AtCjsr501YZnHWuKxNJ.png?width=1200 ', 'https://assets.st-note.com/img/1739947867-yxzY23VinFgkLKrCtmXqvG0B.png?width=1200'], videoUrl: 'https://youtu.be/fDn-IKfIL-A?si=92PmIUWw-Vgvg34m', note: 'ワープ8にワープした段階でワクカウもロードされます。その後、移動し、モシリ炎アビスとモシリ雷アビスもロードします。目印は杭です。\n極力動画と同じように移動してください。' },
     15: { images: ['https://assets.st-note.com/img/1738380135-LlcU0487Xtbjduk9KzqT6sDa.png?width=1200', 'https://assets.st-note.com/img/1740114869-zBxEZO2v3dAeQusnTYJ0WkNb.png?width=1200'], videoUrl: 'https://youtu.be/FRZu8bq3SEY?si=Ra81bAbgAKu_DGqb', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）\n目印はミントです。\n極力動画と同じように移動してください。' },
-    16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーです。\n極力動画と同じように移動してください。' },
+    16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーと崖の隙間です。\n極力動画と同じように移動してください。' },
     17: { images: ['https://assets.st-note.com/img/1738916671-ORDvWIt8zi692QxAJVKb1rlS.png?width=1200', 'https://assets.st-note.com/img/1738916711-VnxAvW1qJdrGXlOzoHe8Mshk.png?width=1200'], videoUrl: 'https://youtu.be/x8Zcoz0VjzY?si=42_j7YWlgBPT_zR3', note: 'ワープ7にワープした段階でモシリ炎アビスとワクカウもロードされます。その後、移動し、アウタケ東もロードします。目標は雷石です。\n極力動画と同じように移動してください。' },
-    18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はミント\n極力動画と同じように移動してください。' },
-    19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置\n極力動画と同じように移動してください。' },
+    18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: 'シリコロのボートポイントです。ポケワを置くのがおすすめですが、セイライ島やヤシオリ島から海を渡って来ても大丈夫です。\n極力動画と同じように移動してください。' },
+    19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置\n目印はミントです。\n極力動画と同じように移動してください。' },
     20: { images: ['https://assets.st-note.com/img/1740887637-KEB38rW94bPpH2YI6whCcQ7x.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
     21: { images: ['https://assets.st-note.com/img/1740464299-tWJOErwCv4B1cnPI57XmoMY3.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
 };
@@ -1718,7 +1722,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('copy-current-btn').addEventListener('click', copyCurrentConfigToIdeal);
     document.getElementById('calculate-plan-btn').addEventListener('click', () => {
         const isMultiplayer = document.getElementById('multiplayer-mode-checkbox').checked;
-        calculatePlan(isMultiplayer);
+        const allowBoat = document.getElementById('boat-mode-checkbox').checked;
+        calculatePlan(isMultiplayer, allowBoat);
     });
     document.getElementById('reset-btn').addEventListener('click', resetApp);
     document.getElementById('save-plan-btn').addEventListener('click', savePlan);
@@ -2046,7 +2051,7 @@ function generatePossibleDailyActions() {
     console.log(`Generated ${possibleDailyActions.length} unique daily actions.`);
 }
 
-function calculatePlan(isMultiplayer) {
+function calculatePlan(isMultiplayer, allowBoat) {
     if (Object.keys(currentConfig).length !== totalGroups || Object.keys(idealConfig).length === 0) {
         alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
         return;
@@ -2058,12 +2063,19 @@ function calculatePlan(isMultiplayer) {
     
     if (calculationTask) clearTimeout(calculationTask);
 
+    // ▼▼▼ MODIFIED FOR TASK 4 ▼▼▼
+    let actionsToUse = possibleDailyActions;
+    if (!allowBoat) {
+        actionsToUse = possibleDailyActions.filter(action => !action.name.includes('ボート'));
+    }
+    // ▲▲▲ MODIFIED FOR TASK 4 ▲▲▲
+
     const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
     const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
 
     if (startConfigStr === endConfigStr) {
         setTimeout(() => {
-            displayResults([], isMultiplayer);
+            displayResults([], isMultiplayer, allowBoat);
             closeModal('loading-modal');
         }, 100);
         return;
@@ -2083,7 +2095,7 @@ function calculatePlan(isMultiplayer) {
 
             let solutionPath = null;
             // Solo Mode
-            for (const soloAction of possibleDailyActions) {
+            for (const soloAction of actionsToUse) { // Use filtered list
                 let nextConfigArr = config.split('').map(Number);
                 for (const group of soloAction.affectedGroups) {
                     nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
@@ -2099,15 +2111,15 @@ function calculatePlan(isMultiplayer) {
                 }
             }
             if (solutionPath) {
-                displayResults(solutionPath, isMultiplayer);
+                displayResults(solutionPath, isMultiplayer, allowBoat);
                 closeModal('loading-modal');
                 return;
             }
 
             // Multiplayer Mode
             if (isMultiplayer) {
-                for (const holdAction of possibleDailyActions) {
-                    for (const advanceAction of possibleDailyActions) {
+                for (const holdAction of actionsToUse) { // Use filtered list
+                    for (const advanceAction of actionsToUse) { // Use filtered list
                         const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(x => !holdAction.affectedGroups.has(x)));
                         if (effectiveAdvance.size === 0) continue;
                         
@@ -2129,7 +2141,7 @@ function calculatePlan(isMultiplayer) {
                 }
             }
             if (solutionPath) {
-                displayResults(solutionPath, isMultiplayer);
+                displayResults(solutionPath, isMultiplayer, allowBoat);
                 closeModal('loading-modal');
                 return;
             }
@@ -2139,7 +2151,7 @@ function calculatePlan(isMultiplayer) {
             progressEl.textContent = `検証済みパターン: ${verifiedCount} / 59049`;
             calculationTask = setTimeout(processChunk, 0);
         } else {
-            displayResults(null, isMultiplayer);
+            displayResults(null, isMultiplayer, allowBoat);
             closeModal('loading-modal');
         }
     };
@@ -2149,7 +2161,7 @@ function calculatePlan(isMultiplayer) {
 
 
 // --- RESULT DISPLAY ---
-function displayResults(plan, isMultiplayer) {
+function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat state
     lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
@@ -2160,12 +2172,12 @@ function displayResults(plan, isMultiplayer) {
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(false);
+        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat); // Pass allowBoat state
         alternateCalcBtn.className = 'btn btn-primary';
         soloNoticeEl.style.display = 'none';
     } else {
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(true);
+        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat); // Pass allowBoat state
         alternateCalcBtn.className = 'btn btn-multi';
         soloNoticeEl.style.display = '';
     }

@@ -1110,19 +1110,10 @@
                 min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
 
-            /* ===== ここからが修正箇所 ===== */
-            /*
-             * 問題点：上記の .page-content-wrapper の min-height が全ページに適用され、
-             * #start-page の要素が上下に引き伸ばされていました。
-             * * 解決策：#start-page の .page-content-wrapper のみ、min-height をリセットします。
-             * これにより、他のページ（入力・結果ページ）の「フルスクリーン表示」は維持しつつ、
-             * スタートページだけがコンテンツの高さに合わせて中央寄せになります。
-             */
             #start-page .page-content-wrapper {
-                min-height: 0; /* min-height をリセット */
-                flex-grow: 1; /* 親要素(.page)の高さに合わせて伸縮するように */
+                min-height: 0; 
+                flex-grow: 1; 
             }
-            /* ===== ここまでが修正箇所 ===== */
             
             .input-views-container {
                 flex-grow: 0;
@@ -1142,9 +1133,16 @@
                 left: 0;
             }
             
+            /* ===== ▼▼▼ ここからがバグ修正箇所 (CSS) ▼▼▼ ===== */
             #result-page .scroll-indicator {
                 display: flex;
+                position: fixed;       /* 画面に固定して常に見えるようにする */
+                bottom: 20px;          /* 下からの位置 */
+                left: 50%;             /* 左から50%の位置へ */
+                transform: translateX(-50%); /* 中央揃え */
+                z-index: 9999;         /* 他の要素より前面に出す */
             }
+            /* ===== ▲▲▲ ここまでがバグ修正箇所 (CSS) ▲▲▲ ===== */
         }
 
         @media (max-width: 480px) {
@@ -1188,9 +1186,6 @@
                 padding: 10px;
             }
 
-            #result-page .scroll-indicator {
-                display: flex;
-            }
         }
         
         @media (max-height: 800px) and (min-width: 769px) {
@@ -1234,6 +1229,16 @@
             #result-page .scroll-indicator {
                 display: flex;
             }
+            
+            /* ▼▼▼ ADDED FOR TASK 4 (LAYOUT FIX) ▼▼▼ */
+            #start-page .start-footer {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap; /* Allow wrapping if space is tight */
+                gap: 20px; /* Add space between items */
+            }
+            /* ▲▲▲ ADDED FOR TASK 4 (LAYOUT FIX) ▲▲▲ */
         }
     </style>
 </head>
@@ -1244,7 +1249,7 @@
             <span class="title-short">鶴観調整ツール</span>
         </h1>
         <div class="header-info">
-            <span class="header-version">Ver. 1.0.1</span>
+            <span class="header-version">Ver. 1.1.0</span>
             <span class="credit-separator">|</span>
             <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
         </div>
@@ -1281,7 +1286,7 @@
 
                     <div class="start-footer">
                         <div class="multi-mode-toggle">
-                            <input type="checkbox" id="boat-mode-checkbox" checked>
+                            <input type="checkbox" id="boat-mode-checkbox">
                             <label for="boat-mode-checkbox">ボートでの調整を許可する</label>
                         </div>
                         <div class="multi-mode-toggle">
@@ -1606,13 +1611,13 @@ const actionsData = [
 ];
 
 const actionDetails = {
-    2:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202210.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    3:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202231.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    4:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202321.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
-    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所（マップを開く、別エリアに飛ぶなど）に移動してください。' },
+    2:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202210.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    3:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202231.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    4:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202321.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
+    8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' },
     9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' },
     10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' },
     11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' },
@@ -1622,7 +1627,7 @@ const actionDetails = {
     15: { images: ['https://assets.st-note.com/img/1738380135-LlcU0487Xtbjduk9KzqT6sDa.png?width=1200', 'https://assets.st-note.com/img/1740114869-zBxEZO2v3dAeQusnTYJ0WkNb.png?width=1200'], videoUrl: 'https://youtu.be/FRZu8bq3SEY?si=Ra81bAbgAKu_DGqb', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）\n目印はミントです。\n極力動画と同じように移動してください。' },
     16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーと崖の隙間です。\n極力動画と同じように移動してください。' },
     17: { images: ['https://assets.st-note.com/img/1738916671-ORDvWIt8zi692QxAJVKb1rlS.png?width=1200', 'https://assets.st-note.com/img/1738916711-VnxAvW1qJdrGXlOzoHe8Mshk.png?width=1200'], videoUrl: 'https://youtu.be/x8Zcoz0VjzY?si=42_j7YWlgBPT_zR3', note: 'ワープ7にワープした段階でモシリ炎アビスとワクカウもロードされます。その後、移動し、アウタケ東もロードします。目標は雷石です。\n極力動画と同じように移動してください。' },
-    18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: 'シリコロのボートポイントです。ポケワを置くのがおすすめですが、セイライ島やヤシオリ島から海を渡って来ても大丈夫です。\n極力動画と同じように移動してください。' },
+    18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: 'シリコロのボートポイントです。ポケワを置くのがおすすめですが、セイライ島やヤシオリ島から海を渡って来ても大丈夫です。' },
     19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置\n目印はミントです。\n極力動画と同じように移動してください。' },
     20: { images: ['https://assets.st-note.com/img/1740887637-KEB38rW94bPpH2YI6whCcQ7x.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
     21: { images: ['https://assets.st-note.com/img/1740464299-tWJOErwCv4B1cnPI57XmoMY3.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
@@ -1744,13 +1749,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // スクロールインジケーターのクリックイベント
     document.getElementById('scroll-indicator').addEventListener('click', function(e) {
         e.preventDefault();
-        document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
+        const targetElement = document.getElementById('result-details') || document.getElementById('result-page');
+        targetElement.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // スクロールとリサイズを監視して、インジケーターの表示を制御
+    // ===== ▼▼▼ ここからがバグ修正箇所 (JS) ▼▼▼ =====
     const resultPage = document.getElementById('result-page');
     resultPage.addEventListener('scroll', updateScrollIndicator);
+    window.addEventListener('scroll', updateScrollIndicator, { passive: true }); // windowのスクロールも監視
     window.addEventListener('resize', updateScrollIndicator);
+    // ===== ▲▲▲ ここまでがバグ修正箇所 (JS) ▲▲▲ =====
+
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -2232,7 +2241,7 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-    let contentHTML = '<p style="color: red; font-weight: bold; text-align:center;">注意: 移動時には閑雲のような空中移動キャラクターは、ロード範囲がズレる可能性があるため使用しないでください。</p>';
+        let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認し、閑雲や放浪者のような高速移動キャラは使用しないでください。</strong></p>';
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
@@ -2242,20 +2251,24 @@ function showDayDetail(dayData, dayNumber) {
 
         contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
         
-        contentHTML += `<h4>Step 1: 2P (ゲスト) の行動</h4>`;
+        contentHTML += `<h4>Step 1: 準備</h4>
+                        <p>ホスト(1P)は鶴観以外の安全な場所に移動し、ゲスト(2P)を世界に招き入れます。</p>`;
+        
+        contentHTML += `<h4>Step 2: 周期のホールド (ゲストの操作)</h4>`;
         if (dayData.holdAction.name === '何もしない' || dayData.holdAction.name === '---') {
-             contentHTML += `<p><strong>行動:</strong> なし</p><p>ゲストは何もしません。ホストの世界に入ったら、鶴見以外の場所（例えば塵歌壺など）で待機してください。</p>`;
+             contentHTML += `<p><strong>行動:</strong> なし</p><p>この日はゲスト(2P)の操作は不要です。</p>`;
         } else {
-            contentHTML += `<p><strong>目的:</strong> 下記グループの周期を<strong>ホールド(固定)</strong>します。</p>`;
+            contentHTML += `<p><strong>[重要]</strong> まずホスト(1P)が層岩巨淵・地下鉱区など、<strong>テイワット以外のマップに移動</strong>するのを待ちます。</p>`;
+            contentHTML += `<p>ホストの移動後、ゲスト(2P)は以下の行動で指定されたグループの周期を<strong>ホールド(固定)</strong>します。</p>`;
             contentHTML += generateActionDetailsHTML(dayData.holdAction, "2P (ゲスト)");
-            contentHTML += `<p><strong>[重要]</strong> ゲストは上記行動を終えたら、ホストが次の行動を完了するまで、<strong>鶴見以外の場所（塵歌壺など）</strong>に移動して待機してください。</p>`;
+            contentHTML += `<p><strong>[重要]</strong> ゲストは上記行動を終えたら、速やかにホストの世界から退出してください。</p>`;
         }
         
-        contentHTML += `<h4 style="margin-top: 25px;">Step 2: 1P (ホスト) の行動</h4>`;
+        contentHTML += `<h4 style="margin-top: 25px;">Step 3: 周期の進行 (ホストの操作)</h4>`;
         if (dayData.advanceAction.name === '何もしない' || dayData.advanceAction.name === '---' || effectiveAdvanceGroups.size === 0) {
             contentHTML += `<p><strong>行動:</strong> なし</p><p>ホストの特別な行動は不要です。日付が変わるのを待ってください。</p>`;
         } else {
-            contentHTML += `<p><strong>目的:</strong> ゲストがホールドしなかった、下記グループの周期を1つ<strong>進めます</strong>。</p>`;
+            contentHTML += `<p>ゲストが退出してソロ状態に戻った後、ホスト(1P)は以下の行動で、ゲストが<strong>ホールドしなかった</strong>グループの周期を1つ<strong>進めます</strong>。</p>`;
             const effectiveAdvanceAction = {
                 name: dayData.advanceAction.name,
                 affectedGroups: effectiveAdvanceGroups
@@ -2344,25 +2357,39 @@ function generateActionDetailsHTML(actionData, playerRole) {
     return html;
 }
 
+// ===== ▼▼▼ ここからがバグ修正箇所 (JS Function) ▼▼▼ =====
 /**
  * スクロールインジケーターの表示/非表示を制御する関数
+ * モバイルでのbodyスクロールと、デスクトップでの#result-pageスクロールの両方に対応
  */
 function updateScrollIndicator() {
     const resultPage = document.getElementById('result-page');
     const scrollIndicator = document.getElementById('scroll-indicator');
     if (!resultPage || !scrollIndicator) return;
 
-    // ページがスクロール可能か、かつユーザーがページ上部にいるかを確認
-    const isScrollable = resultPage.scrollHeight > resultPage.clientHeight;
-    const isAtTop = resultPage.scrollTop < 50;
+    // まず、resultPage 自身がスクロール可能かを確認
+    const resultPageCanScroll = resultPage.scrollHeight > resultPage.clientHeight;
 
-    // スクロール可能で、かつページ上部にいる場合のみ矢印を表示
+    // スクロールコンテナを決定（resultPage がスクロール可能ならそれを優先、そうでなければ document）
+    const scrollContainer = resultPageCanScroll
+        ? resultPage
+        : (document.scrollingElement || document.documentElement);
+
+    const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
+    const scrollTop = (scrollContainer === resultPage) 
+        ? resultPage.scrollTop
+        : (document.scrollingElement ? document.scrollingElement.scrollTop : document.documentElement.scrollTop);
+
+    const isAtTop = scrollTop < 50;
+
     if (isScrollable && isAtTop) {
         scrollIndicator.classList.remove('hidden');
     } else {
         scrollIndicator.classList.add('hidden');
     }
 }
+// ===== ▲▲▲ ここまでがバグ修正箇所 (JS Function) ▲▲▲ =====
+
 
 // --- SAVE/LOAD LOGIC ---
 
@@ -2578,4 +2605,3 @@ function setupImageLoader(imgElement) {
 </script>
 </body>
 </html>
-

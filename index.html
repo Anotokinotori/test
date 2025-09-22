@@ -1,4 +1,4 @@
-ｇｐｔ
+じぇみに
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -163,7 +163,8 @@
             left: 0;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            transform: translateY(20px);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -179,6 +180,7 @@
         .page.active {
             opacity: 1;
             visibility: visible;
+            transform: translateY(0);
             pointer-events: auto;
         }
 
@@ -639,6 +641,7 @@
         .mode-solo { color: var(--accent-color); font-weight: bold; }
         .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
 
+        /* ▼▼▼ ADDED FOR TASK 1 ▼▼▼ */
         .result-footer-link {
             text-align: center;
             margin-top: 25px;
@@ -655,6 +658,7 @@
         .result-footer-link a:hover {
             color: var(--accent-hover-color);
         }
+        /* ▲▲▲ ADDED FOR TASK 1 ▲▲▲ */
 
         /* Modal Styles */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: none; justify-content: center; align-items: center; padding: 2vh 2vw; box-sizing: border-box; }
@@ -664,26 +668,26 @@
         .modal-close:hover { color: #333; }
         
         #guide-modal .modal-content h2 {
-            font-size: 2.2em;
+            font-size: 2.2em; /* メインタイトルを大きく */
             margin-bottom: 15px;
         }
 
         #guide-modal .modal-content h3 {
-            font-size: 1.6em;
+            font-size: 1.6em; /* ステップの見出しを大きく */
             margin-top: 10px;
             margin-bottom: 15px;
         }
 
         #guide-modal .modal-content hr {
             border: none;
-            height: 4px;
-            background-color: #adb5bd;
-            border-radius: 2px;
-            margin: 30px 0;
+            height: 4px; /* 境界線を太く */
+            background-color: #adb5bd; /* 少し濃い色に変更 */
+            border-radius: 2px; /* 角を丸く */
+            margin: 30px 0; /* 上下の余白を調整 */
         }
         
         #zoom-view .modal-content {
-            overflow: hidden;
+            overflow: hidden; /* Prevent modal's own scrollbar */
         }
         #zoom-map-container {
             position: relative;
@@ -718,7 +722,7 @@
             font-weight: bold; 
             cursor: pointer; 
             border-radius: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* Center the marker on the coordinate */
             background-size: cover;
             background-position: center;
         }
@@ -756,8 +760,8 @@
         
         /* Loading Modal Spinner */
         .loader {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid var(--accent-color);
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid var(--accent-color); /* Blue */
             border-radius: 50%;
             width: 60px;
             height: 60px;
@@ -768,7 +772,7 @@
             margin-top: 15px;
             color: var(--secondary-text-color);
             font-weight: bold;
-            height: 2em;
+            height: 2em; /* Reserve space to prevent layout shift */
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -803,7 +807,7 @@
         
         #day-detail-content .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
             height: 0;
             overflow: hidden;
             max-width: 100%;
@@ -876,7 +880,7 @@
 
         /* Scroll Down Indicator */
         .scroll-indicator {
-            display: none;
+            display: none; /* Hidden by default, shown via JS */
             position: absolute;
             bottom: 20px;
             left: 50%;
@@ -1004,17 +1008,20 @@
 
         /* --- RESPONSIVE STYLES --- */
         @media (min-width: 992px) {
+             /* === [MODIFIED] Apply two-column layout to the new grid container === */
             .result-grid {
-                grid-template-columns: minmax(350px, 4fr) 6fr;
-                gap: 40px;
+                grid-template-columns: minmax(350px, 4fr) 6fr; /* Left column for map, right for table */
+                gap: 40px; /* Wider gap on desktop */
                 align-items: flex-start;
             }
 
+            /* Make the left panel (map + buttons) sticky */
             .result-layout-container {
                 position: sticky;
                 top: 20px;
             }
 
+            /* === [NEW] Increase zoom map icon size on large screens === */
             .pattern-marker {
                 width: 50px;
                 height: 50px;
@@ -1046,10 +1053,10 @@
                 min-height: 0;
                 max-height: none; 
                 border-radius: 0; 
-                overflow: visible;
+                overflow: visible; /* Let content determine height */
             }
             body {
-                 padding-bottom: 50px;
+                 padding-bottom: 50px; /* Space for the footer */
             }
             .page { 
                 padding: 20px; 
@@ -1068,6 +1075,7 @@
                 justify-content: center;
                 padding-top: 2vh;
                 padding-bottom: 2vh;
+                /* ページ自体が親として高さを確保するようにする */
                 flex-grow: 1; 
             }
 
@@ -1100,13 +1108,22 @@
             
             .page-content-wrapper {
                 height: auto;
-                min-height: calc(100vh - 80px);
+                min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
 
+            /* ===== ここからが修正箇所 ===== */
+            /*
+             * 問題点：上記の .page-content-wrapper の min-height が全ページに適用され、
+             * #start-page の要素が上下に引き伸ばされていました。
+             * * 解決策：#start-page の .page-content-wrapper のみ、min-height をリセットします。
+             * これにより、他のページ（入力・結果ページ）の「フルスクリーン表示」は維持しつつ、
+             * スタートページだけがコンテンツの高さに合わせて中央寄せになります。
+             */
             #start-page .page-content-wrapper {
-                min-height: 0; 
-                flex-grow: 1; 
+                min-height: 0; /* min-height をリセット */
+                flex-grow: 1; /* 親要素(.page)の高さに合わせて伸縮するように */
             }
+            /* ===== ここまでが修正箇所 ===== */
             
             .input-views-container {
                 flex-grow: 0;
@@ -1126,17 +1143,15 @@
                 left: 0;
             }
             
-            /* ===== ▼▼▼ ここからがバグ修正箇所 (CSS) ▼▼▼ ===== */
-            #scroll-indicator {
-                position: fixed !important;
-                bottom: 80px !important; /* フッターと重ならないように調整 */
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                z-index: 9999 !important;
-                display: flex !important;
-                pointer-events: auto;
+            /* ===== ▼▼▼ BUGFIX ▼▼▼ ===== */
+            /* スマホ表示では矢印を表示し、画面に固定する */
+            .scroll-indicator {
+                display: flex;
+                position: fixed; /* 画面に固定 */
+                bottom: 70px; /* フッターの上に配置 */
+                z-index: 100;
             }
-            /* ===== ▲▲▲ ここまでがバグ修正箇所 (CSS) ▲▲▲ ===== */
+            /* ▲▲▲ BUGFIX ▲▲▲ */
         }
 
         @media (max-width: 480px) {
@@ -1158,7 +1173,7 @@
                 flex-direction: row; 
                 flex-wrap: wrap;
                 gap: 10px;
-                padding-bottom: 15px;
+                padding-bottom: 15px; /* Add some bottom padding */
             }
             .page-footer .left-action, .page-footer .right-action {
                 flex-basis: auto;
@@ -1179,7 +1194,6 @@
                 font-size: 0.9em;
                 padding: 10px;
             }
-
         }
         
         @media (max-height: 800px) and (min-width: 769px) {
@@ -1220,13 +1234,19 @@
                 margin-top: 10px;
             }
             
+            #result-page .scroll-indicator {
+                display: flex;
+            }
+            
+            /* ▼▼▼ ADDED FOR TASK 4 (LAYOUT FIX) ▼▼▼ */
             #start-page .start-footer {
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                flex-wrap: wrap;
-                gap: 20px;
+                flex-wrap: wrap; /* Allow wrapping if space is tight */
+                gap: 20px; /* Add space between items */
             }
+            /* ▲▲▲ ADDED FOR TASK 4 (LAYOUT FIX) ▲▲▲ */
         }
     </style>
 </head>
@@ -1430,15 +1450,17 @@
                                      <tbody id="result-tbody"></tbody>
                                  </table>
                              </div>
+                             <!-- ▼▼▼ MODIFIED FOR TASK 1 ▼▼▼ -->
                              <p class="result-footer-link">
                                 鶴観のロード範囲（移動ルート）について詳しく知りたい方は<a href="https://note.com/nekoshita_g/n/n485ff9b3df29" target="_blank" rel="noopener noreferrer">こちら</a>
                              </p>
+                             <!-- ▲▲▲ MODIFIED FOR TASK 1 ▲▲▲ -->
                         </div>
                     </div>
                 </div>
-                <a href="#result-details" id="scroll-indicator" class="scroll-indicator hidden">
+                <div id="scroll-indicator" class="scroll-indicator hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                </a>
+                </div>
             </div>
         </div>
     </main>
@@ -1506,10 +1528,10 @@
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-              <span class="modal-close" data-target="day-detail-modal">&times;</span>
-              <h2 id="day-detail-title"></h2>
-              <div id="day-detail-content"></div>
-       </div>
+               <span class="modal-close" data-target="day-detail-modal">&times;</span>
+               <h2 id="day-detail-title"></h2>
+               <div id="day-detail-content"></div>
+        </div>
     </div>
 
     <div id="credit-modal" class="modal backdrop-blur">
@@ -1662,25 +1684,23 @@ let currentConfig = {};
 let idealConfig = {};
 let possibleDailyActions = [];
 let activeSelection = { configType: null, groupId: null, pattern: null };
-let lastCalculatedPlan = null;
-let calculationTask = null;
+let lastCalculatedPlan = null; // Store the last calculated plan
+let calculationTask = null; // For async calculation
 const PATTERN_MAP = { 'A': 0, 'B': 1, 'C': 2 };
 
 // --- SCRIPT START ---
 document.addEventListener('DOMContentLoaded', () => {
-    // ===== ▼▼▼ ここからがバグ修正箇所 (JS) ▼▼▼ =====
-    ensureScrollIndicatorIsInBody();
-    // ===== ▲▲▲ ここまでがバグ修正箇所 (JS) ▲▲▲ =====
-
     const infoBanner = document.getElementById('info-banner');
     const closeBannerBtn = document.getElementById('close-banner-btn');
     
+    // localStorageをチェックして、バナーが以前に閉じられたか確認
     if (localStorage.getItem('tsurumiBannerClosed') === 'true') {
-        infoBanner.style.display = 'none';
+        infoBanner.style.display = 'none'; // 最初から非表示にする
     }
 
     closeBannerBtn.addEventListener('click', () => {
         infoBanner.classList.add('hidden');
+        // localStorageに状態を保存
         localStorage.setItem('tsurumiBannerClosed', 'true');
     });
 
@@ -1701,11 +1721,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => {
                 validationMessage.classList.remove('show');
-            }, 2000);
+            }, 2000); // Message disappears after 2 seconds
 
             setTimeout(() => {
                 button.classList.remove('shake');
-            }, 600);
+            }, 600); // Animation duration
         } else {
             showPage('ideal-config-page');
         }
@@ -1734,16 +1754,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fill-all-b-btn').addEventListener('click', () => fillAllConfigs('B'));
     document.getElementById('fill-all-c-btn').addEventListener('click', () => fillAllConfigs('C'));
 
+    // スクロールインジケーターのクリックイベント
     document.getElementById('scroll-indicator').addEventListener('click', function(e) {
         e.preventDefault();
-        const targetElement = document.getElementById('result-details') || document.getElementById('result-page');
-        targetElement.scrollIntoView({ behavior: 'smooth' });
+        const scrollTarget = document.getElementById('result-details');
+        if (scrollTarget) {
+            scrollTarget.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            // Fallback for mobile where scrolling is on the body
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     });
 
+    // スクロールとリサイズを監視して、インジケーターの表示を制御
+    // ▼▼▼ BUGFIX ▼▼▼
+    // On mobile, the scroll event listener needs to be on the window.
     const resultPage = document.getElementById('result-page');
     resultPage.addEventListener('scroll', updateScrollIndicator);
-    window.addEventListener('scroll', updateScrollIndicator, { passive: true });
+    window.addEventListener('scroll', updateScrollIndicator);
     window.addEventListener('resize', updateScrollIndicator);
+    // ▲▲▲ BUGFIX ▲▲▲
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1786,6 +1816,9 @@ function showPage(pageId) {
         setTimeout(() => updateMapLayout('current-map-container'), 50);
     } else if (pageId === 'ideal-config-page') {
         setTimeout(() => updateMapLayout('ideal-map-container'), 50);
+    } else if (pageId === 'result-page') {
+        // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
+        setTimeout(updateScrollIndicator, 150);
     }
 }
 
@@ -2056,10 +2089,12 @@ function calculatePlan(isMultiplayer, allowBoat) {
     
     if (calculationTask) clearTimeout(calculationTask);
 
+    // ▼▼▼ MODIFIED FOR TASK 4 ▼▼▼
     let actionsToUse = possibleDailyActions;
     if (!allowBoat) {
         actionsToUse = possibleDailyActions.filter(action => !action.name.includes('ボート'));
     }
+    // ▲▲▲ MODIFIED FOR TASK 4 ▲▲▲
 
     const startConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[currentConfig[k]]])));
     const endConfigStr = configToString(Object.fromEntries(groupKeys.map(k => [k, PATTERN_MAP[idealConfig[k] || currentConfig[k]]])));
@@ -2078,7 +2113,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
     const processChunk = () => {
         const startTime = Date.now();
-        while(queue.length > 0 && (Date.now() - startTime < 50)) {
+        while(queue.length > 0 && (Date.now() - startTime < 50)) { // Process for max 50ms
             const { config, path } = queue.shift();
             verifiedCount++;
 
@@ -2086,7 +2121,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
             let solutionPath = null;
             // Solo Mode
-            for (const soloAction of actionsToUse) {
+            for (const soloAction of actionsToUse) { // Use filtered list
                 let nextConfigArr = config.split('').map(Number);
                 for (const group of soloAction.affectedGroups) {
                     nextConfigArr[groupKeys.indexOf(group)] = (nextConfigArr[groupKeys.indexOf(group)] + 1) % 3;
@@ -2109,8 +2144,8 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
             // Multiplayer Mode
             if (isMultiplayer) {
-                for (const holdAction of actionsToUse) {
-                    for (const advanceAction of actionsToUse) {
+                for (const holdAction of actionsToUse) { // Use filtered list
+                    for (const advanceAction of actionsToUse) { // Use filtered list
                         const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(x => !holdAction.affectedGroups.has(x)));
                         if (effectiveAdvance.size === 0) continue;
                         
@@ -2152,7 +2187,7 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
 
 // --- RESULT DISPLAY ---
-function displayResults(plan, isMultiplayer, allowBoat) {
+function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat state
     lastCalculatedPlan = plan; 
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
@@ -2163,12 +2198,12 @@ function displayResults(plan, isMultiplayer, allowBoat) {
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat);
+        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat); // Pass allowBoat state
         alternateCalcBtn.className = 'btn btn-primary';
         soloNoticeEl.style.display = 'none';
     } else {
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat);
+        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat); // Pass allowBoat state
         alternateCalcBtn.className = 'btn btn-multi';
         soloNoticeEl.style.display = '';
     }
@@ -2211,8 +2246,9 @@ function displayResults(plan, isMultiplayer, allowBoat) {
     showPage('result-page');
     
     const resultPage = document.getElementById('result-page');
-    resultPage.scrollTop = 0;
+    resultPage.scrollTop = 0; // ページ表示時にスクロール位置を一番上に戻す
 
+    // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
     setTimeout(updateScrollIndicator, 150); 
 }
 
@@ -2222,12 +2258,12 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-        let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認し、閑雲や放浪者のような高速移動キャラは使用しないでください。</strong></p>';
+      let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認し、閑雲や放浪者のような高速移動キャラは使用しないでください。</strong></p>';
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
         contentHTML += generateActionDetailsHTML(dayData.advanceAction, "1P (ホスト)");
-    } else {
+    } else { // multi
         const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(x => !dayData.holdAction.affectedGroups.has(x)));
 
         contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
@@ -2338,40 +2374,51 @@ function generateActionDetailsHTML(actionData, playerRole) {
     return html;
 }
 
-// ===== ▼▼▼ ここからがバグ修正箇所 (JS Function) ▼▼▼ =====
 /**
- * スクロール矢印をbodyの直下に移動させる関数
+ * スクロールインジケーターの表示/非表示を制御する関数
  */
-function ensureScrollIndicatorIsInBody() {
-  const indicator = document.getElementById('scroll-indicator');
-  if (!indicator) return;
-  // 親がbodyでなければ、bodyの末尾に移動させる
-  if (indicator.parentElement !== document.body) {
-    document.body.appendChild(indicator);
-  }
-}
-
+// ===== ▼▼▼ BUGFIX ▼▼▼ =====
+// ロジックを修正して、モバイルとデスクトップで正しいスクロール要素を参照するように変更
 function updateScrollIndicator() {
-    const resultPage = document.getElementById('result-page');
     const scrollIndicator = document.getElementById('scroll-indicator');
-    if (!resultPage || !scrollIndicator) return;
+    if (!scrollIndicator) return;
 
-    const resultPageCanScroll = resultPage.scrollHeight > resultPage.clientHeight;
-    const scrollContainer = resultPageCanScroll ? resultPage : (document.scrollingElement || document.documentElement);
-    const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
-    const scrollTop = (scrollContainer === resultPage) ? resultPage.scrollTop : (document.scrollingElement ? document.scrollingElement.scrollTop : document.documentElement.scrollTop);
-    const isAtTop = scrollTop < 50;
+    // 現在result-pageが表示されているかどうかもチェック
+    const resultPage = document.getElementById('result-page');
+    if (!resultPage.classList.contains('active')) {
+        scrollIndicator.classList.add('hidden');
+        return;
+    }
 
+    const isMobileView = window.innerWidth <= 768;
+    let isScrollable, isAtTop;
+
+    if (isMobileView) {
+        // スマホ表示では、ページ全体(body/document)がスクロール対象
+        const scrollRoot = document.documentElement || document.body;
+        isScrollable = scrollRoot.scrollHeight > scrollRoot.clientHeight;
+        isAtTop = scrollRoot.scrollTop < 50;
+    } else {
+        // PC表示では、#result-pageがスクロール対象
+        isScrollable = resultPage.scrollHeight > resultPage.clientHeight;
+        isAtTop = resultPage.scrollTop < 50;
+    }
+
+    // スクロール可能で、かつページ上部にいる場合のみ矢印を表示
     if (isScrollable && isAtTop) {
         scrollIndicator.classList.remove('hidden');
     } else {
         scrollIndicator.classList.add('hidden');
     }
 }
-// ===== ▲▲▲ ここまでがバグ修正箇所 (JS Function) ▲▲▲ =====
-
+// ===== ▲▲▲ BUGFIX ▲▲▲ =====
 
 // --- SAVE/LOAD LOGIC ---
+
+/**
+ * Reads all saved plans from localStorage.
+ * @returns {Array} An array of saved plan objects.
+ */
 function getSavedPlans() {
     try {
         const plansJSON = localStorage.getItem('tsurumiSavedPlans');
@@ -2382,12 +2429,17 @@ function getSavedPlans() {
     }
 }
 
+/**
+ * Saves the current plan to localStorage.
+ */
 function savePlan() {
     const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
     if (!planName || planName.trim() === "") {
-        return;
+        return; // User cancelled or entered empty name
     }
 
+    // ▼▼▼ MODIFIED FOR TASK 2 (BUGFIX) ▼▼▼
+    // Convert Set to Array for JSON compatibility
     const serializablePlan = lastCalculatedPlan.map(day => {
         return {
             ...day,
@@ -2401,13 +2453,14 @@ function savePlan() {
             }
         };
     });
+    // ▲▲▲ MODIFIED FOR TASK 2 (BUGFIX) ▲▲▲
 
     const planData = {
-        id: Date.now().toString(),
+        id: Date.now().toString(), // Unique ID for the plan
         name: planName.trim(),
         currentConfig: currentConfig,
         idealConfig: idealConfig,
-        plan: serializablePlan,
+        plan: serializablePlan, // Use the serializable version
         isMultiplayer: document.getElementById('multiplayer-mode-checkbox').checked,
         createdAt: new Date().toISOString()
     };
@@ -2423,11 +2476,17 @@ function savePlan() {
     }
 }
 
+/**
+ * Opens the 'Load Plan' modal and populates it with saved plans.
+ */
 function openLoadModal() {
     renderSavedPlans();
     showModal('load-plan-modal');
 }
 
+/**
+ * Renders the list of saved plans in the modal.
+ */
 function renderSavedPlans() {
     const plans = getSavedPlans();
     const listEl = document.getElementById('saved-plans-list');
@@ -2443,6 +2502,7 @@ function renderSavedPlans() {
     noPlansEl.style.display = 'none';
     listEl.style.display = '';
 
+    // Sort by newest first
     plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     plans.forEach(plan => {
@@ -2458,6 +2518,7 @@ function renderSavedPlans() {
         listEl.appendChild(li);
     });
 
+    // Attach event listeners after creating the buttons
     listEl.querySelectorAll('.btn-load').forEach(btn => {
         btn.addEventListener('click', () => loadPlan(btn.dataset.planId));
     });
@@ -2466,6 +2527,10 @@ function renderSavedPlans() {
     });
 }
 
+/**
+ * Loads a selected plan and restores the application state.
+ * @param {string} planId - The ID of the plan to load.
+ */
 function loadPlan(planId) {
     const plans = getSavedPlans();
     const planToLoad = plans.find(p => p.id === planId);
@@ -2475,6 +2540,8 @@ function loadPlan(planId) {
         return;
     }
 
+    // ▼▼▼ MODIFIED FOR TASK 2 (BUGFIX) ▼▼▼
+    // Convert Array back to Set after loading
     const deserializedPlan = planToLoad.plan.map(day => {
         return {
             ...day,
@@ -2488,12 +2555,15 @@ function loadPlan(planId) {
             }
         };
     });
+    // ▲▲▲ MODIFIED FOR TASK 2 (BUGFIX) ▲▲▲
 
+    // Restore state from the loaded plan
     currentConfig = planToLoad.currentConfig;
     idealConfig = planToLoad.idealConfig;
-    lastCalculatedPlan = deserializedPlan;
+    lastCalculatedPlan = deserializedPlan; // Use the deserialized version
     document.getElementById('multiplayer-mode-checkbox').checked = planToLoad.isMultiplayer;
 
+    // Update the input pages UI to reflect the loaded configurations
     for (const groupId in currentConfig) {
         updateConfig('current', groupId, currentConfig[groupId]);
     }
@@ -2501,10 +2571,15 @@ function loadPlan(planId) {
         updateConfig('ideal', groupId, idealConfig[groupId]);
     }
 
+    // Display the results page with the loaded plan
     displayResults(lastCalculatedPlan, planToLoad.isMultiplayer);
     closeModal('load-plan-modal');
 }
 
+/**
+ * Deletes a selected plan from localStorage.
+ * @param {string} planId - The ID of the plan to delete.
+ */
 function deletePlan(planId) {
     if (!confirm("本当にこのプランを削除しますか？")) {
         return;
@@ -2515,13 +2590,18 @@ function deletePlan(planId) {
 
     try {
         localStorage.setItem('tsurumiSavedPlans', JSON.stringify(plans));
-        renderSavedPlans();
+        renderSavedPlans(); // Re-render the list in the modal
     } catch (e) {
         console.error("Failed to delete plan:", e);
         alert("プランの削除に失敗しました。");
     }
 }
 
+
+/**
+ * Handles the loading state for an image within a container.
+ * @param {HTMLImageElement} imgElement The image to handle.
+ */
 function setupImageLoader(imgElement) {
     const container = imgElement.parentElement;
     if (!container || !container.classList.contains('image-container')) {
@@ -2547,6 +2627,3 @@ function setupImageLoader(imgElement) {
 </script>
 </body>
 </html>
-
-
-

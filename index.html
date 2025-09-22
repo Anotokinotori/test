@@ -1,4 +1,4 @@
-じぇみに
+ぐろっく
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -163,8 +163,7 @@
             left: 0;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.35s ease, transform 0.35s ease;
-            transform: translateY(20px);
+            transition: opacity 0.35s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -180,7 +179,6 @@
         .page.active {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
             pointer-events: auto;
         }
 
@@ -1111,19 +1109,10 @@
                 min-height: calc(100vh - 80px); /* Ensure wrapper takes full viewport minus fixed elements */
             }
 
-            /* ===== ここからが修正箇所 ===== */
-            /*
-             * 問題点：上記の .page-content-wrapper の min-height が全ページに適用され、
-             * #start-page の要素が上下に引き伸ばされていました。
-             * * 解決策：#start-page の .page-content-wrapper のみ、min-height をリセットします。
-             * これにより、他のページ（入力・結果ページ）の「フルスクリーン表示」は維持しつつ、
-             * スタートページだけがコンテンツの高さに合わせて中央寄せになります。
-             */
             #start-page .page-content-wrapper {
-                min-height: 0; /* min-height をリセット */
-                flex-grow: 1; /* 親要素(.page)の高さに合わせて伸縮するように */
+                min-height: 0; 
+                flex-grow: 1; 
             }
-            /* ===== ここまでが修正箇所 ===== */
             
             .input-views-container {
                 flex-grow: 0;
@@ -1143,15 +1132,16 @@
                 left: 0;
             }
             
-            /* ===== ▼▼▼ BUGFIX ▼▼▼ ===== */
-            /* スマホ表示では矢印を表示し、画面に固定する */
-            .scroll-indicator {
+            /* ===== ▼▼▼ ここからがバグ修正箇所 (CSS) ▼▼▼ ===== */
+            #result-page .scroll-indicator {
                 display: flex;
-                position: fixed; /* 画面に固定 */
-                bottom: 70px; /* フッターの上に配置 */
-                z-index: 100;
+                position: fixed;       /* 画面に固定して常に見えるようにする */
+                bottom: 60px;          /* 下からの位置を調整 (フッターとの重なり回避) */
+                left: 50%;             /* 左から50%の位置へ */
+                transform: translateX(-50%); /* 中央揃え */
+                z-index: 9999;         /* 他の要素より前面に出す */
             }
-            /* ▲▲▲ BUGFIX ▲▲▲ */
+            /* ===== ▲▲▲ ここまでがバグ修正箇所 (CSS) ▲▲▲ ===== */
         }
 
         @media (max-width: 480px) {
@@ -1194,6 +1184,7 @@
                 font-size: 0.9em;
                 padding: 10px;
             }
+
         }
         
         @media (max-height: 800px) and (min-width: 769px) {
@@ -1458,9 +1449,9 @@
                         </div>
                     </div>
                 </div>
-                <div id="scroll-indicator" class="scroll-indicator hidden">
+                <a href="#result-details" id="scroll-indicator" class="scroll-indicator hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                </div>
+                </a>
             </div>
         </div>
     </main>
@@ -1528,10 +1519,10 @@
     
     <div id="day-detail-modal" class="modal backdrop-blur">
          <div class="modal-content">
-               <span class="modal-close" data-target="day-detail-modal">&times;</span>
-               <h2 id="day-detail-title"></h2>
-               <div id="day-detail-content"></div>
-        </div>
+              <span class="modal-close" data-target="day-detail-modal">&times;</span>
+              <h2 id="day-detail-title"></h2>
+              <div id="day-detail-content"></div>
+       </div>
     </div>
 
     <div id="credit-modal" class="modal backdrop-blur">
@@ -1757,23 +1748,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // スクロールインジケーターのクリックイベント
     document.getElementById('scroll-indicator').addEventListener('click', function(e) {
         e.preventDefault();
-        const scrollTarget = document.getElementById('result-details');
-        if (scrollTarget) {
-            scrollTarget.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            // Fallback for mobile where scrolling is on the body
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        const targetElement = document.getElementById('result-details') || document.getElementById('result-page');
+        targetElement.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // スクロールとリサイズを監視して、インジケーターの表示を制御
-    // ▼▼▼ BUGFIX ▼▼▼
-    // On mobile, the scroll event listener needs to be on the window.
+    // イベントリスナー
     const resultPage = document.getElementById('result-page');
     resultPage.addEventListener('scroll', updateScrollIndicator);
-    window.addEventListener('scroll', updateScrollIndicator);
+    window.addEventListener('scroll', updateScrollIndicator, { passive: true }); // windowのスクロールも監視
     window.addEventListener('resize', updateScrollIndicator);
-    // ▲▲▲ BUGFIX ▲▲▲
+
 
     document.getElementById('result-tbody').addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('btn-details')) {
@@ -1816,9 +1800,6 @@ function showPage(pageId) {
         setTimeout(() => updateMapLayout('current-map-container'), 50);
     } else if (pageId === 'ideal-config-page') {
         setTimeout(() => updateMapLayout('ideal-map-container'), 50);
-    } else if (pageId === 'result-page') {
-        // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
-        setTimeout(updateScrollIndicator, 150);
     }
 }
 
@@ -2187,23 +2168,24 @@ function calculatePlan(isMultiplayer, allowBoat) {
 
 
 // --- RESULT DISPLAY ---
-function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat state
-    lastCalculatedPlan = plan; 
+// ===== ▼▼▼ ここからがバグ修正箇所 (JS Function) ▼▼▼ =====
+function displayResults(plan, isMultiplayer, allowBoat) {
+    lastCalculatedPlan = plan;
     const tbody = document.getElementById('result-tbody');
     tbody.innerHTML = '';
-    
+
     const summaryEl = document.getElementById('result-summary');
     const soloNoticeEl = document.getElementById('solo-mode-notice');
-    
+
     const alternateCalcBtn = document.getElementById('recalculate-alternate-mode-btn');
     if (isMultiplayer) {
         alternateCalcBtn.textContent = '周期ホールドOFFで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat); // Pass allowBoat state
+        alternateCalcBtn.onclick = () => calculatePlan(false, allowBoat);
         alternateCalcBtn.className = 'btn btn-primary';
         soloNoticeEl.style.display = 'none';
     } else {
         alternateCalcBtn.textContent = '周期ホールドONで再計算';
-        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat); // Pass allowBoat state
+        alternateCalcBtn.onclick = () => calculatePlan(true, allowBoat);
         alternateCalcBtn.className = 'btn btn-multi';
         soloNoticeEl.style.display = '';
     }
@@ -2216,7 +2198,7 @@ function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat stat
     } else {
         summaryText = `最短 ${plan.length} 日で調整が完了します！`;
     }
-    
+
     summaryEl.innerHTML = summaryText;
     alternateCalcBtn.style.display = 'block';
 
@@ -2242,15 +2224,26 @@ function displayResults(plan, isMultiplayer, allowBoat) { // Pass allowBoat stat
         }
     }
 
-
     showPage('result-page');
-    
-    const resultPage = document.getElementById('result-page');
-    resultPage.scrollTop = 0; // ページ表示時にスクロール位置を一番上に戻す
 
-    // ページ描画が完了するのを少し待ってから、インジケーターの表示を更新する
-    setTimeout(updateScrollIndicator, 150); 
+    const resultPage = document.getElementById('result-page');
+    resultPage.scrollTop = 0; // デスクトップ用のスクロールをリセット
+
+    // モバイル対応: body/windowのスクロールをトップにリセット
+    window.scrollTo(0, 0);
+
+    // タイミングを強化してインジケーターを更新
+    // 1. 300ms待ってから初期更新
+    setTimeout(() => {
+        updateScrollIndicator();
+        // 2. 次のフレームで再確認
+        requestAnimationFrame(updateScrollIndicator);
+    }, 300);
+
+    // 3. 念のため1秒後にも再更新
+    setTimeout(updateScrollIndicator, 1000);
 }
+// ===== ▲▲▲ ここまでがバグ修正箇所 (JS Function) ▲▲▲ =====
 
 function showDayDetail(dayData, dayNumber) {
     const titleEl = document.getElementById('day-detail-title');
@@ -2258,7 +2251,7 @@ function showDayDetail(dayData, dayNumber) {
     
     titleEl.textContent = `${dayNumber}日目の手順詳細`;
     
-      let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認し、閑雲や放浪者のような高速移動キャラは使用しないでください。</strong></p>';
+        let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認し、閑雲や放浪者のような高速移動キャラは使用しないでください。</strong></p>';
 
     if (dayData.mode === 'ソロ') {
         contentHTML += `<h3>ソロモードでの行動</h3>`;
@@ -2376,42 +2369,38 @@ function generateActionDetailsHTML(actionData, playerRole) {
 
 /**
  * スクロールインジケーターの表示/非表示を制御する関数
+ * モバイルでのbodyスクロールと、デスクトップでの#result-pageスクロールの両方に対応
  */
-// ===== ▼▼▼ BUGFIX ▼▼▼ =====
-// ロジックを修正して、モバイルとデスクトップで正しいスクロール要素を参照するように変更
 function updateScrollIndicator() {
-    const scrollIndicator = document.getElementById('scroll-indicator');
-    if (!scrollIndicator) return;
-
-    // 現在result-pageが表示されているかどうかもチェック
     const resultPage = document.getElementById('result-page');
-    if (!resultPage.classList.contains('active')) {
-        scrollIndicator.classList.add('hidden');
-        return;
-    }
+    const scrollIndicator = document.getElementById('scroll-indicator');
+    if (!resultPage || !scrollIndicator) return;
 
-    const isMobileView = window.innerWidth <= 768;
-    let isScrollable, isAtTop;
+    // まず、resultPage 自身がスクロール可能かを確認
+    const resultPageCanScroll = resultPage.scrollHeight > resultPage.clientHeight;
 
-    if (isMobileView) {
-        // スマホ表示では、ページ全体(body/document)がスクロール対象
-        const scrollRoot = document.documentElement || document.body;
-        isScrollable = scrollRoot.scrollHeight > scrollRoot.clientHeight;
-        isAtTop = scrollRoot.scrollTop < 50;
-    } else {
-        // PC表示では、#result-pageがスクロール対象
-        isScrollable = resultPage.scrollHeight > resultPage.clientHeight;
-        isAtTop = resultPage.scrollTop < 50;
-    }
+    // スクロールコンテナを決定（resultPage がスクロール可能ならそれを優先、そうでなければ document）
+    const scrollContainer = resultPageCanScroll
+        ? resultPage
+        : (document.scrollingElement || document.documentElement);
 
-    // スクロール可能で、かつページ上部にいる場合のみ矢印を表示
+    const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
+    const scrollTop = (scrollContainer === resultPage) 
+        ? resultPage.scrollTop
+        : (document.scrollingElement ? document.scrollingElement.scrollTop : document.documentElement.scrollTop);
+
+    const isAtTop = scrollTop < 50;
+    
+    // デバッグ用ログ（必要に応じてコメントを外してください）
+    // console.log(`Scrollable: ${isScrollable}, AtTop: ${isAtTop}, ScrollTop: ${scrollTop}, ContainerHeight: ${scrollContainer.clientHeight}, ScrollHeight: ${scrollContainer.scrollHeight}`);
+
     if (isScrollable && isAtTop) {
         scrollIndicator.classList.remove('hidden');
     } else {
         scrollIndicator.classList.add('hidden');
     }
 }
-// ===== ▲▲▲ BUGFIX ▲▲▲ =====
+
 
 // --- SAVE/LOAD LOGIC ---
 
@@ -2572,7 +2561,7 @@ function loadPlan(planId) {
     }
 
     // Display the results page with the loaded plan
-    displayResults(lastCalculatedPlan, planToLoad.isMultiplayer);
+    displayResults(lastCalculatedPlan, planToLoad.isMultiplayer, document.getElementById('boat-mode-checkbox').checked);
     closeModal('load-plan-modal');
 }
 
@@ -2627,3 +2616,4 @@ function setupImageLoader(imgElement) {
 </script>
 </body>
 </html>
+

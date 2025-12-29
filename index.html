@@ -1,2082 +1,1617 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>鶴観調整プラン計算ツール（周期ホールド対応）</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Teyvat EliteDB Prototype</title>
+
+    <!-- Tailwind CDN（試作用） -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- React (UMD) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel（ブラウザ内でJSX変換：試作用） -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        /* General Styles */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-
-        :root {
-            --bg-color: #f0f2f5;
-            --panel-bg-color: rgba(255, 255, 255, 0.85);
-            --header-bg-color: rgba(26, 32, 44, 0.85);
-            --primary-text-color: #333;
-            --secondary-text-color: #555;
-            --accent-color: #3B82F6; /* Blue accent */
-            --accent-hover-color: #2563EB;
-            --multiplayer-accent-color: #EC4899; /* Pink for multi */
-            --multiplayer-accent-hover-color: #DB2777;
-            --border-color: #e0e0e0;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --btn-secondary-bg: #f3f4f6;
-            --btn-secondary-bg-hover: #e5e7eb;
-            --danger-color: #ef4444;
-            --danger-hover-color: #dc2626;
-        }
-
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('https://api.mg-dev.net/api/v1/genshin/backgrounds/Tsurumi%20Island');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Prevent body scroll on desktop */
-        }
-
-        .backdrop-blur {
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-        }
-        
-        /* --- Site Header --- */
-        .site-header {
-            width: 100%;
-            padding: 10px 40px;
-            background-color: var(--header-bg-color);
-            color: white;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .site-header h1 {
-            margin: 0;
-            font-size: clamp(1.2em, 2vw, 1.5em);
-            color: white;
-        }
-
-        .header-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: clamp(0.8em, 1.5vw, 0.9em);
-            color: #ccc;
-        }
-        .header-info a {
-            color: #fff;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-        .header-info a:hover {
-            color: #ccc;
-        }
-
-        /* --- Info Banner --- */
-        .info-banner {
-            background-color: rgba(229, 231, 235, 0.95); /* Light gray */
-            color: var(--secondary-text-color);
-            text-align: center;
-            padding: 12px 50px; /* Add space for close button */
-            position: relative;
-            font-size: 0.95em;
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.4s ease-in-out;
-            overflow: hidden;
-        }
-        .info-banner.hidden {
-            height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-            opacity: 0;
-        }
-        .info-banner p {
-            margin: 0;
-        }
-        .info-banner a {
-            color: var(--accent-color);
-            font-weight: bold;
-            text-decoration: underline;
-        }
-        .close-banner-btn {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.8em;
-            line-height: 1;
-            cursor: pointer;
-            color: #a0aec0;
-            padding: 5px;
-        }
-        .close-banner-btn:hover {
-            color: var(--primary-text-color);
-        }
-        
-        /* --- Main Content Area --- */
-        main {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            overflow: hidden; 
-            padding: 2vh 2vw;
-            box-sizing: border-box;
-        }
-
-        .container {
-            width: 100%;
-            height: 100%; 
-            max-width: 1600px;
-            max-height: 900px;
-            background-color: var(--panel-bg-color);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px var(--shadow-color);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* --- Page System --- */
-        .page {
-            padding: 2vw 4vw;
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.35s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            pointer-events: none;
-        }
-        #result-page {
-            overflow-y: auto;
-            justify-content: flex-start;
-        }
-
-        .page.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        h1, h2, h3 {
-            color: var(--primary-text-color);
-        }
-
-        /* --- Page: Start --- */
-        #start-page .page-content-wrapper {
-             height: auto;
-             justify-content: center;
-             display: flex;
-             flex-direction: column;
-             gap: 2vh;
-        }
-        #start-page h1 {
-            font-size: clamp(2.5em, 5vw, 4.5em);
-            font-weight: 700;
-            color: #1E3A8A;
-            margin-bottom: 10px;
-        }
-        #start-page .subtitle {
-            font-size: clamp(1em, 1.5vw, 1.2em);
-            color: var(--secondary-text-color);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-        .start-buttons {
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-        }
-        .start-buttons .btn {
-            width: 100%;
-            max-width: 450px;
-            box-sizing: border-box;
-        }
-        .start-footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .multi-mode-toggle {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            color: var(--secondary-text-color);
-        }
-        .multi-mode-toggle input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        .multi-mode-toggle label {
-            font-size: 1em;
-            cursor: pointer;
-        }
-        .help-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #ccc;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 0.9em;
-            margin-left: 5px;
-            transition: background-color 0.2s;
-        }
-        .help-icon:hover {
-            background-color: #999;
-        }
-
-        /* --- Page: Input (Current & Ideal) --- */
-        .page-content-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-        }
-        .page-footer {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-        .page-footer .progress-text {
-            text-align: center;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: var(--secondary-text-color);
-        }
-        .page-footer .left-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: flex-start;
-             gap: 10px;
-        }
-        .page-footer .center-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: center;
-             gap: 15px;
-        }
-         .page-footer .right-action {
-             flex: 1 1 0%;
-             display: flex;
-             justify-content: flex-end;
-             gap: 15px;
-             position: relative; /* For validation message */
-        }
-        
-        /* --- Page: Result --- */
-        #result-page .page-content-wrapper {
-            display: block; /* Use block to allow children to layout normally */
-        }
-        .result-grid {
-            display: grid;
-            grid-template-columns: 1fr; /* Mobile first */
-            gap: 20px;
-            align-items: flex-start; /* Align items to the top of their grid area */
-            width: 100%;
-        }
-        .result-layout-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-        }
-        .result-map-container {
-            width: 100%;
-            height: auto;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-        .result-map-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-        .result-actions-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-        .result-actions-container .btn {
-            width: 100%;
-            max-width: 300px;
-        }
-        .result-actions-row {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-            max-width: 300px;
-        }
-        .result-actions-row .btn {
-            flex: 1;
-        }
-        .result-details-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        #result-summary { 
-            font-size: 1.5em; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            padding: 15px; 
-            background-color: #eef2ff; 
-            border-radius: 10px; 
-            color: #312e81; 
-            flex-shrink: 0;
-        }
-        .result-table-container { 
-            width: 100%;
-        }
-        .result-table { width: 100%; border-collapse: collapse; }
-        .result-table th, .result-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        .result-table th { background-color: #f9f9f9; position: sticky; top: 0; z-index: 1; }
-        .mode-solo { color: var(--accent-color); font-weight: bold; }
-        .mode-multi { color: var(--multiplayer-accent-color); font-weight: bold; }
-
-        .result-footer-link {
-            text-align: center;
-            margin-top: 25px;
-            padding: 10px;
-            font-size: 1.1em;
-            color: var(--secondary-text-color);
-        }
-        .result-footer-link a {
-            color: var(--accent-color);
-            font-weight: bold;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-        .result-footer-link a:hover {
-            color: var(--accent-hover-color);
-        }
-
-        /* --- Component: Buttons --- */
-        .btn { border: none; padding: 14px 28px; border-radius: 50px; font-size: clamp(1em, 1.5vw, 1.2em); cursor: pointer; transition: all 0.3s ease; font-weight: bold; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: var(--accent-color); color: white; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
-        .btn-primary:hover { background-color: var(--accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
-        .btn-secondary {
-            background: var(--btn-secondary-bg);
-            color: var(--secondary-text-color);
-            box-shadow: none;
-            text-decoration: none;
-        }
-        .btn-secondary:hover {
-            background: var(--btn-secondary-bg-hover);
-            transform: translateY(-2px);
-            color: var(--primary-text-color);
-        }
-        .btn-secondary-link {
-            background: none; color: var(--secondary-text-color); font-size: 1em; text-decoration: underline; padding: 10px 20px; box-shadow: none;
-        }
-        .btn-secondary-link:hover {
-            background: none; transform: none; box-shadow: none; color: var(--primary-text-color);
-        }
-        .btn-multi { background-color: var(--multiplayer-accent-color); color: white; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
-        .btn-multi:hover { background-color: var(--multiplayer-accent-hover-color); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.5); }
-        .btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-details { background-color: #6b7280; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9em; }
-        .btn-details:hover { background-color: #4b5563; }
-        .btn-small {
-            padding: 5px 15px;
-            font-size: 0.9em;
-            border-radius: 20px;
-        }
-        #go-to-current-btn {
-            padding: 21px 42px;
-            font-size: clamp(1.5em, 2.25vw, 1.8em);
-        }
-        .btn-back {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            background-image: url('https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/chevron_backward_41dp_1F1F1F_FILL0_wght400_GRAD0_opsz40.png?raw=true');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
-        .btn-back:hover {
-            opacity: 1;
-        }
-        
-        /* --- Component: Step Indicator --- */
-        .header-placeholder {
-            width: 40px;
-            flex-shrink: 0;
-        }
-        .steps-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-grow: 1;
-        }
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .step-icon {
-            width: 60px;
-            height: 60px;
-            background-color: #fff;
-            border: 3px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: var(--secondary-text-color);
-            box-shadow: 0 4px 10px var(--shadow-color);
-            transition: all 0.3s ease;
-        }
-        .step-label {
-            margin-top: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: var(--secondary-text-color);
-             transition: all 0.3s ease;
-        }
-        .step-arrow {
-            font-size: 2.5em;
-            color: var(--border-color);
-        }
-        .step.active-step .step-icon {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            animation: glowing-step 2s infinite ease-in-out;
-        }
-        .step.active-step .step-label {
-            color: var(--primary-text-color);
-        }
-        @keyframes glowing-step {
-            0% { box-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); transform: scale(1); }
-            50% { box-shadow: 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); transform: scale(1.05); }
-            100% { box-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); transform: scale(1); }
-        }
-        #start-page .step.active-step .step-icon {
-            animation: none;
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-        #start-page .step.active-step .step-label {
-            color: var(--primary-text-color);
-        }
-
-        /* --- Component: Validation & Quick Fill --- */
-        .validation-message {
-            color: #ef4444; /* red-500 */
-            font-weight: bold;
-            font-size: 0.9em;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #ef4444;
-            position: absolute;
-            bottom: 110%; /* Position above the button */
-            right: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            transform: translateY(10px);
-            pointer-events: none;
-            z-index: 10;
-        }
-        .validation-message.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        @keyframes shake {
-         10%, 90% { transform: translateX(-1px); }
-         20%, 80% { transform: translateX(2px); }
-         30%, 50%, 70% { transform: translateX(-3px); }
-         40%, 60% { transform: translateX(3px); }
-        }
-        .shake {
-            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        .show-on-desktop { display: none; }
-        .show-flex-on-desktop { display: none; }
-
-        .quick-fill-buttons {
-            align-items: center;
-            gap: 5px;
-        }
-        .quick-fill-label {
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            margin-right: 5px;
-            font-weight: bold;
-        }
-
-        /* --- Component: Input Views (Tabs, Map, List) --- */
-        .view-switcher { margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; align-items: center; flex-wrap: wrap; }
-        .view-tab { padding: 10px 20px; font-size: 1em; font-weight: bold; color: var(--secondary-text-color); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s; }
-        .view-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
-        .input-views-container { flex-grow: 1; position: relative; width: 100%; min-height: 200px; }
-        .input-view { width: 100%; height: 100%; position: absolute; top: 0; left: 0; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .input-view.active { opacity: 1; visibility: visible; }
-        
-        .map-container { 
-            position: relative; 
-            width: 100%; 
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .map-guide-text {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 1em;
-            font-weight: bold;
-            pointer-events: none; /* So it doesn't block clicks */
-            z-index: 5;
-            opacity: 0.8;
-            transition: opacity 0.5s ease-in-out;
-            animation: pulsing-text 2.5s infinite ease-in-out;
-        }
-        @keyframes pulsing-text {
-            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-            50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
-            100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-        }
-        .map-guide-text.hidden {
-            opacity: 0;
-            animation: none;
-        }
-        .map-container img.map-bg {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain; 
-            border-radius: 10px; 
-        }
-        .map-marker { 
-            position: absolute; 
-            width: clamp(28px, 5vw, 40px);
-            height: clamp(28px, 5vw, 40px);
-            background-color: rgba(59, 130, 246, 0.7); 
-            background-size: cover;
-            background-position: center;
-            border-radius: 50%; border: 3px solid var(--accent-color); 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-weight: bold; 
-            color: white; 
-            font-size: 1.1em; 
-            transition: all 0.3s ease; 
-        }
-        .map-marker.glowing { animation: glowing 2s infinite; }
-        .map-marker.completed { 
-            background-color: #10B981; 
-            border-color: white; 
-            animation: none; 
-            background-image: none !important;
-        }
-        @keyframes glowing { 0% { box-shadow: 0 0 8px var(--accent-color); } 50% { box-shadow: 0 0 55px var(--accent-color); } 100% { box-shadow: 0 0 8px var(--accent-color); } }
-        
-        .config-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; overflow-y: auto; padding: 15px; height: 100%;}
-        .config-item { background-color: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); text-align: left;}
-        .config-item-label { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; display: block; }
-        .pattern-buttons button { background: #fff; color: var(--secondary-text-color); border: 2px solid var(--border-color); padding: 10px; margin: 2px; border-radius: 5px; cursor: pointer; width: 50px; font-size: 1em; transition: all 0.2s; }
-        .pattern-buttons button:hover { border-color: var(--accent-hover-color); }
-        .pattern-buttons button.selected { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        
-        /* --- Component: Modals --- */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; display: none; justify-content: center; align-items: center; padding: 2vh 2vw; box-sizing: border-box; }
-        .modal.active { opacity: 1; visibility: visible; display: flex; }
-        .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; position: relative; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 95vh; overflow-y: auto;}
-        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5em; line-height: 1; cursor: pointer; color: #aaa; transition: color 0.2s; }
-        .modal-close:hover { color: #333; }
-        
-        #guide-modal .modal-content h2 { font-size: 2.2em; margin-bottom: 15px; }
-        #guide-modal .modal-content h3 { font-size: 1.6em; margin-top: 10px; margin-bottom: 15px; }
-        #guide-modal .modal-content hr { border: none; height: 4px; background-color: #adb5bd; border-radius: 2px; margin: 30px 0; }
-        
-        #zoom-view .modal-content { overflow: hidden; }
-        #zoom-map-container { position: relative; width: 100%; margin: 20px auto 0; aspect-ratio: 16 / 9; flex-shrink: 1; min-height: 0; }
-        #zoom-map-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
-        .pattern-marker { 
-            position: absolute; 
-            width: clamp(25px, 4vw, 35px); 
-            height: clamp(25px, 4vw, 35px);
-            background-color: rgba(59, 130, 246, 0.8); 
-            border: 2px solid var(--accent-color); 
-            animation: glowing 2s infinite; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 1.1em; 
-            color: white; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            background-size: cover;
-            background-position: center;
-        }
-        .pattern-marker .pattern-label { background-color: rgba(0,0,0,0.5); padding: 1px 4px; border-radius: 3px; }
-        .pattern-marker.completed { background-color: #10B981; border-color: white; animation: none; background-image: none !important; }
-        
-        .solo-notice {
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            background-color: var(--btn-secondary-bg);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            max-width: 300px;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            line-height: 1.6;
-        }
-        .solo-notice a { color: var(--accent-color); font-weight: bold; text-decoration: underline; }
-        
-        .loader { border: 8px solid #f3f3f3; border-top: 8px solid var(--accent-color); border-radius: 50%; width: 60px; height: 60px; animation: spin 1.5s linear infinite; margin: 20px auto; }
-        #calculation-progress { margin-top: 15px; color: var(--secondary-text-color); font-weight: bold; height: 2em; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #day-detail-content ul { list-style: none; padding: 0; margin-top: 15px; text-align: left; }
-        #day-detail-content li { background-color: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--accent-color); }
-        #day-detail-content h3 { margin-bottom: 20px; text-align: center; }
-        #day-detail-content h4 { margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px; text-align: left; }
-        
-        #day-detail-content .video-container { position: relative; padding-bottom: 56.25%; /* 16:9 */ height: 0; overflow: hidden; max-width: 100%; background: #000; margin-top: 10px; border-radius: 8px; }
-        #day-detail-content .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        #credit-modal .modal-content p { text-align: left; line-height: 1.8; }
-        #credit-modal .modal-content h4 { margin-top: 20px; margin-bottom: 10px; text-align: left; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-
-        #saved-plans-list { list-style: none; padding: 0; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .saved-plan-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: var(--btn-secondary-bg); border-radius: 10px; border: 1px solid var(--border-color); }
-        .saved-plan-item-name { font-weight: bold; font-size: 1.1em; color: var(--primary-text-color); }
-        .saved-plan-item-actions { display: flex; gap: 10px; }
-        .btn-delete { background-color: var(--danger-color); color: white; padding: 8px 16px; font-size: 0.9em; }
-        .btn-delete:hover { background-color: var(--danger-hover-color); }
-        .btn-load { padding: 8px 16px; font-size: 0.9em; }
-        #no-saved-plans { text-align: center; color: var(--secondary-text-color); margin-top: 30px; font-size: 1.1em; }
-
-        /* --- Site Footer --- */
-        .site-credit-footer {
-            width: 100%;
-            padding: 8px 40px;
-            background-color: var(--header-bg-color);
-            color: #ccc;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            z-index: 10;
-            text-align: center;
-            font-size: 0.9em;
-        }
-        .site-credit-footer p { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; }
-        #credit-modal-trigger { cursor: pointer; transition: color 0.2s; }
-        #credit-modal-trigger:hover { color: #fff; text-decoration: underline; }
-        .credit-separator { margin: 0 10px; }
-        .site-credit-footer a { color: #fff; text-decoration: underline; transition: color 0.2s; }
-        .site-credit-footer a:hover { color: #ccc; text-decoration: none; }
-        
-        /* --- Utilities --- */
-        .scroll-indicator {
-            display: none;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 50;
-            width: 50px;
-            height: 50px;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 50%;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .scroll-indicator.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        .scroll-indicator svg {
-            width: 30px;
-            height: 30px;
-            animation: bounce 2s infinite ease-in-out;
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
-        
-        .image-container {
-            position: relative;
-            width: 100%;
-            min-height: 150px;
-            background-color: var(--btn-secondary-bg);
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .image-loader {
-            color: var(--secondary-text-color);
-            font-weight: bold;
-        }
-        .image-container img {
-            display: none; /* Initially hidden */
-            width: 100%;
-            height: auto;
-        }
-        .image-container.loaded .image-loader {
-            display: none;
-        }
-        .image-container.loaded img {
-            display: block;
-        }
-        #zoom-map-container { aspect-ratio: 16 / 9; min-height: 0; }
-        #screenshot-popup .image-container { aspect-ratio: 500 / 300; min-height: 0; }
-        #day-detail-content .image-container { max-width: 450px; margin: 10px auto 0; border: 1px solid var(--border-color); }
-
-
-        /* --- Responsive Styles --- */
-        @media (min-width: 992px) {
-            .result-grid {
-                grid-template-columns: minmax(350px, 4fr) 6fr;
-                gap: 40px;
-                align-items: flex-start;
-            }
-            .result-layout-container {
-                position: sticky;
-                top: 20px;
-            }
-            .pattern-marker {
-                width: 50px;
-                height: 50px;
-                font-size: 1.3em;
-            }
-            .show-on-desktop { display: block; }
-            .show-flex-on-desktop { display: flex; }
-        }
-        
-        @media (max-width: 768px) {
-            body { overflow: auto; height: auto; min-height: 100vh; }
-            main { padding: 0; height: auto; flex-grow: 1; }
-            .container { width: 100%; height: auto; min-height: 0; max-height: none; border-radius: 0; overflow: visible; }
-            body { padding-bottom: 50px; }
-            .page { padding: 20px; height: auto; position: relative; opacity: 1; visibility: visible; transform: none; display: none; justify-content: flex-start; }
-            .page.active { display: flex; }
-            #start-page { justify-content: center; padding-top: 2vh; padding-bottom: 2vh; flex-grow: 1; }
-            #current-config-page, #ideal-config-page { min-height: calc(100vh - 80px); }
-            .site-header, .site-credit-footer { padding: 10px 20px; }
-            
-            .header-version, .header-version + .credit-separator { display: none; }
-
-            #start-page h1 { font-size: 2.5em; }
-            .steps-container { gap: 10px; }
-            .step-icon { width: 50px; height: 50px; font-size: 1.2em;}
-            .step-label { font-size: 0.9em; }
-            .step-arrow { font-size: 2em; }
-            h2 { font-size: 1.5em; }
-            .config-list { grid-template-columns: 1fr; }
-            .modal-content { width: 90%; padding: 20px; }
-            .result-table th, .result-table td { padding: 10px; font-size: 0.9em;}
-            
-            .page-content-wrapper { height: auto; min-height: calc(100vh - 80px); }
-            #start-page .page-content-wrapper { min-height: 0; flex-grow: 1; }
-            
-            .input-views-container { flex-grow: 0; height: 43vh; }
-            .input-views-container .map-container { height: 100%; aspect-ratio: unset; }
-            .config-list { height: 100%; max-height: none; }
-            .site-credit-footer { position: fixed; bottom: 0; left: 0; }
-            
-            #scroll-indicator {
-                position: fixed !important;
-                bottom: 80px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                z-index: 9999 !important;
-                display: flex !important;
-                pointer-events: auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #start-page h1 { font-size: 2em; }
-            .steps-container { gap: 5px; margin-top: 15px; margin-bottom: 10px;}
-            .step-icon { width: 40px; height: 40px; font-size: 1em; }
-            .step-label { font-size: 0.7em; margin-top: 8px; }
-            .step-arrow { font-size: 1.5em; }
-            .btn { font-size: 1em; padding: 12px 24px; }
-             #go-to-current-btn { padding: 18px 36px; font-size: 1.3em; }
-            .page { padding: 15px; }
-            .config-item-label { font-size: 1em; }
-            .pattern-buttons button { width: 40px; height: 40px; padding: 5px; font-size: 0.9em;}
-            
-            .page-footer { flex-direction: row; flex-wrap: wrap; gap: 10px; padding-bottom: 15px; }
-            .page-footer .left-action, .page-footer .right-action { flex-basis: auto; flex-grow: 0; }
-             .page-footer .center-action { flex-basis: 100%; order: 3; }
-            .page-footer .right-action { margin-left: auto; }
-            .page-footer .btn { font-size: 0.9em; padding: 10px 20px; }
-             .page-footer .btn-secondary-link { font-size: 0.9em; padding: 10px; }
-        }
-        
-        @media (max-height: 800px) and (min-width: 769px) {
-            .page { padding-top: 1vw; padding-bottom: 1vw; }
-            .page-header { margin-bottom: 8px; }
-            .btn-back, .header-placeholder { width: 32px; height: 32px; }
-            .steps-container { gap: 10px; }
-            .step-icon { width: 40px; height: 40px; font-size: 1.1em; }
-            .step-label { margin-top: 5px; font-size: 0.8em; }
-            .step-arrow { font-size: 1.5em; }
-            .view-switcher { margin-bottom: 8px; }
-            .view-tab { padding: 6px 12px; font-size: 0.9em; }
-            .page-footer { margin-top: 10px; }
-            
-            #start-page .start-footer { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px; }
-        }
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+      body { font-family: 'Noto Sans JP', sans-serif; }
+      .header-font { font-family: 'Space Grotesk', 'Noto Sans JP', sans-serif; }
+      /* HoYoLAB-like Card Style */
+      .hoyo-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border: 1px solid #ebebeb;
+        transition: all 0.3s ease;
+      }
+      .hoyo-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f0f2f5; }
+      ::-webkit-scrollbar-thumb { background: #dcdfe6; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #c0c4cc; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-</head>
-<body>
-    <header class="site-header backdrop-blur">
-        <h1>鶴観調整ツール（周期ホールド対応）</h1>
-        <div class="header-info">
-            <span class="header-version">Ver. 1.1.1</span>
-            <span class="credit-separator">|</span>
-            <span>製作者: <a href="https://x.com/PIpXlMz1tB5ASjF" target="_blank" rel="noopener noreferrer">あの時の鳥です</a></span>
-        </div>
-    </header>
+  </head>
+  <body class="bg-[#f0f2f5]">
+    <div id="root"></div>
 
-    <div id="info-banner" class="info-banner">
-        <p>鶴観の精鋭の仕組みについて詳しく知りたい方は、<a href="https://youtu.be/2xqllaCTP5c?si=m9yyxXo5GS0rwFG9" target="_blank" rel="noopener noreferrer">こちらの解説動画</a>をご覧ください。</p>
-        <button id="close-banner-btn" class="close-banner-btn" title="閉じる">&times;</button>
-    </div>
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
 
-    <main>
-        <div class="container backdrop-blur">
+      // --- Icon stubs (絵文字で代用) ---
+      const makeIcon = (emoji) => ({ size = 16, className = "" }) => (
+        <span
+          className={className}
+          style={{
+            width: size,
+            height: size,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: size,
+            lineHeight: `${size}px`,
+          }}
+        >
+          {emoji}
+        </span>
+      );
+      const Trophy = makeIcon("T");
+      const Timer = makeIcon("T");
+      const Zap = makeIcon("Z");
+      const Search = makeIcon("?");
+      const Filter = makeIcon("F");
+      const Plus = makeIcon("+");
+      const Crown = makeIcon("C");
+      const Flame = makeIcon("*");
+      const Gem = makeIcon("$");
+      const Swords = makeIcon("/");
+      const Calendar = makeIcon("C");
+      const Info = makeIcon("i");
+      const User = makeIcon("U");
+      const CheckCircle = makeIcon("v");
+      const X = makeIcon("x");
+      const LikeIcon = ({ size = 16, className = "" }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          className={className}
+          aria-hidden="true"
+        >
+          <path
+            d="M7 11v9H4v-9h3zm3.6-6.5L7 11v9h9.1c.8 0 1.5-.5 1.7-1.2l1.7-6.1c.3-1.1-.5-2.2-1.7-2.2H13V6c0-1.1-.9-2-2-2h-.4z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
 
-            <!-- Page 1: Start Screen -->
-            <div id="start-page" class="page active">
-                <div class="page-content-wrapper">
-                    <div class="start-header">
-                        <h1>鶴観調整ツール</h1>
-                        <p class="subtitle">※PCでの使用をおすすめします<br>現在と理想の配置を入力すると、最短調整スケジュールを計算します</p>
-                    </div>
-                    
-                    <div class="steps-container">
-                        <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
-                        <div class="step-arrow">→</div>
-                        <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                    </div>
+      const CommentIcon = ({ size = 16, className = "" }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          className={className}
+          aria-hidden="true"
+        >
+          <path
+            d="M7 18l-3 3V6a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
 
-                    <div class="start-buttons">
-                        <button id="go-to-current-btn" class="btn btn-primary">調整を始める</button>
-                        <button id="load-plan-btn" class="btn btn-secondary">保存したプランを読み込む</button>
-                    </div>
+      const PlatformIcons = {
+        PC: ({ className = "" }) => (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <path d="M8 21h8" />
+            <path d="M12 17v4" />
+          </svg>
+        ),
+        Mobile: ({ className = "" }) => (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+            <path d="M12 18h.01" />
+          </svg>
+        ),
+        PS5: ({ className = "" }) => <PS5Controller className={className} />,
+      };
 
-                    <div class="start-footer">
-                        <div class="multi-mode-toggle">
-                            <input type="checkbox" id="boat-mode-checkbox">
-                            <label for="boat-mode-checkbox">ボートでの調整を許可する</label>
-                        </div>
-                        <div class="multi-mode-toggle">
-                            <input type="checkbox" id="multiplayer-mode-checkbox">
-                            <label for="multiplayer-mode-checkbox">周期ホールドを有効にする</label>
-                            <a href="https://youtu.be/2xqllaCTP5c?si=_P-LgtUukOdhN57k&t=1194" class="help-icon" target="_blank" rel="noopener noreferrer" title="周期ホールドの解説動画">?</a>
-                        </div>
-                         <button id="guide-btn" class="btn btn-secondary-link">使い方ガイド</button>
-                    </div>
-                </div>
-            </div>
+      const PS5Controller = ({ className = "" }) => (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 13c0-2 2-3 4-3h12c2 0 4 1 4 3v3c0 1.5-1.5 3-3 3-1.5 0-2.5-1-3-2l-1.5-2h-5l-1.5 2c-.5 1-1.5 2-3 2-1.5 0-3-1.5-3-3v-3z" />
+          <rect x="8" y="11" width="8" height="3" rx="0.5" />
+        </svg>
+      );
 
-            <!-- Page 2: Current Configuration Input -->
-            <div id="current-config-page" class="page">
-                <div class="page-content-wrapper">
-                    <div class="page-header">
-                        <button id="back-to-start-btn" class="btn-back" aria-label="戻る"></button>
-                        <div class="steps-container">
-                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                        </div>
-                        <div class="header-placeholder"></div>
-                    </div>
+      const FilterIcons = {
+        Funnel: ({ className = "" }) => (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+          </svg>
+        ),
+        FilterList: ({ className = "" }) => (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 6h16" />
+            <path d="M7 12h10" />
+            <path d="M10 18h4" />
+          </svg>
+        ),
+        Sliders: ({ className = "" }) => (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 6h16" />
+            <path d="M8 3v6" />
+            <path d="M4 12h16" />
+            <path d="M16 9v6" />
+            <path d="M4 18h16" />
+            <path d="M10 15v6" />
+          </svg>
+        ),
+      };
 
-                    <div class="view-switcher">
-                        <button id="current-map-tab" class="view-tab active" data-view="map">マップ表示</button>
-                        <button id="current-list-tab" class="view-tab" data-view="list">リスト表示</button>
-                    </div>
+      const WeaponWatermark = ({ type, className = "", style = {} }) => {
+        const common = {
+          viewBox: "0 0 100 100",
+          xmlns: "http://www.w3.org/2000/svg",
+          className,
+          style,
+          "aria-hidden": true,
+        };
 
-                    <div class="input-views-container">
-                        <div id="current-map-view" class="input-view active">
-                            <div class="map-container" id="current-map-container">
-                                 <div class="map-guide-text">アイコンをタップして選択</div>
-                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
-                            </div>
-                        </div>
-                        <div id="current-list-view" class="input-view">
-                            <div class="config-list" id="current-config-list">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="page-footer">
-                        <div class="left-action">
-                            <div class="quick-fill-buttons show-flex-on-desktop">
-                                <span class="quick-fill-label">一括入力:</span>
-                                <button id="fill-all-a-btn" class="btn btn-secondary btn-small">A</button>
-                                <button id="fill-all-b-btn" class="btn btn-secondary btn-small">B</button>
-                                <button id="fill-all-c-btn" class="btn btn-secondary btn-small">C</button>
-                            </div>
-                        </div>
-                        <div class="center-action">
-                            <div class="progress-text" id="progress-text">入力完了: 0 / 10</div>
-                        </div>
-                        <div class="right-action">
-                            <div id="validation-message" class="validation-message"></div>
-                            <button id="go-to-ideal-btn" class="btn btn-primary" disabled>理想の配置へ</button>
-                        </div>
-                   </div>
-                </div>
-            </div>
-            
-            <!-- Page 3: Ideal Configuration Input -->
-            <div id="ideal-config-page" class="page">
-                <div class="page-content-wrapper">
-                     <div class="page-header">
-                        <button id="back-to-current-btn" class="btn-back" aria-label="戻る"></button>
-                        <div class="steps-container">
-                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                        </div>
-                        <div class="header-placeholder"></div>
-                    </div>
-
-                    <div class="view-switcher">
-                        <button id="ideal-map-tab" class="view-tab active" data-view="map">マップ表示</button>
-                        <button id="ideal-list-tab" class="view-tab" data-view="list">リスト表示</button>
-                    </div>
-
-                    <div class="input-views-container">
-                        <div id="ideal-map-view" class="input-view active">
-                            <div class="map-container" id="ideal-map-container">
-                                 <div class="map-guide-text">アイコンをタップして選択</div>
-                                 <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/input_page_map.png?raw=true" alt="鶴観マップ" class="map-bg">
-                            </div>
-                        </div>
-                        <div id="ideal-list-view" class="input-view">
-                            <div class="config-list" id="ideal-config-list">
-                            </div>
-                        </div>
-                    </div>
-
-                     <div class="page-footer">
-                        <div class="left-action">
-                             <button class="btn btn-secondary" id="set-recommended-btn">環境配置</button>
-                             <button class="btn btn-secondary show-on-desktop" id="copy-current-btn">現在配置をコピー</button>
-                        </div>
-                        <div class="center-action">
-                            <div class="progress-text" id="ideal-progress-text">入力完了: 0 / 10</div>
-                        </div>
-                        <div class="right-action">
-                            <button id="calculate-plan-btn" class="btn btn-primary">調整プランを計算</button>
-                        </div>
-                   </div>
-                </div>
-            </div>
-
-            <!-- Page 4: Result Page -->
-            <div id="result-page" class="page">
-                <div class="page-content-wrapper">
-                     <div class="page-header">
-                        <button id="back-to-ideal-btn" class="btn-back" aria-label="戻る"></button>
-                         <div class="steps-container">
-                            <div class="step" data-step="1"> <div class="step-icon">①</div> <div class="step-label">現在の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="2"> <div class="step-icon">②</div> <div class="step-label">理想の配置を入力</div> </div>
-                            <div class="step-arrow">→</div>
-                            <div class="step" data-step="3"> <div class="step-icon">③</div> <div class="step-label">調整スケジュール</div> </div>
-                        </div>
-                        <div class="header-placeholder"></div>
-                    </div>
-
-                    <div class="result-grid">
-                        <div class="result-layout-container">
-                            <div class="result-map-container">
-                                <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-21%20161308.png?raw=true" alt="鶴観マップ 結果表示" class="map-bg">
-                            </div>
-                            <div class="result-actions-container">
-                                <div id="solo-mode-notice" class="solo-notice show-on-desktop">
-周期ホールドを使わない調整方法です。使用すると期間をもっと短縮できるかもしれません。<a href="https://youtu.be/2xqllaCTP5c?si=UyMkRCct-Z1Pp5HI&t=1194" target="_blank" rel="noopener noreferrer">詳しくは動画で</a>
-                                </div>
-                                <button id="recalculate-alternate-mode-btn" class="btn"></button>
-                                <div class="result-actions-row">
-                                    <button id="save-plan-btn" class="btn btn-secondary">結果を保存</button>
-                                    <button id="reset-btn" class="btn btn-secondary">リセット</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="result-details" class="result-details-container">
-                             <div id="result-summary"></div>
-                             <div class="result-table-container">
-                                 <table class="result-table">
-                                     <thead>
-                                         <tr> <th>日付</th> <th>モード</th> <th>2P(ホールド役)の行動</th> <th>1P(ホスト)の行動</th> <th>詳細</th> </tr>
-                                     </thead>
-                                     <tbody id="result-tbody"></tbody>
-                                 </table>
-                             </div>
-                             <p class="result-footer-link">
-                                鶴観のロード範囲（移動ルート）について詳しく知りたい方は<a href="https://note.com/nekoshita_g/n/n485ff9b3df29" target="_blank" rel="noopener noreferrer">こちら</a>
-                             </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modals -->
-    <div id="guide-modal" class="modal backdrop-blur">
-        <div class="modal-content">
-            <span class="modal-close" data-target="guide-modal">&times;</span>
-            <h2>使い方ガイド</h2>
-            <p>このツールは、鶴観の精鋭エネミーの配置を、最短日数で理想の配置に調整するためのスケジュールを計算します。</p>
-            <hr>
-            <h3>Step 1: 現在の配置を入力</h3>
-            <p>まず、あなたの世界の現在のエネミー配置を10ヶ所すべて入力します。「マップ表示」または「リスト表示」で入力できます。</p>
-            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%8F%BE%E5%9C%A8.gif?raw=true" alt="マップ入力画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
-            <p style="margin-top: 10px;">マップ上のアイコンをタップすると、詳細なマップが表示され、A/B/Cのパターンを選択できます。選択に迷ったら、スクリーンショットで実際のゲーム画面を確認できます。</p>
-            <hr>
-            <h3>Step 2: 理想の配置を入力</h3>
-            <p>次に、目標とする理想の配置を入力します。すべて入力する必要はなく、変更したい場所だけ入力すればOKです。</p>
-            <p>便利な「環境配置を自動入力」ボタンも活用してください。</p>
-            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%90%86%E6%83%B3.gif?raw=true" alt="理想配置の入力" style="width:100%; border-radius: 8px; margin-top: 10px;">
-            <hr>
-            <h3>Step 3: スケジュールを計算・確認</h3>
-            <p>入力が終わったら、「調整プランを計算」ボタンを押します。</p>
-            <p>スタートページで「周期ホールドを有効にする」にチェックを入れていると、マルチプレイを前提とした最短ルートを計算します。</p>
-            <img src="https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E4%BD%BF%E3%81%84%E6%96%B9%E3%82%AC%E3%82%A4%E3%83%89GIF/%E7%B5%90%E6%9E%9C.gif?raw=true" alt="結果表示画面" style="width:100%; border-radius: 8px; margin-top: 10px;">
-        </div>
-    </div>
-    
-    <div id="zoom-view" class="modal backdrop-blur">
-        <div class="modal-content">
-            <span class="modal-close" data-target="zoom-view">&times;</span>
-            <h3 id="zoom-title"></h3>
-            <div id="zoom-map-container" class="image-container">
-                <div class="image-loader">読み込み中...</div>
-                <img src="https://placehold.co/800x500/e9e9e9/333?text=Zoomed+Area" alt="ズームマップ">
-            </div>
-        </div>
-    </div>
-
-    <div id="screenshot-popup" class="modal backdrop-blur">
-        <div class="modal-content">
-             <span class="modal-close" data-target="screenshot-popup">&times;</span>
-             <h3 id="screenshot-title"></h3>
-             <div class="image-container">
-                <div class="image-loader">読み込み中...</div>
-                <img id="screenshot-img" src="https://placehold.co/500x300/eef2ff/312e81?text=In-Game+Screenshot" alt="ゲーム内スクリーンショット">
-             </div>
-             <button id="confirm-pattern-btn" class="btn btn-primary" style="margin-top: 15px;">確定</button>
-        </div>
-    </div>
-    
-    <div id="loading-modal" class="modal">
-         <div class="modal-content" style="text-align: center;">
-            <h2 style="font-size: 2.5em; margin-bottom: 10px;">計算中...</h2>
-            <p id="loading-text">最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。</p>
-            <div class="loader"></div>
-            <div id="calculation-progress"></div>
-         </div>
-    </div>
-    
-    <div id="day-detail-modal" class="modal backdrop-blur">
-         <div class="modal-content">
-              <span class="modal-close" data-target="day-detail-modal">&times;</span>
-              <h2 id="day-detail-title"></h2>
-              <div id="day-detail-content"></div>
-       </div>
-    </div>
-
-    <div id="credit-modal" class="modal backdrop-blur">
-        <div class="modal-content">
-            <span class="modal-close" data-target="credit-modal">&times;</span>
-            <h2>Special Thanks</h2>
-            <p>このツールの開発にあたり、「ねこした」さんより多大なるご協力をいただきました。<br>心より感謝申し上げます。</p>
-            <hr style="margin: 20px 0;">
-            <h4>■ 画像・情報提供</h4>
-            <p>ツール内で使用している各配置の画像や、精鋭エネミーの出現パターンに関する情報は、以下のnote記事を参考にさせていただきました。非常に分かりやすくまとめられており、開発の大きな助けとなりました。</p>
-            <p style="padding-left: 1em;"><strong>note記事:</strong> <a href="https://note.com/nekoshita_g/n/nba4aff6a13ff" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法</a></p>
-            <h4>■ 調整方法の解説</h4>
-            <p>本ツールの計算ロジックは、以下の動画で解説されている調整方法を基にプログラムとして実装したものです。鶴観調整の仕組みそのものについて、大変分かりやすく解説されていますので、ぜひご覧ください。</p>
-            <p style="padding-left: 1em;"><strong>解説動画:</strong> <a href="https://youtu.be/2xqllaCTP5c?si=jY3Vn64mj6y91Vte" target="_blank" rel="noopener noreferrer">【原神】鶴観の精鋭の仕組みと調整方法 (YouTube)</a></p>
-            <hr style="margin: 20px 0;">
-            <p style="text-align: center;">
-                <a href="https://www.youtube.com/@nekoshita_g" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none;">ねこしたさんのYouTubeチャンネルはこちら</a>
-            </p>
-        </div>
-    </div>
-    
-    <div id="load-plan-modal" class="modal backdrop-blur">
-        <div class="modal-content">
-            <span class="modal-close" data-target="load-plan-modal">&times;</span>
-            <h2>保存したプランを読み込む</h2>
-            <ul id="saved-plans-list">
-                <!-- Saved plans will be dynamically inserted here -->
-            </ul>
-            <p id="no-saved-plans">保存されたプランはありません。</p>
-        </div>
-    </div>
-
-    <footer class="site-credit-footer backdrop-blur">
-        <p>
-            <span id="credit-modal-trigger">Special Thanks: ねこしたさん (詳細はこちら)</span>
-            <span class="credit-separator">|</span>
-            <span>鶴観を研究してくださった先人の方々</span>
-        </p>
-    </footer>
-
-    <!-- This element will be moved to the body tag by JavaScript to ensure correct fixed positioning. -->
-    <a href="#result-details" id="scroll-indicator" class="scroll-indicator hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-    </a>
-
-
-<script>
-/**
- * Tsurumi Adjustment Plan Calculator
- * Refactored for readability and maintainability.
- * Original author: あの時の鳥です (https://x.com/PIpXlMz1tB5ASjF)
- * Special Thanks: ねこしたさん (for research and assets)
- */
-document.addEventListener('DOMContentLoaded', () => {
-
-    // --- 1. DATA DEFINITIONS & CONSTANTS ---
-    
-    const data = {
-        eliteGroups: {
-            'A': { name: 'モシリ炎アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Pyro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738372090-i0Dg36tAbTaRjEHlpQhPr5NY.jpg?width=1200' },
-            'B': { name: 'モシリ雷アビス', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Electro%2520Abyss%2520Mage_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419313-vIRa5KkjYBwznp1OSoUMZCLG.jpg?width=1200' },
-            'C': { name: 'モシリ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419512-Zn6ERGTQCwgakSrmVHjWztFY.jpg?width=1200' },
-            'D': { name: 'チライ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419554-5Vfy0paPscJjSACn4DTvY3Mr.jpg?width=1200' },
-            'E': { name: 'オイナ機兵', iconUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/Ruin_Cruiser_Icon.webp?raw=true', zoomMapUrl: 'https://assets.st-note.com/img/1738419603-5ULFDgf1RN86dZQHnMJoSX3e.jpg?width=1200' },
-            'F': { name: 'オイナ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419733-GNO1jErQmFh9p5yP423WgLaH.jpg?width=1200' },
-            'G': { name: 'シリコロ暴徒', iconUrl: 'https://wiki.hoyolab.com/_ipx/f_webp/https://bbs.hoyolab.com/hoyowiki/picture/enemy/Rock%2520Shieldwall%2520Mitachurl_icon.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419775-yxGHB6uJZpdh7VDzT2n85osX.jpg?width=1200' },
-            'H': { name: 'アウタケ東', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/f98aad8ddb6a41ae54eb9b81c63f58da_8280051482592802504.png', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E6%9D%B1.png?raw=true' },
-            'I': { name: 'アウタケ西', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/f98aad8ddb6a41ae54eb9b81c63f58da_8280051482592802504.png', zoomMapUrl: 'https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%82%A2%E3%82%A6%E3%82%BF%E3%82%B1%E8%A5%BF.png?raw=true' },
-            'J': { name: 'ワクカウ', iconUrl: 'https://upload-static.hoyoverse.com/hoyolab-wiki/2023/04/21/132746206/c0b9fccb976922890793a88cefa44525_4478418637550120506.png', zoomMapUrl: 'https://assets.st-note.com/img/1738419878-oLvIuKdDGVEc3RsO6UWrZFH4.jpg?width=1200' },
-        },
-        actions: [
-            {id: 2, name: 'ワープ②', affectedGroups: ['A', 'D']}, {id: 3, name: 'ワープ③', affectedGroups: ['A', 'B', 'C', 'D', 'E', 'J']}, {id: 4, name: 'ワープ④', affectedGroups: ['B', 'C', 'D', 'E', 'F']}, {id: 5, name: 'ワープ⑤', affectedGroups: ['B', 'E', 'F', 'G', 'H', 'I']}, {id: 6, name: 'ワープ⑥', affectedGroups: ['A', 'B', 'C', 'E', 'F', 'G', 'H', 'I']}, {id: 7, name: 'ワープ⑦', affectedGroups: ['A', 'J']}, {id: 8, name: 'ワープ⑧', affectedGroups: ['J']}, {id: 9, name: 'ボート⑨', affectedGroups: ['A']}, {id: 10, name: 'ボート⑩', affectedGroups: ['C', 'D']}, {id: 11, name: 'ボート⑪', affectedGroups: ['B', 'C', 'D']}, {id: 12, name: 'ボート⑫', affectedGroups: ['D']}, {id: 13, name: '歩き⑬', affectedGroups: ['A', 'B', 'C', 'J']}, {id: 14, name: '歩き⑭', affectedGroups: ['A', 'B', 'J']}, {id: 15, name: '歩き⑮', affectedGroups: ['E', 'G']}, {id: 16, name: '歩き⑯', affectedGroups: ['E', 'F', 'G']}, {id: 17, name: '歩き⑰', affectedGroups: ['A', 'H', 'J']}, {id: 18, name: 'ポケワ⑱', affectedGroups: ['E']}, {id: 19, name: '歩き⑲', affectedGroups: ['E', 'F', 'G', 'I']}, {id: 20, name: 'ボート⑳', affectedGroups: ['H', 'I']}, {id: 21, name: 'ボート㉑', affectedGroups: ['I']},
-        ],
-        actionDetails: {
-            2:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202210.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 3:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202231.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 4:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%Bーン%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202321.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 5:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202329.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 6:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202336.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 7:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202343.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 8:  { images: ['https://github.com/Anotokinotori/Tsurumi-Route-Optimizer/blob/main/%E3%83%AF%E3%83%BC%E3%83%97/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-09-20%20202349.png?raw=true'], videoUrl: null, note: 'ワープポイントに移動するだけの操作です。ロードが完了したら、影響範囲を広げないよう、一切移動はせずに他の場所に移動してください。' }, 9:  { images: ['https://assets.st-note.com/img/1740718483-AhlXqnUk7BWjzOoeZcR6D9Y4.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 10: { images: ['https://assets.st-note.com/img/1740972735-fGwYadHbXy3MxPjqiACBrN0h.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 11: { images: ['https://assets.st-note.com/img/1741059429-fjJvq8DHOs5kcYNUmzW2dKrn.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 12: { images: ['https://assets.st-note.com/img/1740718519-C5t0WKmVepqoji19Rc2GZduf.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\n鶴観の七天神像の近くのボートポイントから向かってください' }, 13: { images: ['https://assets.st-note.com/img/1740019544-fjJrv5VwbpUgatR0FLMODEPG.png?width=1200', 'https://assets.st-note.com/img/1740019502-2BkCqL4znrixluRm7FpjvhOQ.png?width=1200'], videoUrl: 'https://youtu.be/2_xN2PYjrO4?si=0K03Yr1tl74NQ0MF', note: 'ワープ8にワープした段階でワクカウもロードされます。\nその後、移動し、モシリ炎アビスとモシリ雷アビスとモシリ暴徒もロードします。\n目印は草です。\n※ワープ7からだと、アウタケ東とモシリ雷アビスのロード境界付近になり誤ロードのリスクが上がるため、8から向かってます\n極力動画と同じように移動してください。' }, 14: { images: ['https://assets.st-note.com/img/1739947858-im8E9AtCjsr501YZnHWuKxNJ.png?width=1200 ', 'https://assets.st-note.com/img/1739947867-yxzY23VinFgkLKrCtmXqvG0B.png?width=1200'], videoUrl: 'https://youtu.be/fDn-IKfIL-A?si=92PmIUWw-Vgvg34m', note: 'ワープ8にワープした段階でワクカウもロードされます。その後、移動し、モシリ炎アビスとモシリ雷アビスもロードします。目印は杭です。\n極力動画と同じように移動してください。' }, 15: { images: ['https://assets.st-note.com/img/1738380135-LlcU0487Xtbjduk9KzqT6sDa.png?width=1200', 'https://assets.st-note.com/img/1740114869-zBxEZO2v3dAeQusnTYJ0WkNb.png?width=1200'], videoUrl: 'https://youtu.be/FRZu8bq3SEY?si=Ra81bAbgAKu_DGqb', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）\n目印はミントです。\n極力動画と同じように移動してください。' }, 16: { images: ['https://assets.st-note.com/img/1743737811-wB7bQ5n9SjWA04tyDLsJROVf.png?width=1200', 'https://assets.st-note.com/img/1743737778-7VAa6i9QBv2HjXslczhdKoTg.png?width=1200'], videoUrl: 'https://youtu.be/2Ev8hvTaVgo?si=nR242nzcypbrcmbF', note: '他の精鋭をロードしないようにボートポイントから向かってください。（ポケワを置くかヤシオリ島から海を渡る）目印はスイートフワラーと崖の隙間です。\n極力動画と同じように移動してください。' }, 17: { images: ['https://assets.st-note.com/img/1738916671-ORDvWIt8zi692QxAJVKb1rlS.png?width=1200', 'https://assets.st-note.com/img/1738916711-VnxAvW1qJdrGXlOzoHe8Mshk.png?width=1200'], videoUrl: 'https://youtu.be/x8Zcoz0VjzY?si=42_j7YWlgBPT_zR3', note: 'ワープ7にワープした段階でモシリ炎アビスとワクカウもロードされます。その後、移動し、アウタケ東もロードします。目標は雷石です。\n極力動画と同じように移動してください。' }, 18: { images: ['https://assets.st-note.com/img/1738401375-T9NnmahGdqv30Ije4tbpZ6y5.jpg?width=1200', 'https://assets.st-note.com/img/1738374779-0BuAKsWRnoTiSNbltd2qIv4H.png?width=1200'], videoUrl: null, note: 'シリコロのボートポイントです。ポケワを置くのがおすすめですが、セイライ島やヤシオリ島から海を渡って来ても大丈夫です。' }, 19: { images: ['https://assets.st-note.com/img/1741392581-OlQNcjt2W14iaRJymhSG0VdI.png?width=1200', 'https://assets.st-note.com/img/1741392586-2SUxeY4fBXj7z918Tok0nqHu.png?width=1200'], videoUrl: 'https://youtu.be/XbqcgyuE0vw?si=Xf3wZ57Y_nxWjBW8', note: 'オイナ機兵 + シリコロ暴徒 + オイナ暴徒 + アウタケ西 ロード位置\n目印はミントです。\n極力動画と同じように移動してください。' }, 20: { images: ['https://assets.st-note.com/img/1740887637-KEB38rW94bPpH2YI6whCcQ7x.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' }, 21: { images: ['https://assets.st-note.com/img/1740464299-tWJOErwCv4B1cnPI57XmoMY3.jpg?width=1200'], videoUrl: null, note: '意図せぬ精鋭をロードしないよう、目的までの移動ルートに気をつけてください。\nヤシオリ島からボートで向かいます。\nシリコロ山付近の精鋭をロードしないように大回りしてください。' },
-        },
-        recommendedConfig: {
-            'A': 'C', 'B': 'B', 'C': 'C', 'D': 'C', 'E': 'C',
-            'F': 'B', 'G': 'C', 'H': 'C', 'I': 'C', 'J': 'B'
-        },
-        markerPositions: {
-            'A': { top: '52%', left: '61%' }, 'B': { top: '48%', left: '54%' }, 'C': { top: '43%', left: '59%' }, 'D': { top: '34%', left: '59%' }, 'E': { top: '34%', left: '44%' }, 'F': { top: '41%', left: '38%' }, 'G': { top: '32%', left: '35%' }, 'H': { top: '50%', left: '32%' }, 'I': { top: '48%', left: '23%' }, 'J': { top: '69%', left: '43%' }
-        },
-        patternMarkerPositions: {
-            'A': { 'A': { bottom: '46%', right: '43%' }, 'B': { bottom: '54%', right: '47%' }, 'C': { bottom: '40%', right: '51%' } }, 'B': { 'A': { bottom: '62%', right: '57%' }, 'B': { bottom: '52%', right: '52%' }, 'C': { bottom: '61%', right: '48%' } }, 'C': { 'A': { bottom: '75%', right: '50%' }, 'B': { bottom: '64%', right: '54%' }, 'C': { bottom: '61%', right: '45%' } }, 'D': { 'A': { bottom: '73.5%', right: '28.6%' }, 'B': { bottom: '59.9%', right: '31.3%' }, 'C': { bottom: '57.8%', right: '27.4%' } }, 'E': { 'A': { bottom: '54.1%', right: '36.7%' }, 'B': { bottom: '51.0%', right: '43.2%' }, 'C': { bottom: '73.7%', right: '40.7%' } }, 'F': { 'A': { bottom: '42.9%', right: '49.9%' }, 'B': { bottom: '36.5%', right: '45.0%' }, 'C': { bottom: '48.3%', right: '46.0%' } }, 'G': { 'A': { bottom: '63.0%', right: '49.5%' }, 'B': { bottom: '59.5%', right: '55.4%' }, 'C': { bottom: '63.0%', right: '44.5%' } }, 'H': { 'A': { bottom: '41.3%', right: '58.7%' }, 'B': { bottom: '45.2%', right: '63.4%' }, 'C': { bottom: '47.0%', right: '57.6%' } }, 'I': { 'A': { bottom: '58.4%', right: '66.3%' }, 'B': { bottom: '61.1%', right: '61.0%' }, 'C': { bottom: '51.0%', right: '67.5%' } }, 'J': { 'A': { bottom: '58.0%', right: '40.8%' }, 'B': { bottom: '51.8%', right: '56.5%' }, 'C': { bottom: '28.5%', right: '52.6%' } }
-        },
-        screenshotImageUrls: {
-            'A': { 'A': 'https://assets.st-note.com/img/1738372100-wkRfaQDElqCepTY12bHVJszm.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738372108-Ozf8gFbjTZEaGJMDx7qHAoVN.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738420209-Vs9IFoQq3dJxwOGv5RM7Xh0C.jpg?width=1200' }, 'B': { 'A': 'https://assets.st-note.com/img/1738419367-4wCdF5eOLbmtVuDAURYSaIr1.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419379-3mOLkEy16jefW0nvGlctzK9B.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419389-Zm5ra9xD6JU2SKfNzeBHpIl1.jpg?width=1200' }, 'C': { 'A': 'https://assets.st-note.com/img/1738419522-lgzSU9nI2x6ZYhkNfHqiPXOo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419532-g9URz8f04FckmJtAseBhu7Qj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419541-1IgcObQjl3dH4rwy2LNM6SP9.jpg?width=1200' }, 'D': { 'A': 'https://assets.st-note.com/img/1738419563-xyMQ1nkuOjbpa6Dwm3KWoYh9.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419572-YuweId6SiyKDBAtWgOlojQGa.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419580-quLQMGeRlbfv0wSgmh8jCINt.jpg?width=1200' }, 'E': { 'A': 'https://assets.st-note.com/img/1738419683-Y3pzloUPmn861idxQvLaMNZy.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419695-t41JA6FX2CeViT9GB3UOdhlK.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419704-xdZlTOuatBockhDLVgsN4I3w.jpg?width=1200' }, 'F': { 'A': 'https://assets.st-note.com/img/1738419747-YfBn7iOzKVekQRAJ9DParxlv.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419755-5CmQ8u0hGFrsfRyZojIH2kpX.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419763-zFvuEZK9nYgd61OsrM5NeRAP.jpg?width=1200' }, 'G': { 'A': 'https://assets.st-note.com/img/1738586151-mkVNDUfHbGTQFJ7M9opaYRK2.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419796-1mHqF5OyP6rEAoU3YZNcuQKj.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419805-MF0UpPyI6cNzqldvXADiuEwg.jpg?width=1200' }, 'H': { 'A': 'https://assets.st-note.com/img/1738419821-2VtSLA5DROoJ0wBClZIxvMTu.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419829-4evqad8bPjYEAmBfpZH9RuT1.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419837-4tSaJMW6y7BzDZQ3fRC2LXqH.jpg?width=1200' }, 'I': { 'A': 'https://assets.st-note.com/img/1738419855-V8XBf5WexFzy60psuQGvmNdY.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738586173-KCQXfOlVjNtUoBn37qg5Fcu0.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419868-YORuncAJ3DgLoZ560WwCv4Uq.jpg?width=1200' }, 'J': { 'A': 'https://assets.st-note.com/img/1738419900-C9ZW6JqmkxnVz5vBrKbAXtDo.jpg?width=1200', 'B': 'https://assets.st-note.com/img/1738419916-pQNEJcL0dXovR7jnTfa8qzeh.jpg?width=1200', 'C': 'https://assets.st-note.com/img/1738419933-zFKX9tqVyjMilUBRdJIWNYrH.jpg?width=1200' }
-        },
-    };
-    
-    const CONSTANTS = {
-        GROUP_KEYS: Object.keys(data.eliteGroups),
-        TOTAL_GROUPS: Object.keys(data.eliteGroups).length,
-        TOTAL_COMBINATIONS: 59049, // 3^10
-        PATTERN_MAP: { 'A': 0, 'B': 1, 'C': 2 },
-        STORAGE_KEY: 'tsurumiSavedPlans',
-        BANNER_CLOSED_KEY: 'tsurumiBannerClosed',
-    };
-
-    // --- 2. APPLICATION STATE ---
-
-    const state = {
-        currentConfig: {},
-        idealConfig: {},
-        activeSelection: { configType: null, groupId: null, pattern: null },
-        lastCalculatedPlan: null,
-        calculationTask: null,
-        possibleDailyActions: [],
-    };
-    
-    // --- 3. DOM ELEMENT CACHE ---
-
-    const dom = {
-        infoBanner: document.getElementById('info-banner'),
-        closeBannerBtn: document.getElementById('close-banner-btn'),
-        pages: document.querySelectorAll('.page'),
-        steps: document.querySelectorAll('.step'),
-        modals: document.querySelectorAll('.modal'),
-
-        // Start Page
-        goToCurrentBtn: document.getElementById('go-to-current-btn'),
-        guideBtn: document.getElementById('guide-btn'),
-        loadPlanBtn: document.getElementById('load-plan-btn'),
-        multiplayerModeCheckbox: document.getElementById('multiplayer-mode-checkbox'),
-        boatModeCheckbox: document.getElementById('boat-mode-checkbox'),
-
-        // Current Config Page
-        goToIdealBtn: document.getElementById('go-to-ideal-btn'),
-        progressText: document.getElementById('progress-text'),
-        validationMessage: document.getElementById('validation-message'),
-        
-        // Ideal Config Page
-        idealProgressText: document.getElementById('ideal-progress-text'),
-        setRecommendedBtn: document.getElementById('set-recommended-btn'),
-        copyCurrentBtn: document.getElementById('copy-current-btn'),
-        calculatePlanBtn: document.getElementById('calculate-plan-btn'),
-        
-        // Result Page
-        resultPage: document.getElementById('result-page'),
-        resultTbody: document.getElementById('result-tbody'),
-        resultSummary: document.getElementById('result-summary'),
-        soloModeNotice: document.getElementById('solo-mode-notice'),
-        recalculateBtn: document.getElementById('recalculate-alternate-mode-btn'),
-        savePlanBtn: document.getElementById('save-plan-btn'),
-        resetBtn: document.getElementById('reset-btn'),
-        scrollIndicator: document.getElementById('scroll-indicator'),
-
-        // Modals
-        zoom: {
-            modal: document.getElementById('zoom-view'),
-            title: document.getElementById('zoom-title'),
-            mapContainer: document.getElementById('zoom-map-container'),
-            mapImage: document.querySelector('#zoom-map-container img'),
-        },
-        screenshot: {
-            modal: document.getElementById('screenshot-popup'),
-            title: document.getElementById('screenshot-title'),
-            img: document.getElementById('screenshot-img'),
-            confirmBtn: document.getElementById('confirm-pattern-btn'),
-        },
-        loading: {
-            modal: document.getElementById('loading-modal'),
-            text: document.getElementById('loading-text'),
-            progress: document.getElementById('calculation-progress'),
-        },
-        dayDetail: {
-            modal: document.getElementById('day-detail-modal'),
-            title: document.getElementById('day-detail-title'),
-            content: document.getElementById('day-detail-content'),
-        },
-        loadPlan: {
-            modal: document.getElementById('load-plan-modal'),
-            list: document.getElementById('saved-plans-list'),
-            noPlansMsg: document.getElementById('no-saved-plans'),
-        },
-        credit: {
-            modal: document.getElementById('credit-modal'),
-            trigger: document.getElementById('credit-modal-trigger'),
+        if (type === "sword") {
+          return (
+            <svg {...common}>
+              <g fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M50 10 L57 17 L57 58 L50 70 L43 58 L43 17 Z" opacity="0.55" />
+                <path d="M43 24 L57 24" opacity="0.9" />
+                <path d="M34 60 L66 60" />
+                <path d="M38 60 Q50 50 62 60" opacity="0.55" />
+                <path d="M50 70 L50 88" />
+                <path d="M44 88 L56 88" />
+                <path d="M47 92 L53 92" opacity="0.7" />
+              </g>
+              <path d="M50 13 L54.5 17.5 L54.5 56.5 L50 64 L45.5 56.5 L45.5 17.5 Z" fill="currentColor" opacity="0.14" />
+            </svg>
+          );
         }
-    };
 
-    // --- 4. UI HELPER FUNCTIONS ---
-    
-    const uiHelpers = {
-        showPage(pageId) {
-            dom.pages.forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+        if (type === "bow") {
+          return (
+            <svg {...common}>
+              <g fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M70 18 Q42 50 70 82" />
+                <path d="M64 24 Q44 50 64 76" opacity="0.65" />
+                <path d="M30 20 L30 80" opacity="0.7" />
+                <path d="M30 20 L70 18" />
+                <path d="M30 80 L70 82" />
+                <path d="M30 50 L78 50" />
+                <path d="M78 50 L70 46" />
+                <path d="M78 50 L70 54" />
+              </g>
+              <path d="M66 25 Q49 50 66 75" fill="currentColor" opacity="0.12" />
+            </svg>
+          );
+        }
 
-            dom.steps.forEach(step => step.classList.remove('active-step'));
-            let activeStepNumber;
-            if (pageId.includes('current')) activeStepNumber = 1;
-            else if (pageId.includes('ideal')) activeStepNumber = 2;
-            else if (pageId.includes('result')) activeStepNumber = 3;
-            else activeStepNumber = 1;
+        if (type === "polearm") {
+          return (
+            <svg {...common}>
+              <g fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M28 86 L72 14" />
+                <path d="M64 18 L82 18 L72 14 L78 28 Z" />
+                <path d="M62 22 L74 22" opacity="0.7" />
+                <path d="M24 82 L32 90" />
+                <path d="M20 88 L28 96" opacity="0.6" />
+                <path d="M40 56 L50 62" opacity="0.55" />
+                <path d="M44 52 L54 58" opacity="0.35" />
+              </g>
+              <path d="M67 19 L79 19 L72 16 L76 27 Z" fill="currentColor" opacity="0.14" />
+            </svg>
+          );
+        }
+
+        if (type === "claymore") {
+          return (
+            <svg {...common}>
+              <g fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M45 12 L55 12 L60 62 L50 78 L40 62 Z" opacity="0.55" />
+                <path d="M48 18 L52 18" opacity="0.9" />
+                <path d="M42 60 L58 60" opacity="0.8" />
+                <path d="M34 64 L66 64" />
+                <path d="M50 78 L50 90" />
+                <path d="M42 90 L58 90" />
+                <path d="M46 94 L54 94" opacity="0.7" />
+                <path d="M49 18 L49 58" opacity="0.35" />
+                <path d="M51 18 L51 58" opacity="0.35" />
+              </g>
+              <path d="M46.5 14 L53.5 14 L57.5 60 L50 73 L42.5 60 Z" fill="currentColor" opacity="0.14" />
+            </svg>
+          );
+        }
+
+        return null;
+      };
+
+      const HERO_IMAGE_URL = "https://pbs.twimg.com/media/G6QnKhYWMAAtYMl.jpg";
+
+      const ATTACKER_FILTER_SCOPE = "party"; // "party" | "main"
+
+      const CHAR_DB = {
+        amber: { id: "amber", name: "Amber", jpName: "アンバー", type: "four_star", rarity: 4 },
+        mav: { id: "mav", name: "Mavuika", jpName: "マーヴィカ", type: "limited", rarity: 5 },
+        bennett: { id: "bennett", name: "Bennett", jpName: "ベネット", type: "four_star", rarity: 4 },
+        furina: { id: "furina", name: "Furina", jpName: "フリーナ", type: "limited", rarity: 5 },
+        zhongli: { id: "zhongli", name: "Zhongli", jpName: "鍾離", type: "limited", rarity: 5 },
+        collei: { id: "collei", name: "Collei", jpName: "コレイ", type: "four_star", rarity: 4 },
+        xiangling: { id: "xiangling", name: "Xiangling", jpName: "香菱", type: "four_star", rarity: 4 },
+        xingqiu: { id: "xingqiu", name: "Xingqiu", jpName: "行秋", type: "four_star", rarity: 4 },
+        keqing: { id: "keqing", name: "Keqing", jpName: "刻晴", type: "standard", rarity: 5 },
+      };
+
+      const CHAR_NAME_TO_ID = Object.values(CHAR_DB).reduce((acc, char) => {
+        acc[char.name.toLowerCase()] = char.id;
+        acc[char.jpName.toLowerCase()] = char.id;
+        return acc;
+      }, {});
+
+      const WEAPON_DB = {
+        s5: { id: "s5", name: "5-Star Sword", type: "five_star", rarity: 5 },
+        s4: { id: "s4", name: "4-Star Sword", type: "four_star", rarity: 4 },
+        bow5: { id: "bow5", name: "5-Star Bow", type: "five_star", rarity: 5 },
+        bow4: { id: "bow4", name: "4-Star Bow", type: "four_star", rarity: 4 },
+      };
+
+      const RUNS_RAW = [
+        {
+          id: "r1",
+          userId: "u1",
+          userName: "R",
+          mainAttackerId: "mav",
+          supportIds: ["bennett", "furina", "xiangling"],
+          party: [
+            { characterId: "mav", cons: 2 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "furina", cons: 1 },
+            { characterId: "xiangling", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s5", refine: 2 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s5", refine: 1 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "26:45",
+          videoUrl: "#",
+          platform: "PC",
+          date: "2025-12-24",
+          season: "5.3",
+          isFestival: false,
+          comment: "Fast meta route.",
+          tags: ["Meta", "WR"],
+        },
+        {
+          id: "r2",
+          userId: "u2",
+          userName: "Bird",
+          mainAttackerId: "amber",
+          supportIds: ["collei", "bennett", "xingqiu"],
+          party: [
+            { characterId: "amber", cons: 0 },
+            { characterId: "collei", cons: 6 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xingqiu", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "bow4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "32:10",
+          videoUrl: "#",
+          platform: "Mobile",
+          date: "2025-12-25",
+          season: "5.3",
+          isFestival: false,
+          comment: "Low cost clear.",
+          tags: ["Budget", "New"],
+        },
+        {
+          id: "r3",
+          userId: "u3",
+          userName: "Random",
+          mainAttackerId: "keqing",
+          supportIds: ["zhongli", "bennett", "xiangling"],
+          party: [
+            { characterId: "keqing", cons: 0 },
+            { characterId: "zhongli", cons: 0 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xiangling", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s5", refine: 1 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "1:02:30",
+          videoUrl: "#",
+          platform: "PS5",
+          date: "2025-12-23",
+          season: "5.3",
+          isFestival: false,
+          comment: "Off-meta tech.",
+          tags: ["OffMeta"],
+        },
+        {
+          id: "r4",
+          userId: "u1",
+          userName: "R",
+          mainAttackerId: "amber",
+          supportIds: ["bennett", "xiangling", "xingqiu"],
+          party: [
+            { characterId: "amber", cons: 0 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xiangling", cons: 6 },
+            { characterId: "xingqiu", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "bow4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "42:00",
+          videoUrl: "#",
+          platform: "PC",
+          date: "2025-12-26",
+          season: "5.3",
+          isFestival: true,
+          comment: "Festival rules run.",
+          tags: ["Fes"],
+        },
+        {
+          id: "r5",
+          userId: "u4",
+          userName: "Luna",
+          mainAttackerId: "zhongli",
+          supportIds: ["bennett", "xiangling", "xingqiu"],
+          party: [
+            { characterId: "zhongli", cons: 0 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xiangling", cons: 6 },
+            { characterId: "xingqiu", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s5", refine: 1 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "29:10",
+          videoUrl: "#",
+          platform: "PC",
+          date: "2025-12-22",
+          season: "5.3",
+          isFestival: false,
+          comment: "Stable clear.",
+          tags: ["Meta"],
+        },
+        {
+          id: "r6",
+          userId: "u5",
+          userName: "Echo",
+          mainAttackerId: "amber",
+          supportIds: ["collei", "bennett", "xiangling"],
+          party: [
+            { characterId: "amber", cons: 0 },
+            { characterId: "collei", cons: 6 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xiangling", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "bow4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "36:20",
+          videoUrl: "#",
+          platform: "Mobile",
+          date: "2025-12-21",
+          season: "5.3",
+          isFestival: false,
+          comment: "Entry run.",
+          tags: ["New"],
+        },
+        {
+          id: "r7",
+          userId: "u6",
+          userName: "Kai",
+          mainAttackerId: "keqing",
+          supportIds: ["bennett", "xiangling", "xingqiu"],
+          party: [
+            { characterId: "keqing", cons: 0 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xiangling", cons: 6 },
+            { characterId: "xingqiu", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "40:05",
+          videoUrl: "#",
+          platform: "PS5",
+          date: "2025-12-20",
+          season: "5.3",
+          isFestival: false,
+          comment: "Off-meta route.",
+          tags: ["OffMeta"],
+        },
+        {
+          id: "r8",
+          userId: "u7",
+          userName: "Nova",
+          mainAttackerId: "mav",
+          supportIds: ["bennett", "furina", "xiangling"],
+          party: [
+            { characterId: "mav", cons: 1 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "furina", cons: 0 },
+            { characterId: "xiangling", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s5", refine: 1 },
+            { weaponId: "s5", refine: 1 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "27:40",
+          videoUrl: "#",
+          platform: "PC",
+          date: "2025-12-19",
+          season: "5.3",
+          isFestival: false,
+          comment: "Aggressive.",
+          tags: ["Meta"],
+        },
+        {
+          id: "r9",
+          userId: "u8",
+          userName: "Rin",
+          mainAttackerId: "zhongli",
+          supportIds: ["amber", "bennett", "xingqiu"],
+          party: [
+            { characterId: "zhongli", cons: 0 },
+            { characterId: "amber", cons: 0 },
+            { characterId: "bennett", cons: 6 },
+            { characterId: "xingqiu", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "bow4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+            { weaponId: "s4", refine: 5 },
+          ],
+          time: "44:10",
+          videoUrl: "#",
+          platform: "PS5",
+          date: "2025-12-18",
+          season: "5.3",
+          isFestival: true,
+          comment: "Festival casual.",
+          tags: ["Fes"],
+        },
+        {
+          id: "r10",
+          userId: "u9",
+          userName: "Aster",
+          mainAttackerId: "mav",
+          supportIds: ["furina", "zhongli", "bennett"],
+          party: [
+            { characterId: "mav", cons: 6 },
+            { characterId: "furina", cons: 6 },
+            { characterId: "zhongli", cons: 6 },
+            { characterId: "bennett", cons: 6 },
+          ],
+          weapons: [
+            { weaponId: "s5", refine: 5 },
+            { weaponId: "s5", refine: 5 },
+            { weaponId: "s5", refine: 5 },
+            { weaponId: "s5", refine: 5 },
+          ],
+          time: "25:40",
+          videoUrl: "#",
+          platform: "PC",
+          date: "2025-12-27",
+          season: "5.3",
+          isFestival: false,
+          comment: "Max investment.",
+          tags: ["Meta", "WR"],
+        },
+      ];
+
+      const toSeconds = (timeStr) => {
+        const parts = String(timeStr)
+          .trim()
+          .split(":")
+          .map((p) => parseInt(p, 10));
+        if (parts.some((n) => Number.isNaN(n))) return Number.POSITIVE_INFINITY;
+        if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        if (parts.length === 2) return parts[0] * 60 + parts[1];
+        if (parts.length === 1) return parts[0];
+        return Number.POSITIVE_INFINITY;
+      };
+
+      const calcCharCost = (party) =>
+        party.reduce((sum, member) => {
+          const char = CHAR_DB[member.characterId];
+          if (!char) return sum;
+          if (char.type === "limited") return sum + (member.cons + 1);
+          if (char.type === "standard") return sum + 1;
+          return sum;
+        }, 0);
+
+      const calcWeaponCost = (weapons) =>
+        weapons.reduce((sum, wep) => {
+          const weapon = WEAPON_DB[wep.weaponId];
+          if (!weapon) return sum;
+          if (weapon.type === "five_star") return sum + wep.refine;
+          return sum;
+        }, 0);
+
+      const calcBracket = (charCost, wepCost) => {
+        if (charCost <= 3 && wepCost <= 1) return 1;
+        if (charCost <= 6 && wepCost <= 2) return 2;
+        if (charCost <= 12 && wepCost <= 3) return 3;
+        return 4;
+      };
+
+      const makeCategoryKey = (run) =>
+        [run.userId, run.mainAttackerId, run.bracket, run.season, run.isFestival ? "fes" : "main"].join("|");
+
+      const normalizeRun = (run) => {
+        const charCost = calcCharCost(run.party);
+        const wepCost = calcWeaponCost(run.weapons);
+        const bracket = calcBracket(charCost, wepCost);
+        return {
+          ...run,
+          charCost,
+          wepCost,
+          bracket,
+          mainAttacker: CHAR_DB[run.mainAttackerId]?.jpName || CHAR_DB[run.mainAttackerId]?.name || run.mainAttackerId,
+          support: run.supportIds.map((id) => CHAR_DB[id]?.jpName || CHAR_DB[id]?.name || id),
+          categoryKey: makeCategoryKey({ ...run, bracket }),
+        };
+      };
+
+      const RUNS = RUNS_RAW.map(normalizeRun);
+
+      const parseAttackerInput = (input) =>
+        input
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((token) => CHAR_NAME_TO_ID[token.toLowerCase()] || token);
+
+      const matchesAttackerFilter = (run, includeIds, excludeIds) => {
+        const partyIds =
+          ATTACKER_FILTER_SCOPE === "main"
+            ? [run.mainAttackerId]
+            : [run.mainAttackerId, ...run.supportIds];
+
+        const hasInclude =
+          includeIds.length === 0 || includeIds.some((id) => partyIds.includes(id));
+        const hasExclude = excludeIds.some((id) => partyIds.includes(id));
+        return hasInclude && !hasExclude;
+      };
+
+      const filterRuns = (runs, filters) =>
+        runs.filter((run) => {
+          if (filters.season && run.season !== filters.season) return false;
+          if (filters.isFestival !== null && run.isFestival !== filters.isFestival) return false;
+          if (filters.bracket && run.bracket !== filters.bracket) return false;
+          if (filters.platform && run.platform !== filters.platform) return false;
+          if (!matchesAttackerFilter(run, filters.includeIds, filters.excludeIds)) return false;
+          return true;
+        });
+
+      const isBetterRun = (a, b) => {
+        const timeDiff = toSeconds(a.time) - toSeconds(b.time);
+        if (timeDiff !== 0) return timeDiff < 0;
+        return new Date(a.date).getTime() > new Date(b.date).getTime();
+      };
+
+      const applyRLogic = (runs) => {
+        const bestByCategory = new Map();
+        runs.forEach((run) => {
+          const key = run.categoryKey;
+          const current = bestByCategory.get(key);
+          if (!current || isBetterRun(run, current)) {
+            bestByCategory.set(key, run);
+          }
+        });
+        return Array.from(bestByCategory.values());
+      };
+
+      const applyWRTag = (runs) => {
+        if (runs.length === 0) return runs;
+        let best = runs[0];
+        runs.forEach((run) => {
+          if (isBetterRun(run, best)) best = run;
+        });
+        return runs.map((run) => {
+          const tags = Array.isArray(run.tags) ? run.tags.filter((t) => t !== "WR") : [];
+          if (run.id === best.id) tags.push("WR");
+          return { ...run, tags };
+        });
+      };
+
+      const getBestRun = (runs) => {
+        if (runs.length === 0) return null;
+        return runs.reduce((best, run) => (isBetterRun(run, best) ? run : best), runs[0]);
+      };
+
+      const TopPlayerCard = ({ label, run, theme, onView }) => {
+        const BgIcon = null;
+        if (!run) {
+          return (
+            <div className="bg-white border rounded-lg p-4 h-full flex flex-col justify-between relative overflow-hidden shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg" style={{ borderColor: theme.accent }}>
+              <div
+                className="absolute top-0 left-0 right-0 h-10 pointer-events-none"
+                style={{ backgroundImage: `linear-gradient(180deg, ${theme.accentLight}66, transparent)` }}
+              />
+              
+              <div className="text-[22px] font-bold text-black tracking-tight">{label}</div>
+              <div className="text-sm text-[#606266]">集計中...</div>
+              <button onClick={onView} className="mt-4 text-sm text-black border border-black/20 rounded-full px-3 py-1 bg-black/5">
+                ランキングを見る
+              </button>
+            </div>
+          );
+        }
+
+        return (
+          <div className="bg-white border rounded-lg p-4 h-full flex flex-col justify-between relative overflow-hidden shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg" style={{ borderColor: theme.accent }}>
+            <div
+              className="absolute top-0 left-0 right-0 h-10 pointer-events-none"
+              style={{ backgroundImage: `linear-gradient(180deg, ${theme.accentLight}66, transparent)` }}
+            />
             
-            document.querySelectorAll(`.step[data-step="${activeStepNumber}"]`).forEach(stepEl => stepEl.classList.add('active-step'));
+            <div>
+              <div className="text-[22px] font-bold text-black tracking-tight">{label}</div>
+              <div className="text-[18px] text-black mt-1">{run.userName}</div>
+              <div className="flex items-center justify-end gap-2 mt-2 text-[16px] text-black">
+                <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                  <LikeIcon size={14} className="text-black" />
+                </button>
+                <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                  <CommentIcon size={14} className="text-black" />
+                </button>
+              </div>
+            </div>
+            <div className="bg-[#f7f7f7] border border-black/10 rounded-lg p-2 mt-3">
+              <div className="flex items-center justify-between">
+                {run.party.map((member, idx) => (
+                  <div key={idx} className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center text-[12px] text-black">
+                    {(CHAR_DB[member.characterId]?.jpName || CHAR_DB[member.characterId]?.name || "?").slice(0, 1)}
+                  </div>
+                ))}
+              </div>
+              <div className="text-[20px] font-semibold text-black text-center mt-2">{run.time}</div>
+            </div>
+            <button onClick={onView} className="mt-4 text-sm text-black border border-black/20 rounded-full px-3 py-1 bg-black/5">
+              ランキングを見る
+            </button>
+          </div>
+        );
+      };
 
-            if (pageId === 'current-config-page') {
-                setTimeout(() => this.updateMapLayout('current-map-container'), 50);
-            } else if (pageId === 'ideal-config-page') {
-                setTimeout(() => this.updateMapLayout('ideal-map-container'), 50);
-            }
+      const getBracketLabel = (bracket) => {
+        const map = { 1: "Low", 2: "Mid.", 3: "High", 4: "Unl." };
+        return map[bracket] || "Unl.";
+      };
 
-            this.updateScrollIndicator();
-        },
-        showModal(modalId) { 
-            document.getElementById(modalId).classList.add('active'); 
-        },
-        closeModal(modalId) { 
-            if (modalId === 'loading-modal' && state.calculationTask) {
-                clearTimeout(state.calculationTask);
-                state.calculationTask = null;
-            }
-            document.getElementById(modalId).classList.remove('active'); 
-        },
-        switchInputView(configType, viewType) {
-            document.getElementById(`${configType}-map-tab`).classList.toggle('active', viewType === 'map');
-            document.getElementById(`${configType}-list-tab`).classList.toggle('active', viewType === 'list');
-            document.getElementById(`${configType}-map-view`).classList.toggle('active', viewType === 'map');
-            document.getElementById(`${configType}-list-view`).classList.toggle('active', viewType === 'list');
-            if (viewType === 'map') {
-                setTimeout(() => this.updateMapLayout(`${configType}-map-container`), 50);
-            }
-        },
-        updateMapLayout(containerId) {
-            const mapContainer = document.getElementById(containerId);
-            if (!mapContainer || !mapContainer.offsetParent) return;
+      const LeaderboardRow = ({ run, index }) => {
+        const rankMove = run.rankMove || "same";
+        const rankIcon = rankMove === "up" ? "↑" : rankMove === "down" ? "↓" : "→";
+        const PlatformIcon = PlatformIcons[run.platform] || PlatformIcons.PC;
+        return (
+          <div className="flex items-center justify-between border-t border-black/10 py-3">
+            <div className="flex items-center gap-4">
+              <div className="text-[20px] w-6 text-center">{rankIcon}</div>
+              <div className="text-[24px] w-10 text-center font-semibold">{index + 1}</div>
+              <div className="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center text-[12px]">
+                {(CHAR_DB[run.mainAttackerId]?.jpName || CHAR_DB[run.mainAttackerId]?.name || "?").slice(0, 1)}
+              </div>
+              <div className="w-10 h-10 rounded-full bg-black/5 border border-black/10 flex items-center justify-center">
+                <PlatformIcon className="w-5 h-5 text-black" />
+              </div>
+              <div className="text-[22px] font-semibold">{run.userName}</div>
+              <div className="text-[12px] px-2 py-0.5 rounded bg-black/5 border border-black/10">
+                {getBracketLabel(run.bracket)}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                <LikeIcon size={14} className="text-black" />
+              </button>
+              <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                <CommentIcon size={14} className="text-black" />
+              </button>
+              <div className="text-[24px] font-semibold w-20 text-right">{run.time}</div>
+              <a className="border border-black/20 rounded-full w-8 h-8 flex items-center justify-center" href={run.videoUrl} target="_blank" rel="noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5l11 7-11 7V5z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        );
+      };
 
-            const mapImage = mapContainer.querySelector('.map-bg');
-            const markers = mapContainer.querySelectorAll('.map-marker');
+      const sortRuns = (runs, sortMode) => {
+        const list = [...runs];
+        list.sort((a, b) => {
+          if (sortMode === "cost") {
+            const costA = a.charCost + a.wepCost;
+            const costB = b.charCost + b.wepCost;
+            if (costA !== costB) return costA - costB;
+            return toSeconds(a.time) - toSeconds(b.time);
+          }
+          if (sortMode === "date") {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          }
+          return toSeconds(a.time) - toSeconds(b.time);
+        });
+        return list;
+      };
 
-            if (mapImage.complete && mapImage.naturalWidth > 0) {
-                const containerRect = mapContainer.getBoundingClientRect();
-                const imageAspectRatio = mapImage.naturalWidth / mapImage.naturalHeight;
-                const containerAspectRatio = containerRect.width / containerRect.height;
 
-                let renderedWidth, renderedHeight, offsetX, offsetY;
-                if (imageAspectRatio > containerAspectRatio) {
-                    renderedWidth = containerRect.width;
-                    renderedHeight = containerRect.width / imageAspectRatio;
-                    offsetX = 0;
-                    offsetY = (containerRect.height - renderedHeight) / 2;
-                } else {
-                    renderedHeight = containerRect.height;
-                    renderedWidth = containerRect.height * imageAspectRatio;
-                    offsetX = (containerRect.width - renderedWidth) / 2;
-                    offsetY = 0;
-                }
-                
-                markers.forEach(marker => {
-                    const groupId = marker.id.split('-')[2];
-                    const pos = data.markerPositions[groupId];
-                    if (pos) {
-                        const newLeft = offsetX + (renderedWidth * (parseFloat(pos.left) / 100));
-                        const newTop = offsetY + (renderedHeight * (parseFloat(pos.top) / 100));
-                        marker.style.left = `${newLeft - marker.offsetWidth / 2}px`;
-                        marker.style.top = `${newTop - marker.offsetHeight / 2}px`;
+      // --- Helper Components ---
+      const BracketBadge = ({ bracket }) => {
+        const config = {
+          1: { label: "Low Cost", bg: "bg-green-50", text: "text-green-600", border: "border-green-100", icon: <Gem size={12} /> },
+          2: { label: "Middle", bg: "bg-blue-50", text: "text-blue-600", border: "border-blue-100", icon: <Swords size={12} /> },
+          3: { label: "High", bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-100", icon: <Crown size={12} /> },
+          4: { label: "Unlimited", bg: "bg-orange-50", text: "text-orange-600", border: "border-orange-100", icon: <Flame size={12} /> },
+        };
+        const style = config[bracket] || config[4];
+        return (
+          <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${style.bg} ${style.text} ${style.border}`}>
+            {style.icon} {style.label}
+          </span>
+        );
+      };
+
+      const RunCard = ({ run, onSelect, isSelected }) => {
+        const charCost = run.charCost ?? 0;
+        const wepCost = run.wepCost ?? 0;
+        const selectedClass = isSelected ? "ring-2 ring-[#36a1f0]" : "";
+
+        return (
+          <div className={`hoyo-card p-5 group relative ${selectedClass}`} onClick={onSelect}>
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-[#f0f2f5] overflow-hidden border-2 border-white shadow-sm relative group-hover:border-[#36a1f0] transition-colors">
+                  <div className="absolute inset-0 flex items-center justify-center text-sm text-[#909399] font-bold">
+                    {run.mainAttacker.substring(0, 1)}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg leading-tight text-[#333333] group-hover:text-[#36a1f0] transition-colors">{run.mainAttacker}</h3>
+                  <p className="text-xs text-[#909399] flex items-center gap-1 mt-0.5">
+                    <User size={10} /> {run.userName}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-mono font-bold text-[#36a1f0]">{run.time}</div>
+                <div className="text-xs text-[#909399]">{run.date}</div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {run.support.map((char, i) => (
+                <span key={i} className="text-xs bg-[#f4f4f5] text-[#606266] px-2 py-1 rounded-md font-medium">
+                  {char}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex justify-between items-center pt-3 border-t border-[#f0f2f5]">
+              <BracketBadge bracket={run.bracket} />
+              <div className="flex gap-3 text-xs font-mono text-[#606266]">
+                <span className="flex items-center gap-1" title="Character Cost">
+                  <User size={12} className="text-[#909399]" /> {charCost}
+                </span>
+                <span className="flex items-center gap-1" title="Weapon Cost">
+                  <Swords size={12} className="text-[#909399]" /> {wepCost}
+                </span>
+              </div>
+            </div>
+
+            {/* バッジ（重なり回避：優先表示だけにしています） */}
+            {run.tags.includes("WR") ? (
+              <div className="absolute -top-2 -right-2 bg-[#ffc107] text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+                <Trophy size={10} /> WR
+              </div>
+            ) : run.tags.includes("Unique") ? (
+              <div className="absolute -top-2 -right-2 bg-[#ff6b6b] text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+                <Zap size={10} /> Unique
+              </div>
+            ) : null}
+          </div>
+        );
+      };
+
+      const SectionHeader = ({ icon: Icon, title, subtitle, colorClass, iconColor }) => (
+        <div className="flex items-center gap-3 mb-4">
+          <div className={`p-2.5 rounded-xl ${colorClass}`}>
+            <Icon size={24} className={iconColor} />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-[#333333]">{title}</h2>
+            <p className="text-sm text-[#909399]">{subtitle}</p>
+          </div>
+        </div>
+      );
+
+      const HeroSection = ({ runs }) => {
+        const metaRun = runs.find(r => r.tags.includes("Meta") && r.bracket === 4) || runs[0];
+        const budgetRun = runs.find(r => r.tags.includes("Budget")) || runs[1];
+        const offMetaRun = runs.find(r => r.tags.includes("OffMeta")) || runs[2];
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="hoyo-card p-6 border-t-4 border-t-orange-400 relative overflow-hidden group">
+              <SectionHeader icon={Trophy} title="環境最前線" subtitle="今週のメタ編成・世界記録" colorClass="bg-orange-50" iconColor="text-orange-500" />
+              {metaRun ? <RunCard run={metaRun} /> : <p>集計中...</p>}
+            </div>
+
+            <div className="hoyo-card p-6 border-t-4 border-t-green-400 relative overflow-hidden group">
+              <SectionHeader icon={Zap} title="コスパの星" subtitle="Low Cost帯の革命児" colorClass="bg-green-50" iconColor="text-green-500" />
+              {budgetRun ? <RunCard run={budgetRun} /> : <p>集計中...</p>}
+            </div>
+
+            <div className="hoyo-card p-6 border-t-4 border-t-indigo-400 relative overflow-hidden group">
+              <SectionHeader icon={Info} title="匠の編成" subtitle="使用率5%未満の開拓者" colorClass="bg-indigo-50" iconColor="text-indigo-500" />
+              {offMetaRun ? <RunCard run={offMetaRun} /> : <p>集計中...</p>}
+            </div>
+          </div>
+        );
+      };
+
+      const CalculatorModal = ({ isOpen, onClose, onSubmit, seasons }) => {
+        // Hooksは必ず先に（※これが超重要）
+        const [chars, setChars] = useState([
+          { characterId: "mav", cons: 0 },
+          { characterId: "bennett", cons: 6 },
+          { characterId: "furina", cons: 0 },
+          { characterId: "xiangling", cons: 6 },
+        ]);
+        const [weapons, setWeapons] = useState([
+          { weaponId: "s5", refine: 1 },
+          { weaponId: "s4", refine: 5 },
+          { weaponId: "s4", refine: 5 },
+          { weaponId: "s4", refine: 5 },
+        ]);
+        const [userId, setUserId] = useState("");
+        const [userName, setUserName] = useState("");
+        const [timeStr, setTimeStr] = useState("");
+        const [platform, setPlatform] = useState("PC");
+        const [date, setDate] = useState("");
+        const [season, setSeason] = useState(seasons[0] || "5.3");
+        const [isFestival, setIsFestival] = useState(false);
+        const [videoUrl, setVideoUrl] = useState("");
+        const [comment, setComment] = useState("");
+        const [tagsInput, setTagsInput] = useState("");
+        const [error, setError] = useState("");
+
+        if (!isOpen) return null;
+
+        const partyInput = chars.map((char) => ({
+          characterId: char.characterId,
+          cons: char.cons,
+        }));
+        const weaponInput = weapons.map((wep) => ({
+          weaponId: wep.weaponId,
+          refine: wep.refine,
+        }));
+
+        const charOnly = calcCharCost(partyInput);
+        const wepOnly = calcWeaponCost(weaponInput);
+
+        let bracket = 4;
+        if (charOnly <= 3 && wepOnly <= 1) bracket = 1;
+        else if (charOnly <= 6 && wepOnly <= 2) bracket = 2;
+        else if (charOnly <= 12 && wepOnly <= 3) bracket = 3;
+
+        return (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-[#ebebeb]">
+              <div className="flex justify-between items-center mb-6 border-b border-[#f0f2f5] pb-4">
+                <h2 className="text-xl font-bold flex items-center gap-2 text-[#333333]">
+                  <Plus className="text-[#36a1f0]" /> 記録提出 (コスト計算)
+                </h2>
+                <button onClick={onClose} className="text-[#909399] hover:text-[#333333] p-1 rounded-full hover:bg-[#f4f4f5] transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
+                      <User size={16} /> 記録情報
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <input
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        placeholder="User ID"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                      />
+                      <input
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        placeholder="User Name"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                      />
+                      <input
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        placeholder="Time (MM:SS or HH:MM:SS)"
+                        value={timeStr}
+                        onChange={(e) => setTimeStr(e.target.value)}
+                      />
+                      <input
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        placeholder="Date (YYYY-MM-DD)"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                      />
+                      <select
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        value={platform}
+                        onChange={(e) => setPlatform(e.target.value)}
+                      >
+                        <option value="PC">PC</option>
+                        <option value="PS5">PS5</option>
+                        <option value="Mobile">Mobile</option>
+                      </select>
+                      <select
+                        className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
+                        value={season}
+                        onChange={(e) => setSeason(e.target.value)}
+                      >
+                        {seasons.map((s) => (
+                          <option key={s} value={s}>Season {s}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <label className="flex items-center gap-2 text-sm text-[#606266]">
+                      <input
+                        type="checkbox"
+                        checked={isFestival}
+                        onChange={(e) => setIsFestival(e.target.checked)}
+                      />
+                      Festival 記録
+                    </label>
+                    <input
+                      className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
+                      placeholder="Video URL"
+                      value={videoUrl}
+                      onChange={(e) => setVideoUrl(e.target.value)}
+                    />
+                    <input
+                      className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
+                      placeholder="Tags (comma separated)"
+                      value={tagsInput}
+                      onChange={(e) => setTagsInput(e.target.value)}
+                    />
+                    <textarea
+                      className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
+                      placeholder="Comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      rows={2}
+                    />
+                    {error && <div className="text-xs text-red-500">{error}</div>}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
+                      <User size={16} /> パーティ構成
+                    </h3>
+                    <div className="space-y-2">
+                      {chars.map((char, i) => (
+                        <div key={i} className="flex gap-2 items-center text-sm">
+                          <span className="w-6 text-[#909399] font-mono text-xs">#{i+1}</span>
+                          <select
+                            className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] flex-1 outline-none transition-all text-[#606266]"
+                            value={char.characterId}
+                            onChange={(e) => {
+                              const newChars = [...chars];
+                              newChars[i].characterId = e.target.value;
+                              newChars[i].cons = 0;
+                              setChars(newChars);
+                            }}
+                          >
+                            {Object.values(CHAR_DB).map((c) => (
+                              <option key={c.id} value={c.id}>{c.jpName} ({c.name})</option>
+                            ))}
+                          </select>
+
+                          {CHAR_DB[char.characterId]?.type === 'limited' && (
+                            <select
+                              className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] w-20 outline-none transition-all text-[#606266]"
+                              value={char.cons}
+                              onChange={(e) => {
+                                const newChars = [...chars];
+                                newChars[i].cons = parseInt(e.target.value, 10);
+                                setChars(newChars);
+                              }}
+                            >
+                              {[...Array(7)].map((_, n) => <option key={n} value={n}>{n}凸</option>)}
+                            </select>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
+                      <Swords size={16} /> 武器構成
+                    </h3>
+                    <div className="space-y-2">
+                      {weapons.map((wep, i) => (
+                        <div key={i} className="flex gap-2 items-center text-sm">
+                          <span className="w-6 text-[#909399] font-mono text-xs">W{i+1}</span>
+                          <select
+                            className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] flex-1 outline-none transition-all text-[#606266]"
+                            value={wep.weaponId}
+                            onChange={(e) => {
+                              const newWeps = [...weapons];
+                              newWeps[i].weaponId = e.target.value;
+                              setWeapons(newWeps);
+                            }}
+                          >
+                            {Object.values(WEAPON_DB).map((w) => (
+                              <option key={w.id} value={w.id}>{w.name}</option>
+                            ))}
+                          </select>
+
+                          {WEAPON_DB[wep.weaponId]?.type === 'five_star' && (
+                            <select
+                              className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] w-20 outline-none transition-all text-[#606266]"
+                              value={wep.refine}
+                              onChange={(e) => {
+                                const newWeps = [...weapons];
+                                newWeps[i].refine = parseInt(e.target.value, 10);
+                                setWeapons(newWeps);
+                              }}
+                            >
+                              {[...Array(5)].map((_, n) => <option key={n} value={n+1}>R{n+1}</option>)}
+                            </select>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center text-center border border-[#ebebeb]">
+                  <div className="text-xs font-bold text-[#909399] tracking-widest uppercase mb-2">Result Bracket</div>
+                  <div className={`text-6xl font-black mb-4 tracking-tighter ${
+                    bracket === 1 ? 'text-green-500' :
+                    bracket === 2 ? 'text-blue-500' :
+                    bracket === 3 ? 'text-purple-500' : 'text-orange-500'
+                  }`}>
+                    {bracket === 4 ? "Unl." : `B${bracket}`}
+                  </div>
+                  <BracketBadge bracket={bracket} />
+
+                  <div className="mt-8 w-full space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
+                        <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><User size={10} /> Character Cost</div>
+                        <div className="font-mono font-bold text-xl text-[#333333]">{charOnly}</div>
+                      </div>
+                      <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
+                        <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><Swords size={10} /> Weapon Cost</div>
+                        <div className="font-mono font-bold text-xl text-[#333333]">{wepOnly}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 text-xs text-left bg-white p-4 rounded-xl border border-[#ebebeb] w-full shadow-sm">
+                    <p className="font-bold text-[#606266] mb-2 flex items-center gap-1"><Info size={12}/> 判定条件 (AND):</p>
+                    <ul className="space-y-1.5 text-[#909399] font-mono">
+                      <li className={`flex justify-between ${bracket === 1 ? "text-green-600 font-bold" : ""}`}><span>Low</span><span>Char≤3 & Wep≤1</span></li>
+                      <li className={`flex justify-between ${bracket === 2 ? "text-blue-600 font-bold" : ""}`}><span>Middle</span><span>Char≤6 & Wep≤2</span></li>
+                      <li className={`flex justify-between ${bracket === 3 ? "text-purple-600 font-bold" : ""}`}><span>High</span><span>Char≤12 & Wep≤3</span></li>
+                      <li className={`flex justify-between ${bracket === 4 ? "text-orange-600 font-bold" : ""}`}><span>Unlimited</span><span>その他</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end gap-3 border-t border-[#f0f2f5] pt-6">
+                <button onClick={onClose} className="px-5 py-2.5 text-[#606266] hover:bg-[#f4f4f5] rounded-full transition-colors text-sm font-bold">キャンセル</button>
+                <button
+                  onClick={() => {
+                    const hasEmptyChar = partyInput.some((c) => !c.characterId);
+                    const hasEmptyWeapon = weaponInput.some((w) => !w.weaponId);
+                    if (!userId || !userName || !timeStr || !date || !season) {
+                      setError("User/Time/Date/Seasonを入力してください。");
+                      return;
                     }
-                });
-            }
-        },
-        updateProgress(configType) {
-            const config = configType === 'current' ? state.currentConfig : state.idealConfig;
-            const progressEl = configType === 'current' ? dom.progressText : dom.idealProgressText;
-            const completedCount = Object.keys(config).length;
-            
-            progressEl.textContent = `入力完了: ${completedCount} / ${CONSTANTS.TOTAL_GROUPS}`;
-            
-            if (configType === 'current') {
-                dom.goToIdealBtn.disabled = completedCount !== CONSTANTS.TOTAL_GROUPS;
-            }
-        },
-        setupImageLoader(imgElement) {
-            const container = imgElement.parentElement;
-            if (!container || !container.classList.contains('image-container')) {
-                console.warn('Image is not inside an .image-container', imgElement);
-                return;
-            }
-            container.classList.remove('loaded');
-            imgElement.style.display = 'none';
-
-            imgElement.onload = () => {
-                container.classList.add('loaded');
-                imgElement.style.display = 'block';
-            };
-            imgElement.onerror = () => {
-                const loader = container.querySelector('.image-loader');
-                if (loader) loader.textContent = '画像の読込失敗';
-            };
-            if (imgElement.complete && imgElement.src) {
-                imgElement.onload();
-            }
-        },
-        updateScrollIndicator() {
-            if (!dom.scrollIndicator || !dom.resultPage) return;
-            if (!dom.resultPage.classList.contains('active')) {
-                dom.scrollIndicator.classList.add('hidden');
-                return;
-            }
-            const scrollContainer = dom.resultPage.scrollHeight > dom.resultPage.clientHeight 
-                ? dom.resultPage 
-                : (document.scrollingElement || document.documentElement);
-            
-            const isScrollable = scrollContainer.scrollHeight > scrollContainer.clientHeight;
-            const isAtTop = scrollContainer.scrollTop < 50;
-
-            if (isScrollable && isAtTop) {
-                dom.scrollIndicator.classList.remove('hidden');
-            } else {
-                dom.scrollIndicator.classList.add('hidden');
-            }
-        },
-    };
-    
-    // --- 5. CORE LOGIC FUNCTIONS ---
-    
-    const core = {
-        initInputPage(configType) {
-            const mapContainer = document.getElementById(`${configType}-map-container`);
-            const listContainer = document.getElementById(`${configType}-config-list`);
-            mapContainer.querySelectorAll('.map-marker').forEach(marker => marker.remove());
-            listContainer.innerHTML = '';
-            
-            for (const groupId in data.eliteGroups) {
-                const group = data.eliteGroups[groupId];
-                
-                const marker = document.createElement('div');
-                marker.className = 'map-marker glowing';
-                marker.id = `${configType}-marker-${groupId}`;
-                if (group.iconUrl) {
-                    marker.style.backgroundImage = `url(${group.iconUrl})`;
-                } else {
-                    marker.textContent = groupId;
-                }
-                marker.addEventListener('click', () => this.openGroupSelector(configType, groupId));
-                mapContainer.appendChild(marker);
-
-                const item = document.createElement('div');
-                item.className = 'config-item';
-                item.innerHTML = `<span class="config-item-label">${group.name}</span>`;
-                const buttons = document.createElement('div');
-                buttons.className = 'pattern-buttons';
-                buttons.id = `${configType}-buttons-${groupId}`;
-                ['A', 'B', 'C'].forEach(pattern => {
-                    const btn = document.createElement('button');
-                    btn.textContent = pattern;
-                    btn.addEventListener('click', () => this.updateConfig(configType, groupId, pattern));
-                    buttons.appendChild(btn);
-                });
-                item.appendChild(buttons);
-                listContainer.appendChild(item);
-            }
-            setTimeout(() => uiHelpers.updateMapLayout(`${configType}-map-container`), 100);
-        },
-        updateConfig(configType, groupId, pattern) {
-            const configToUpdate = (configType === 'current') ? state.currentConfig : state.idealConfig;
-            configToUpdate[groupId] = pattern;
-            
-            const marker = document.getElementById(`${configType}-marker-${groupId}`);
-            marker.classList.remove('glowing');
-            marker.classList.add('completed');
-            marker.innerHTML = '✔';
-            
-            document.getElementById(`${configType}-buttons-${groupId}`).querySelectorAll('button').forEach(btn => {
-                btn.classList.toggle('selected', btn.textContent === pattern);
-            });
-            
-            uiHelpers.updateProgress(configType);
-            
-            const isAnyConfigStarted = Object.keys(configToUpdate).length > 0;
-            const guideText = document.querySelector(`#${configType}-map-container .map-guide-text`);
-            if (guideText) guideText.classList.toggle('hidden', isAnyConfigStarted);
-        },
-        openGroupSelector(configType, groupId) {
-            state.activeSelection = { configType, groupId };
-            dom.zoom.title.textContent = `${data.eliteGroups[groupId].name} のパターンを選択`;
-            
-            if (dom.zoom.mapImage && data.eliteGroups[groupId].zoomMapUrl) {
-                uiHelpers.setupImageLoader(dom.zoom.mapImage);
-                dom.zoom.mapImage.src = data.eliteGroups[groupId].zoomMapUrl;
-            }
-
-            dom.zoom.mapContainer.querySelectorAll('.pattern-marker').forEach(m => m.remove());
-            const selectedPattern = (configType === 'current' ? state.currentConfig : state.idealConfig)[groupId];
-
-            ['A', 'B', 'C'].forEach(pattern => {
-                const pos = data.patternMarkerPositions[groupId]?.[pattern];
-                if (!pos) return;
-
-                const marker = document.createElement('div');
-                marker.className = 'pattern-marker';
-                marker.innerHTML = `<span class="pattern-label">${pattern}</span>`;
-                if (pattern === selectedPattern) {
-                    marker.classList.add('completed');
-                    marker.innerHTML = '✔';
-                }
-
-                marker.style.top = `${100 - parseFloat(pos.bottom)}%`;
-                marker.style.left = `${100 - parseFloat(pos.right)}%`;
-
-                marker.addEventListener('click', () => this.selectPatternForConfirmation(pattern));
-                dom.zoom.mapContainer.appendChild(marker);
-            });
-            uiHelpers.showModal('zoom-view');
-        },
-        selectPatternForConfirmation(pattern) {
-            state.activeSelection.pattern = pattern;
-            const groupName = data.eliteGroups[state.activeSelection.groupId].name;
-            dom.screenshot.title.textContent = `${groupName} - パターン ${pattern} で合っていますか？`;
-            
-            const imageUrl = data.screenshotImageUrls[state.activeSelection.groupId]?.[state.activeSelection.pattern];
-            if (imageUrl) {
-                uiHelpers.setupImageLoader(dom.screenshot.img);
-                dom.screenshot.img.src = imageUrl;
-            }
-            
-            uiHelpers.showModal('screenshot-popup');
-        },
-    };
-
-    // --- 6. CALCULATION LOGIC ---
-    const calculationLogic = {
-        generatePossibleDailyActions() {
-            const achievablePatterns = new Map();
-            achievablePatterns.set(JSON.stringify([]), { name: '何もしない', affectedGroups: new Set() });
-            
-            const numActions = data.actions.length;
-            for (let i = 1; i < (1 << numActions); i++) {
-                const currentActions = [];
-                const affectedGroupsSet = new Set();
-                for (let j = 0; j < numActions; j++) {
-                    if ((i >> j) & 1) {
-                        const action = data.actions[j];
-                        currentActions.push(action);
-                        action.affectedGroups.forEach(group => affectedGroupsSet.add(group));
+                    if (hasEmptyChar || hasEmptyWeapon) {
+                      setError("パーティと武器を選択してください。");
+                      return;
                     }
-                }
-                
-                const key = JSON.stringify([...affectedGroupsSet].sort());
-                if (!achievablePatterns.has(key)) {
-                    achievablePatterns.set(key, {
-                        name: currentActions.map(a => a.name).join(' + '),
-                        affectedGroups: affectedGroupsSet
-                    });
-                }
-            }
-            state.possibleDailyActions = Array.from(achievablePatterns.values());
-        },
-        configToString(config) {
-            return CONSTANTS.GROUP_KEYS.map(key => config[key] ?? '').join('');
-        },
-        calculatePlan(isMultiplayer, allowBoat) {
-            if (Object.keys(state.currentConfig).length !== CONSTANTS.TOTAL_GROUPS || Object.keys(state.idealConfig).length === 0) {
-                alert('全ての現在配置と、1つ以上の理想配置を入力してください。');
-                return;
-            }
-            dom.loading.progress.textContent = '調整パターンの検証を開始...';
-            dom.loading.text.innerHTML = `最適なルートを探索しています。<br>組み合わせが複雑な場合、十数秒かかることがあります。`;
-            uiHelpers.showModal('loading-modal');
-            
-            if (state.calculationTask) clearTimeout(state.calculationTask);
-
-            let actionsToUse = state.possibleDailyActions;
-            if (!allowBoat) {
-                actionsToUse = state.possibleDailyActions.filter(action => !action.name.includes('ボート'));
-            }
-
-            const startConfigStr = this.configToString(Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.currentConfig[k]]])));
-            const idealWithFallbacks = Object.fromEntries(CONSTANTS.GROUP_KEYS.map(k => [k, CONSTANTS.PATTERN_MAP[state.idealConfig[k] || state.currentConfig[k]]]));
-            const endConfigStr = this.configToString(idealWithFallbacks);
-            
-            if (startConfigStr === endConfigStr) {
-                setTimeout(() => {
-                    this.displayResults([], isMultiplayer, allowBoat);
-                    uiHelpers.closeModal('loading-modal');
-                }, 100);
-                return;
-            }
-            
-            const queue = [{ config: startConfigStr, path: [] }];
-            const visited = new Set([startConfigStr]);
-            let verifiedCount = 0;
-            const maxDays = 8;
-
-            const processChunk = () => {
-                const startTime = Date.now();
-                while(queue.length > 0 && (Date.now() - startTime < 50)) {
-                    const { config, path } = queue.shift();
-                    verifiedCount++;
-                    
-                    if (path.length >= maxDays) continue;
-
-                    let solutionPath = null;
-                    const currentConfigArr = config.split('').map(Number);
-
-                    for (const soloAction of actionsToUse) {
-                        let nextConfigArr = [...currentConfigArr];
-                        for (const group of soloAction.affectedGroups) {
-                            const index = CONSTANTS.GROUP_KEYS.indexOf(group);
-                            nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
-                        }
-                        const nextConfigStr = nextConfigArr.join('');
-                        
-                        if (nextConfigStr === endConfigStr) {
-                            solutionPath = [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }];
-                            break;
-                        }
-                        if (!visited.has(nextConfigStr)) {
-                            visited.add(nextConfigStr);
-                            queue.push({ config: nextConfigStr, path: [...path, { holdAction: { name: '---' }, advanceAction: soloAction, mode: 'ソロ' }] });
-                        }
-                    }
-                    if (solutionPath) {
-                        this.displayResults(solutionPath, isMultiplayer, allowBoat);
-                        uiHelpers.closeModal('loading-modal');
-                        return;
+                    if (!Number.isFinite(toSeconds(timeStr))) {
+                      setError("Time形式が不正です。");
+                      return;
                     }
 
-                    if (isMultiplayer) {
-                        for (const holdAction of actionsToUse) {
-                            for (const advanceAction of actionsToUse) {
-                                const effectiveAdvance = new Set([...advanceAction.affectedGroups].filter(g => !holdAction.affectedGroups.has(g)));
-                                if (effectiveAdvance.size === 0) continue;
-                                
-                                let nextConfigArr = [...currentConfigArr];
-                                for (const group of effectiveAdvance) {
-                                    const index = CONSTANTS.GROUP_KEYS.indexOf(group);
-                                    nextConfigArr[index] = (nextConfigArr[index] + 1) % 3;
-                                }
-                                const nextConfigStr = nextConfigArr.join('');
-                                
-                                if (nextConfigStr === endConfigStr) {
-                                    solutionPath = [...path, { holdAction, advanceAction, mode: 'マルチ' }];
-                                    break;
-                                }
-                                if (!visited.has(nextConfigStr)) {
-                                    visited.add(nextConfigStr);
-                                    queue.push({ config: nextConfigStr, path: [...path, { holdAction, advanceAction, mode: 'マルチ' }] });
-                                }
+                    const tags = tagsInput
+                      .split(",")
+                      .map((t) => t.trim())
+                      .filter(Boolean);
+                    const newRun = {
+                      id: `r${Date.now()}`,
+                      userId,
+                      userName,
+                      mainAttackerId: partyInput[0].characterId,
+                      supportIds: partyInput.slice(1).map((c) => c.characterId),
+                      party: partyInput,
+                      weapons: weaponInput,
+                      time: timeStr,
+                      videoUrl,
+                      platform,
+                      date,
+                      season,
+                      isFestival,
+                      comment: comment || undefined,
+                      tags,
+                    };
+                    setError("");
+                    onSubmit(newRun);
+                    onClose();
+                  }}
+                  className="bg-[#36a1f0] hover:bg-[#2b8cdb] text-white px-8 py-2.5 rounded-full font-bold shadow-md shadow-blue-200 transition-all flex items-center gap-2"
+                >
+                  <CheckCircle size={18} /> 記録を提出
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const App = () => {
+        const leaderboardRef = useRef(null);
+        const [runs, setRuns] = useState(applyWRTag(RUNS));
+        const seasons = Array.from(new Set(runs.map((run) => run.season))).sort((a, b) => {
+          const numA = parseFloat(a);
+          const numB = parseFloat(b);
+          return Number.isNaN(numB - numA) ? 0 : numB - numA;
+        });
+
+        const [activeSeason, setActiveSeason] = useState(seasons[0] || "5.3");
+        const [activeTab, setActiveTab] = useState("main");
+        const [filterBracket, setFilterBracket] = useState(null);
+        const [filterPlatform, setFilterPlatform] = useState(null);
+        const [includeInput, setIncludeInput] = useState("");
+        const [excludeInput, setExcludeInput] = useState("");
+        const [sortMode, setSortMode] = useState("time");
+        const [enableRLogic, setEnableRLogic] = useState(false);
+        const [selectedRunId, setSelectedRunId] = useState(null);
+        const [subHeaderTab, setSubHeaderTab] = useState("NPUI");
+        const [leaderboardView, setLeaderboardView] = useState("rta");
+        const [isModalOpen, setIsModalOpen] = useState(false);
+        const [isOtherMenuOpen, setIsOtherMenuOpen] = useState(false);
+        const topRowRef = useRef(null);
+        const [showTopScrollLeft, setShowTopScrollLeft] = useState(false);
+        const [showTopScrollRight, setShowTopScrollRight] = useState(false);
+
+        const includeIds = parseAttackerInput(includeInput);
+        const excludeIds = parseAttackerInput(excludeInput);
+        const filters = {
+          season: activeSeason,
+          isFestival: activeTab === "festival",
+          bracket: filterBracket,
+          platform: filterPlatform,
+          includeIds,
+          excludeIds,
+        };
+
+        const filteredBase = filterRuns(runs, filters);
+        const rLogicApplied = enableRLogic ? applyRLogic(filteredBase) : filteredBase;
+        const filteredRuns = sortRuns(rLogicApplied, sortMode);
+        const selectedRun = filteredRuns.find((run) => run.id === selectedRunId) || null;
+        const heroRuns = runs.filter((run) => run.season === activeSeason && !run.isFestival);
+
+        useEffect(() => {
+          const updateScrollButtons = () => {
+            if (!topRowRef.current) return;
+            const { scrollLeft, scrollWidth, clientWidth } = topRowRef.current;
+            setShowTopScrollLeft(scrollLeft > 0);
+            setShowTopScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+          };
+          updateScrollButtons();
+          window.addEventListener("resize", updateScrollButtons);
+          return () => window.removeEventListener("resize", updateScrollButtons);
+        }, [activeTab, heroRuns.length]);
+
+        const handleSubmitRun = (newRun) => {
+          const normalized = normalizeRun(newRun);
+          setRuns((prev) => applyWRTag([normalized, ...prev]));
+          setSelectedRunId(normalized.id);
+          setActiveTab(normalized.isFestival ? "festival" : "main");
+          setActiveSeason(normalized.season);
+        };
+
+        const scrollToLeaderboard = () => {
+          if (leaderboardRef.current) {
+            leaderboardRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        };
+
+        return (
+          <div className="min-h-screen text-[#333333] font-sans pb-20">
+            <nav className="bg-white sticky top-0 z-40 border-b border-black/10">
+              <div className="max-w-[1280px] mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between header-font">
+                {/* !!!!!!!! HEADER PADDING: adjust px-* and py-* here !!!!!!!! */}
+                <div className="flex items-center gap-4 md:gap-6">
+                  <h1 className="text-[26px] md:text-[38px] font-semibold tracking-tight text-black">
+                    精鋭狩りDB
+                  </h1>
+                  <div className="relative">
+                    <select
+                      className="appearance-none bg-white border border-black/30 rounded-full pl-3 md:pl-4 pr-12 md:pr-14 py-1.5 text-[16px] md:text-[20px] font-medium text-black"
+                      value={activeSeason}
+                      onChange={(e) => setActiveSeason(e.target.value)}
+                    >
+                      {seasons.map((season) => {
+                        const seasonStr = String(season);
+                        const lunaSuffix = seasonStr.includes(".") ? seasonStr.split(".")[1] : seasonStr;
+                        return (
+                          <option key={season} value={season}>Luna{lunaSuffix}</option>
+                        );
+                      })}
+                    </select>
+                    <span className="pointer-events-none absolute right-4 md:right-5 top-1/2 -translate-y-1/2 text-black/70">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 md:gap-4">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-black text-white rounded-full text-[16px] md:text-[20px] font-medium flex items-center justify-center md:justify-start gap-0 md:gap-2 w-9 h-9 md:w-auto md:h-auto px-0 md:px-5 py-0 md:py-2.5"
+                  >
+                    <span className="md:hidden flex items-center justify-center w-full h-full"><Plus size={20} /></span>
+                    <span className="hidden md:inline"><Plus size={22} /></span>
+                    <span className="hidden md:inline">記録提出</span>
+                  </button>
+                  <div className="w-9 h-9 rounded-full border border-black/30 bg-white" aria-label="User avatar" />
+                </div>
+              </div>
+            </nav>
+            {activeTab === "main" && (
+              <div
+                className="relative w-full h-[320px] md:h-[560px] overflow-hidden mb-8 bg-center bg-cover"
+                style={{ backgroundImage: `url(${HERO_IMAGE_URL})` }}
+                aria-label="Hero visual"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#f0f2f5]" />
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl bg-black/15 backdrop-blur-sm rounded-full border border-white/30 px-4 py-2">
+                  <div className="flex items-center justify-between text-sm font-medium text-white">
+                    {["NPUI", "PUI", "PUA", "その他"].map((label) => (
+                      <div key={label} className="relative">
+                        {(() => {
+                          const isOther = label === "その他";
+                          const isOtherSelected = isOther && !["NPUI", "PUI", "PUA"].includes(subHeaderTab);
+                          const buttonLabel = isOtherSelected ? `その他（${subHeaderTab}）` : label;
+                          const isActive = isOtherSelected || subHeaderTab === label;
+                          return (
+                            <>
+                        <button
+                          onClick={() => {
+                            if (label === "その他") {
+                              setIsOtherMenuOpen((prev) => !prev);
+                            } else {
+                              setSubHeaderTab(label);
+                              setIsOtherMenuOpen(false);
                             }
-                            if (solutionPath) break;
-                        }
-                    }
-                    if (solutionPath) {
-                        this.displayResults(solutionPath, isMultiplayer, allowBoat);
-                        uiHelpers.closeModal('loading-modal');
-                        return;
-                    }
-                }
+                          }}
+                          className={`py-1 px-4 md:px-5 -mx-2 transition-colors ${
+                            isActive ? "border-b-2 border-white" : "text-white/80 hover:text-white"
+                          }`}
+                        >
+                          {buttonLabel}
+                        </button>
+                        {label === "その他" && isOtherMenuOpen && (
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-2 bg-black/80 border border-white/20 rounded-lg py-2 w-40 text-white text-xs">
+                            {["Npui飯", "淵下宮", "マルチNpui", "マルチPui", "マルチPUA"].map((opt) => (
+                              <button
+                                key={opt}
+                                onClick={() => {
+                                  setSubHeaderTab(opt);
+                                  setIsOtherMenuOpen(false);
+                                }}
+                                className="block w-full text-left px-3 py-1.5 hover:bg-white/10"
+                              >
+                                {opt}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                            </>
+                          );
+                        })()}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
-                if (queue.length > 0) {
-                    dom.loading.progress.textContent = `検証済みパターン: ${verifiedCount} / ${CONSTANTS.TOTAL_COMBINATIONS}`;
-                    state.calculationTask = setTimeout(processChunk, 0);
-                } else {
-                    this.displayResults(null, isMultiplayer, allowBoat);
-                    uiHelpers.closeModal('loading-modal');
-                }
-            };
-            
-            state.calculationTask = setTimeout(processChunk, 0);
-        },
-        displayResults(plan, isMultiplayer, allowBoat) {
-            state.lastCalculatedPlan = plan; 
-            dom.resultTbody.innerHTML = '';
-            
-            if (isMultiplayer) {
-                dom.recalculateBtn.textContent = '周期ホールドOFFで再計算';
-                dom.recalculateBtn.onclick = () => this.calculatePlan(false, allowBoat);
-                dom.recalculateBtn.className = 'btn btn-primary';
-                dom.soloModeNotice.style.display = 'none';
-            } else {
-                dom.recalculateBtn.textContent = '周期ホールドONで再計算';
-                dom.recalculateBtn.onclick = () => this.calculatePlan(true, allowBoat);
-                dom.recalculateBtn.className = 'btn btn-multi';
-                dom.soloModeNotice.style.display = '';
-            }
-        
-            let summaryText = '';
-            if (plan === null) {
-                summaryText = '8日以内に完了する調整プランは見つかりませんでした。';
-            } else if (plan.length === 0) {
-                summaryText = '調整は不要です！';
-            } else {
-                summaryText = `最短 ${plan.length} 日で調整が完了します！`;
-            }
-            dom.resultSummary.innerHTML = summaryText;
-        
-            dom.recalculateBtn.style.display = 'block';
-            if (plan !== null && plan.length > 0) {
-                dom.savePlanBtn.style.display = '';
-                plan.forEach((day, index) => {
-                    const tr = document.createElement('tr');
-                    const modeClass = day.mode === 'ソロ' ? 'mode-solo' : 'mode-multi';
-                    tr.innerHTML = `
-                        <td>${index + 1}日目</td>
-                        <td><span class="${modeClass}">${day.mode}</span></td>
-                        <td>${day.holdAction.name}</td>
-                        <td>${day.advanceAction.name}</td>
-                        <td><button class="btn btn-details" data-day-index="${index}">手順を確認</button></td>
-                    `;
-                    dom.resultTbody.appendChild(tr);
-                });
-            } else {
-                dom.savePlanBtn.style.display = 'none';
-                if (plan === null || plan.length === 0) {
-                    dom.recalculateBtn.style.display = 'none';
-                }
-            }
-        
-            uiHelpers.showPage('result-page');
-            dom.resultPage.scrollTop = 0;
-            setTimeout(() => uiHelpers.updateScrollIndicator(), 150); 
-        },
-    };
-
-    // --- 7. EVENT HANDLERS ---
-    
-    const eventHandlers = {
-        handleBannerClose() {
-            dom.infoBanner.classList.add('hidden');
-            localStorage.setItem(CONSTANTS.BANNER_CLOSED_KEY, 'true');
-        },
-        handleModalClose(e) {
-            if (e.target.classList.contains('modal-close')) {
-                uiHelpers.closeModal(e.target.dataset.target);
-            }
-        },
-        handleConfirmPattern() {
-            const { configType, groupId, pattern } = state.activeSelection;
-            if (configType && groupId && pattern) {
-                core.updateConfig(configType, groupId, pattern);
-            }
-            uiHelpers.closeModal('screenshot-popup');
-            uiHelpers.closeModal('zoom-view');
-        },
-        handleGoToIdeal() {
-            if (dom.goToIdealBtn.disabled) {
-                dom.validationMessage.textContent = 'すべての配置を入力してください。';
-                dom.validationMessage.classList.add('show');
-                dom.goToIdealBtn.classList.add('shake');
-                setTimeout(() => dom.validationMessage.classList.remove('show'), 2000);
-                setTimeout(() => dom.goToIdealBtn.classList.remove('shake'), 600);
-            } else {
-                uiHelpers.showPage('ideal-config-page');
-            }
-        },
-        handleCalculate() {
-            const isMulti = dom.multiplayerModeCheckbox.checked;
-            const allowBoat = dom.boatModeCheckbox.checked;
-            calculationLogic.calculatePlan(isMulti, allowBoat);
-        },
-        handleReset() {
-            state.currentConfig = {};
-            state.idealConfig = {};
-            core.initInputPage('current');
-            core.initInputPage('ideal');
-            uiHelpers.updateProgress('current');
-            uiHelpers.updateProgress('ideal');
-            uiHelpers.showPage('start-page');
-        },
-        handleResultTableClick(e) {
-            if (e.target.classList.contains('btn-details')) {
-                const dayIndex = parseInt(e.target.dataset.dayIndex, 10);
-                if (state.lastCalculatedPlan && !isNaN(dayIndex) && state.lastCalculatedPlan[dayIndex]) {
-                    storage.showDayDetail(state.lastCalculatedPlan[dayIndex], dayIndex + 1);
-                }
-            }
-        },
-        handlePlanListClick(e) {
-            const planId = e.target.dataset.planId;
-            if (!planId) return;
-
-            if (e.target.classList.contains('btn-load')) {
-                storage.loadPlan(planId);
-            } else if (e.target.classList.contains('btn-delete')) {
-                storage.deletePlan(planId);
-            }
-        },
-    };
-    
-    // --- 8. STORAGE & DETAIL VIEW LOGIC ---
-    
-    const storage = {
-        getSavedPlans() {
-            try {
-                const plansJSON = localStorage.getItem(CONSTANTS.STORAGE_KEY);
-                return plansJSON ? JSON.parse(plansJSON) : [];
-            } catch (e) {
-                console.error("Failed to read saved plans:", e);
-                return [];
-            }
-        },
-        savePlan() {
-            const planName = prompt("この調整プランの名前を入力してください:", "マイプラン " + new Date().toLocaleDateString());
-            if (!planName || planName.trim() === "") return;
-            
-            const serializablePlan = state.lastCalculatedPlan.map(day => ({
-                ...day,
-                holdAction: { ...day.holdAction, affectedGroups: Array.from(day.holdAction.affectedGroups || []) },
-                advanceAction: { ...day.advanceAction, affectedGroups: Array.from(day.advanceAction.affectedGroups || []) }
-            }));
-
-            const planData = {
-                id: Date.now().toString(),
-                name: planName.trim(),
-                currentConfig: state.currentConfig,
-                idealConfig: state.idealConfig,
-                plan: serializablePlan,
-                isMultiplayer: dom.multiplayerModeCheckbox.checked,
-                createdAt: new Date().toISOString()
-            };
-
-            try {
-                const savedPlans = this.getSavedPlans();
-                savedPlans.push(planData);
-                localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(savedPlans));
-                alert(`「${planName}」を保存しました。`);
-            } catch (e) {
-                console.error("Failed to save plan:", e);
-                alert("プランの保存に失敗しました。");
-            }
-        },
-        loadPlan(planId) {
-            const planToLoad = this.getSavedPlans().find(p => p.id === planId);
-            if (!planToLoad) {
-                alert("プランの読み込みに失敗しました。");
-                return;
-            }
-
-            const deserializedPlan = planToLoad.plan.map(day => ({
-                ...day,
-                holdAction: { ...day.holdAction, affectedGroups: new Set(day.holdAction.affectedGroups || []) },
-                advanceAction: { ...day.advanceAction, affectedGroups: new Set(day.advanceAction.affectedGroups || []) }
-            }));
-
-            state.currentConfig = planToLoad.currentConfig;
-            state.idealConfig = planToLoad.idealConfig;
-            state.lastCalculatedPlan = deserializedPlan;
-            dom.multiplayerModeCheckbox.checked = planToLoad.isMultiplayer;
-
-            for (const groupId in state.currentConfig) core.updateConfig('current', groupId, state.currentConfig[groupId]);
-            for (const groupId in state.idealConfig) core.updateConfig('ideal', groupId, state.idealConfig[groupId]);
-
-            calculationLogic.displayResults(state.lastCalculatedPlan, planToLoad.isMultiplayer);
-            uiHelpers.closeModal('load-plan-modal');
-        },
-        deletePlan(planId) {
-            if (!confirm("本当にこのプランを削除しますか？")) return;
-            try {
-                let plans = this.getSavedPlans().filter(p => p.id !== planId);
-                localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(plans));
-                this.renderSavedPlans();
-            } catch (e) {
-                console.error("Failed to delete plan:", e);
-                alert("プランの削除に失敗しました。");
-            }
-        },
-        openLoadModal() {
-            this.renderSavedPlans();
-            uiHelpers.showModal('load-plan-modal');
-        },
-        renderSavedPlans() {
-            const plans = this.getSavedPlans();
-            dom.loadPlan.list.innerHTML = '';
-
-            if (plans.length === 0) {
-                dom.loadPlan.noPlansMsg.style.display = 'block';
-                dom.loadPlan.list.style.display = 'none';
-                return;
-            }
-            dom.loadPlan.noPlansMsg.style.display = 'none';
-            dom.loadPlan.list.style.display = '';
-
-            plans.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            plans.forEach(plan => {
-                const li = document.createElement('li');
-                li.className = 'saved-plan-item';
-                li.innerHTML = `
-                    <span class="saved-plan-item-name">${plan.name}</span>
-                    <div class="saved-plan-item-actions">
-                        <button class="btn btn-primary btn-load" data-plan-id="${plan.id}">読込</button>
-                        <button class="btn btn-delete" data-plan-id="${plan.id}">削除</button>
+            <main className="max-w-7xl mx-auto px-4 py-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center p-1 bg-[#f4f4f5] rounded-full border border-[#e4e4e7]">
+                  <button
+                    onClick={() => setActiveTab("main")}
+                    className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${activeTab === 'main' ? 'bg-white text-[#333333] shadow-sm' : 'text-[#909399] hover:text-[#606266]'}`}
+                  >
+                    Season {activeSeason}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("festival")}
+                    className={`px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5 transition-all ${activeTab === 'festival' ? 'bg-[#ff6b6b] text-white shadow-sm' : 'text-[#909399] hover:text-[#ff6b6b]'}`}
+                  >
+                    <Calendar size={14} />
+                    <span>Festival</span>
+                  </button>
+                </div>
+              </div>
+              {activeTab === "main" && (
+                <>
+                  <div className="relative z-10 -mt-40 md:-mt-72 mb-12">
+                    <div className="relative">
+                      <div
+                        ref={topRowRef}
+                        className="flex gap-6 overflow-x-auto no-scrollbar"
+                        onScroll={() => {
+                          if (!topRowRef.current) return;
+                          const { scrollLeft, scrollWidth, clientWidth } = topRowRef.current;
+                          setShowTopScrollLeft(scrollLeft > 0);
+                          setShowTopScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+                        }}
+                      >
+                        <div className="bg-white rounded-xl border border-black/10 p-4 md:p-6 shadow-sm min-w-[780px] flex-shrink-0">
+                          <div className="text-[18px] font-semibold text-black mb-3">TOPプレイヤー</div>
+                          <div className="grid grid-cols-4 gap-4 min-w-[900px]">
+                            {[
+                              { label: "無制限 1位", bracket: 4, theme: { accent: "#3A6EA5", accentLight: "#DDEBFA", icon: "claymore" } },
+                              { label: "High 1位", bracket: 3, theme: { accent: "#5A7D7C", accentLight: "#DDE8E7", icon: "polearm" } },
+                              { label: "Middle 1位", bracket: 2, theme: { accent: "#7A5C8C", accentLight: "#EFE5F4", icon: "sword" } },
+                              { label: "Low 1位", bracket: 1, theme: { accent: "#8C6D5C", accentLight: "#F1E7E0", icon: "bow" } },
+                            ].map((item) => {
+                              const run = getBestRun(heroRuns.filter((r) => r.bracket === item.bracket));
+                              return (
+                                <TopPlayerCard
+                                  key={item.label}
+                                  label={item.label}
+                                  run={run}
+                                  theme={item.theme}
+                                  onView={() => {
+                                    setFilterBracket(item.bracket);
+                                    setLeaderboardView("rta");
+                                    scrollToLeaderboard();
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="bg-white rounded-xl border border-black/10 p-4 md:p-6 shadow-sm min-w-[240px] flex-shrink-0">
+                          <div className="text-[18px] font-semibold text-black mb-3">注目プレイヤー</div>
+                          <div className="space-y-4">
+                            {[
+                              { title: "初投稿 新しい狩り仲間！", run: getBestRun(heroRuns.filter((r) => r.tags.includes("New"))) },
+                              { title: "開拓者 使用率5%未満編成", run: getBestRun(heroRuns.filter((r) => r.tags.includes("OffMeta"))) },
+                            ].map((item) => (
+                              <div key={item.title} className="border border-black/10 rounded-lg p-3 relative overflow-hidden shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg">
+                                <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
+                                <div className="text-black font-medium">{item.title}</div>
+                                {item.run ? (
+                                  <div className="mt-2">
+                                    <div className="text-[14px] text-black">{item.run.userName}</div>
+                                    <div className="flex items-center justify-between mt-2">
+                                      <div className="flex items-center gap-2">
+                                        {item.run.party.map((member, idx) => (
+                                          <div key={idx} className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center text-[11px] text-black">
+                                            {(CHAR_DB[member.characterId]?.jpName || CHAR_DB[member.characterId]?.name || "?").slice(0, 1)}
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="flex items-center gap-2 text-[16px] text-black">
+                                        <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                                          <LikeIcon size={14} className="text-black" />
+                                        </button>
+                                        <button className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80">
+                                          <CommentIcon size={14} className="text-black" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="mt-2 text-sm text-[#606266]">集計中...</div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {showTopScrollLeft && (
+                        <button
+                          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 border border-black/20 rounded-full w-8 h-8 items-center justify-center"
+                          aria-label="Scroll left"
+                          onClick={() => {
+                            if (topRowRef.current) {
+                              topRowRef.current.scrollBy({ left: -320, behavior: "smooth" });
+                            }
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M15 6l-6 6 6 6" />
+                          </svg>
+                        </button>
+                      )}
+                      {showTopScrollRight && (
+                        <button
+                          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 border border-black/20 rounded-full w-8 h-8 items-center justify-center"
+                          aria-label="Scroll right"
+                          onClick={() => {
+                            if (topRowRef.current) {
+                              topRowRef.current.scrollBy({ left: 320, behavior: "smooth" });
+                            }
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M9 6l6 6-6 6" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
-                `;
-                dom.loadPlan.list.appendChild(li);
-            });
-        },
-        showDayDetail(dayData, dayNumber) {
-            dom.dayDetail.title.textContent = `${dayNumber}日目の手順詳細`;
-            
-            const generateActionDetailsHTML = (actionData) => {
-                if (!actionData || !actionData.name || actionData.name === '---' || actionData.name === '何もしない') return '<p>特別な行動は不要です。</p>';
-                const actions = actionData.name.split(' + ');
-                const affectedGroupsList = Array.from(actionData.affectedGroups).map(key => `「${data.eliteGroups[key].name}」`).join('、');
+                  </div>
 
-                let html = `<p><strong>影響を受けるグループ:</strong> ${affectedGroupsList}</p><ul>`;
-                actions.forEach(actionName => {
-                    const action = data.actions.find(a => a.name === actionName);
-                    if (!action) return;
-                    const details = data.actionDetails[action.id] || {};
-                    const detailText = details.note || '詳細不明';
-                    html += `<li><strong>${actionName}</strong><p>${detailText.replace(/\n/g, '<br>')}</p>`;
-                    if (details.images) details.images.forEach(imgUrl => {
-                        html += `<div class="image-container"><div class="image-loader">読み込み中...</div><img src="${imgUrl}" alt="${actionName} のルート図"></div>`;
-                    });
-                    if (details.videoUrl) {
-                        try {
-                            const url = new URL(details.videoUrl);
-                            let videoId = url.searchParams.get('v') || url.pathname.split('/').pop();
-                            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                            html += `<div class="video-container"><iframe src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-                        } catch (e) { console.error("Invalid video URL:", details.videoUrl); }
-                    }
-                    html += `</li>`;
-                });
-                return html + '</ul>';
-            };
+                  <div ref={leaderboardRef} className="bg-white rounded-xl border border-black/10 p-4 md:p-6 shadow-sm mb-10">
+                    <div className="text-[20px] font-semibold text-black mb-4">リーダーボード</div>
+                    <div className="flex items-center justify-center mb-4">
+                      <div className="flex items-center border border-black/20 rounded-full overflow-hidden min-w-[520px]">
+                        {[
+                          { key: "rta", label: "RTAランキング" },
+                          { key: "char", label: "キャラTOPプレイヤー" },
+                          { key: "fes", label: "限定フェス" },
+                        ].map((item) => (
+                          <button
+                            key={item.key}
+                            onClick={() => setLeaderboardView(item.key)}
+                            className={`px-4 py-1.5 text-sm font-medium flex-1 ${
+                              leaderboardView === item.key ? "bg-black text-white" : "bg-white text-black"
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <button className="border border-black/20 rounded-full w-9 h-9 flex items-center justify-center">
+                        <FilterIcons.Funnel className="w-5 h-5 text-black" />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between text-sm font-medium mb-4">
+                      {[
+                        { label: "全て", value: null },
+                        { label: "Unlimited", value: 4 },
+                        { label: "High", value: 3 },
+                        { label: "Middle", value: 2 },
+                        { label: "Low", value: 1 },
+                      ].map((item) => (
+                        <button
+                          key={item.label}
+                          onClick={() => setFilterBracket(item.value)}
+                          className={`pb-2 border-b-2 flex-1 text-center ${
+                            filterBracket === item.value || (item.value === null && filterBracket === null)
+                              ? "border-black text-black"
+                              : "border-transparent text-black/60 hover:text-black"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div>
+                      {filteredRuns.map((run, idx) => (
+                        <LeaderboardRow key={run.id} run={run} index={idx} />
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
-            let contentHTML = '<p style="text-align:center; color: var(--secondary-text-color);"><strong>【重要】</strong>「歩き」や「ボート」での移動は、<strong>ルートを慎重に確認してください。移動時にはチャスカのような空を飛ぶようなキャラは使用しないでください。</strong></p>';
-            if (dayData.mode === 'ソロ') {
-                contentHTML += `<h3>ソロモードでの行動</h3>${generateActionDetailsHTML(dayData.advanceAction)}`;
-            } else {
-                contentHTML += `<h3>マルチモード（周期ホールド）での行動</h3>`;
-                contentHTML += `<h4>Step 1: 準備</h4><p>ホスト(1P)は鶴観以外の安全な場所に移動し、ゲスト(2P)を世界に招き入れます。</p>`;
-                contentHTML += `<h4>Step 2: 周期のホールド (ゲストの操作)</h4>`;
-                contentHTML += `<p><strong>[重要]</strong> まずホスト(1P)が層岩巨淵・地下鉱区など、<strong>テイワット以外のマップに移動</strong>するのを待ちます。</p>`;
-                contentHTML += `<p>ホストの移動後、ゲスト(2P)は以下の行動で周期を<strong>ホールド(固定)</strong>し、速やかに退出します。</p>${generateActionDetailsHTML(dayData.holdAction)}`;
-                contentHTML += `<h4>Step 3: 周期の進行 (ホストの操作)</h4>`;
-                const effectiveAdvanceGroups = new Set([...dayData.advanceAction.affectedGroups].filter(g => !dayData.holdAction.affectedGroups.has(g)));
-                contentHTML += `<p>ゲスト退出後、ホスト(1P)は以下の行動で、ホールドされなかったグループの周期を<strong>進めます</strong>。</p>${generateActionDetailsHTML({ ...dayData.advanceAction, affectedGroups: effectiveAdvanceGroups })}`;
-            }
+              {activeTab === "festival" && (
+                <div className="bg-gradient-to-r from-[#ff7e5f] to-[#feb47b] rounded-2xl p-8 mb-8 text-center relative overflow-hidden shadow-lg">
+                  <div className="relative z-10">
+                    <div className="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-white text-xs font-bold mb-3 border border-white/40 backdrop-blur-sm">
+                      <Calendar size={12} /> SEASON EVENT
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-2 drop-shadow-md tracking-tight">
+                      打倒・炎神杯
+                    </h2>
+                    <p className="text-white/90 text-lg font-bold">ルール：マーヴィカを編成に含めないこと。</p>
+                  </div>
+                </div>
+              )}
 
-            dom.dayDetail.content.innerHTML = contentHTML;
-            dom.dayDetail.content.querySelectorAll('.image-container img').forEach(img => uiHelpers.setupImageLoader(img));
-            uiHelpers.showModal('day-detail-modal');
-        }
-    };
+              {filteredRuns.length === 0 && (
+                <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-[#dcdfe6]">
+                  <Search size={48} className="mx-auto mb-4 text-[#dcdfe6]" />
+                  <h3 className="text-lg font-bold text-[#606266]">記録が見つかりません</h3>
+                  <p className="text-sm text-[#909399]">条件を変更するか、最初の記録者になりましょう！</p>
+                </div>
+              )}
+            </main>
 
-    // --- 9. INITIALIZATION ---
-    
-    function init() {
-        document.body.appendChild(dom.scrollIndicator);
+            <footer className="mt-20 border-t border-[#ebebeb] bg-white py-12">
+              <div className="max-w-7xl mx-auto px-4 text-center text-[#909399] text-sm">
+                <div className="flex items-center justify-center gap-2 mb-4 opacity-70">
+                  <Timer size={20} />
+                  <span className="font-bold text-lg">Teyvat EliteDB</span>
+                </div>
+                <p className="mb-2">Community Driven Elite Hunting RTA Database (Prototype)</p>
+                <p>Created based on R's concept & Community Feedback.</p>
+              </div>
+            </footer>
 
-        if (localStorage.getItem(CONSTANTS.BANNER_CLOSED_KEY) === 'true') {
-            dom.infoBanner.style.display = 'none';
-        }
+            <CalculatorModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onSubmit={handleSubmitRun}
+              seasons={seasons}
+            />
+          </div>
+        );
+      };
 
-        calculationLogic.generatePossibleDailyActions();
-
-        dom.closeBannerBtn.addEventListener('click', eventHandlers.handleBannerClose);
-        dom.goToCurrentBtn.addEventListener('click', () => uiHelpers.showPage('current-config-page'));
-        dom.guideBtn.addEventListener('click', () => uiHelpers.showModal('guide-modal'));
-        dom.loadPlanBtn.addEventListener('click', () => storage.openLoadModal());
-        dom.credit.trigger.addEventListener('click', () => uiHelpers.showModal('credit-modal'));
-        dom.modals.forEach(modal => modal.addEventListener('click', eventHandlers.handleModalClose));
-        
-        document.getElementById('back-to-start-btn').addEventListener('click', () => uiHelpers.showPage('start-page'));
-        document.getElementById('back-to-current-btn').addEventListener('click', () => uiHelpers.showPage('current-config-page'));
-        document.getElementById('back-to-ideal-btn').addEventListener('click', () => uiHelpers.showPage('ideal-config-page'));
-        
-        document.getElementById('current-map-tab').addEventListener('click', () => uiHelpers.switchInputView('current', 'map'));
-        document.getElementById('current-list-tab').addEventListener('click', () => uiHelpers.switchInputView('current', 'list'));
-        document.getElementById('ideal-map-tab').addEventListener('click', () => uiHelpers.switchInputView('ideal', 'map'));
-        document.getElementById('ideal-list-tab').addEventListener('click', () => uiHelpers.switchInputView('ideal', 'list'));
-
-        dom.goToIdealBtn.addEventListener('click', eventHandlers.handleGoToIdeal);
-        dom.calculatePlanBtn.addEventListener('click', eventHandlers.handleCalculate);
-        dom.screenshot.confirmBtn.addEventListener('click', eventHandlers.handleConfirmPattern);
-        
-        dom.setRecommendedBtn.addEventListener('click', () => {
-            for (const groupId in data.recommendedConfig) core.updateConfig('ideal', groupId, data.recommendedConfig[groupId]);
-        });
-        dom.copyCurrentBtn.addEventListener('click', () => {
-            for (const groupId in state.currentConfig) core.updateConfig('ideal', groupId, state.currentConfig[groupId]);
-        });
-        ['a', 'b', 'c'].forEach(p => {
-            document.getElementById(`fill-all-${p}-btn`).addEventListener('click', () => {
-                for (const groupId of CONSTANTS.GROUP_KEYS) core.updateConfig('current', groupId, p.toUpperCase());
-            });
-        });
-        
-        dom.resetBtn.addEventListener('click', eventHandlers.handleReset);
-        dom.savePlanBtn.addEventListener('click', () => storage.savePlan());
-        dom.resultTbody.addEventListener('click', eventHandlers.handleResultTableClick);
-        dom.loadPlan.list.addEventListener('click', eventHandlers.handlePlanListClick);
-
-        dom.scrollIndicator.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('result-details').scrollIntoView({ behavior: 'smooth' });
-        });
-        
-        dom.resultPage.addEventListener('scroll', uiHelpers.updateScrollIndicator);
-        window.addEventListener('scroll', uiHelpers.updateScrollIndicator, { passive: true });
-        window.addEventListener('resize', () => {
-            uiHelpers.updateScrollIndicator();
-            uiHelpers.updateMapLayout('current-map-container');
-            uiHelpers.updateMapLayout('ideal-map-container');
-        });
-
-        core.initInputPage('current');
-        core.initInputPage('ideal');
-
-        document.querySelectorAll('.map-bg').forEach(img => {
-            img.addEventListener('load', () => uiHelpers.updateMapLayout(img.closest('.map-container').id));
-        });
-    }
-
-    init();
-});
-</script>
-</body>
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
 </html>
-

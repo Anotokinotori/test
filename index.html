@@ -252,15 +252,30 @@
       const ATTACKER_FILTER_SCOPE = "party"; // "party" | "main"
 
       const CHAR_DB = {
-        amber: { id: "amber", name: "Amber", jpName: "アンバー", type: "four_star", rarity: 4 },
-        mav: { id: "mav", name: "Mavuika", jpName: "マーヴィカ", type: "limited", rarity: 5 },
-        bennett: { id: "bennett", name: "Bennett", jpName: "ベネット", type: "four_star", rarity: 4 },
-        furina: { id: "furina", name: "Furina", jpName: "フリーナ", type: "limited", rarity: 5 },
-        zhongli: { id: "zhongli", name: "Zhongli", jpName: "鍾離", type: "limited", rarity: 5 },
-        collei: { id: "collei", name: "Collei", jpName: "コレイ", type: "four_star", rarity: 4 },
-        xiangling: { id: "xiangling", name: "Xiangling", jpName: "香菱", type: "four_star", rarity: 4 },
-        xingqiu: { id: "xingqiu", name: "Xingqiu", jpName: "行秋", type: "four_star", rarity: 4 },
-        keqing: { id: "keqing", name: "Keqing", jpName: "刻晴", type: "standard", rarity: 5 },
+        amber: { id: "amber", name: "Amber", jpName: "Amber", type: "four_star", rarity: 4, element: "pyro" },
+        mav: { id: "mav", name: "Mavuika", jpName: "Mavuika", type: "limited", rarity: 5, element: "pyro" },
+        bennett: { id: "bennett", name: "Bennett", jpName: "Bennett", type: "four_star", rarity: 4, element: "pyro" },
+        furina: { id: "furina", name: "Furina", jpName: "Furina", type: "limited", rarity: 5, element: "hydro" },
+        zhongli: { id: "zhongli", name: "Zhongli", jpName: "Zhongli", type: "limited", rarity: 5, element: "geo" },
+        collei: { id: "collei", name: "Collei", jpName: "Collei", type: "four_star", rarity: 4, element: "dendro" },
+        xiangling: { id: "xiangling", name: "Xiangling", jpName: "Xiangling", type: "four_star", rarity: 4, element: "pyro" },
+        xingqiu: { id: "xingqiu", name: "Xingqiu", jpName: "Xingqiu", type: "four_star", rarity: 4, element: "hydro" },
+        keqing: { id: "keqing", name: "Keqing", jpName: "Keqing", type: "standard", rarity: 5, element: "electro" },
+        chasca: { id: "chasca", name: "Chasca", jpName: "Chasca", type: "limited", rarity: 5, element: "anemo" },
+        citlali: { id: "citlali", name: "Citlali", jpName: "Citlali", type: "limited", rarity: 5, element: "cryo" },
+        sayu: { id: "sayu", name: "Sayu", jpName: "Sayu", type: "four_star", rarity: 4, element: "anemo" },
+        wanderer: { id: "wanderer", name: "Wanderer", jpName: "Wanderer", type: "limited", rarity: 5, element: "anemo" },
+        mizuki: { id: "mizuki", name: "Mizuki", jpName: "Mizuki", type: "limited", rarity: 5, element: "hydro" },
+        xianyun: { id: "xianyun", name: "Xianyun", jpName: "Xianyun", type: "limited", rarity: 5, element: "anemo" },
+        xilonen: { id: "xilonen", name: "Xilonen", jpName: "Xilonen", type: "limited", rarity: 5, element: "geo" },
+        yelan: { id: "yelan", name: "Yelan", jpName: "Yelan", type: "limited", rarity: 5, element: "hydro" },
+        dehya: { id: "dehya", name: "Dehya", jpName: "Dehya", type: "standard", rarity: 5, element: "pyro" },
+        chiori: { id: "chiori", name: "Chiori", jpName: "Chiori", type: "limited", rarity: 5, element: "geo" },
+        varesa: { id: "varesa", name: "Varesa", jpName: "Varesa", type: "limited", rarity: 5, element: "electro" },
+        ranyan: { id: "ranyan", name: "Ranyan", jpName: "Ranyan", type: "limited", rarity: 5, element: "anemo" },
+        ororon: { id: "ororon", name: "Ororon", jpName: "Ororon", type: "limited", rarity: 5, element: "electro" },
+        ifa: { id: "ifa", name: "Ifa", jpName: "Ifa", type: "limited", rarity: 5, element: "dendro" },
+        neuvillette: { id: "neuvillette", name: "Neuvillette", jpName: "Neuvillette", type: "limited", rarity: 5, element: "hydro" },
       };
 
       let AMBR_NAME_MAP = {
@@ -346,7 +361,7 @@
         if (hidden || urls.length === 0) {
           if (variant === "portrait") return null;
           return (
-            <div className={`bg-black/10 text-black/60 rounded-full flex items-center justify-center ${className}`} aria-hidden="true">
+            <div className={`bg-black/10 text-[#909399] rounded-full flex items-center justify-center ${className}`} aria-hidden="true">
               {fallbackText}
             </div>
           );
@@ -382,6 +397,18 @@
         acc[char.jpName.toLowerCase()] = char.id;
         return acc;
       }, {});
+
+      const ELEMENT_STYLES = {
+        pyro: { bg: "bg-[#3a1b1b]", border: "border-[#ff6b6b]", text: "text-[#ffd6d6]" },
+        hydro: { bg: "bg-[#182b3a]", border: "border-[#5aa9ff]", text: "text-[#cfe7ff]" },
+        cryo: { bg: "bg-[#1a2f38]", border: "border-[#6fd3ff]", text: "text-[#d8f3ff]" },
+        electro: { bg: "bg-[#2c1c3a]", border: "border-[#c084fc]", text: "text-[#f0d9ff]" },
+        anemo: { bg: "bg-[#16352f]", border: "border-[#64d9b2]", text: "text-[#c9f7ea]" },
+        geo: { bg: "bg-[#3a2f1a]", border: "border-[#f2c96d]", text: "text-[#ffe9b5]" },
+        dendro: { bg: "bg-[#1f3520]", border: "border-[#9dd67a]", text: "text-[#e1f5d7]" },
+      };
+
+      const getElementStyle = (element) => ELEMENT_STYLES[element] || ELEMENT_STYLES.geo;
 
       const WEAPON_DB = {
         s5: { id: "s5", name: "5-Star Sword", type: "five_star", rarity: 5 },
@@ -1039,14 +1066,17 @@
           .filter(Boolean)
           .map((token) => CHAR_NAME_TO_ID[token.toLowerCase()] || token);
 
-      const matchesAttackerFilter = (run, includeIds, excludeIds) => {
+      const matchesAttackerFilter = (run, includeIds, excludeIds, includeMode = "or") => {
         const partyIds =
           ATTACKER_FILTER_SCOPE === "main"
             ? [run.mainAttackerId]
             : [run.mainAttackerId, ...run.supportIds];
 
         const hasInclude =
-          includeIds.length === 0 || includeIds.some((id) => partyIds.includes(id));
+          includeIds.length === 0 ||
+          (includeMode === "and"
+            ? includeIds.every((id) => partyIds.includes(id))
+            : includeIds.some((id) => partyIds.includes(id)));
         const hasExclude = excludeIds.some((id) => partyIds.includes(id));
         return hasInclude && !hasExclude;
       };
@@ -1057,7 +1087,7 @@
           if (filters.isFestival !== null && run.isFestival !== filters.isFestival) return false;
           if (filters.bracket && run.bracket !== filters.bracket) return false;
           if (filters.platform && run.platform !== filters.platform) return false;
-          if (!matchesAttackerFilter(run, filters.includeIds, filters.excludeIds)) return false;
+          if (!matchesAttackerFilter(run, filters.includeIds, filters.excludeIds, filters.includeMode)) return false;
           return true;
         });
 
@@ -1147,7 +1177,7 @@ const getDefaultSeason = (seasons) => {
                     event.stopPropagation();
                     onView();
                   }}
-                  className="mt-4 text-sm text-black border border-black/20 rounded-full px-3 py-1 bg-black/5">
+                  className="mt-4 text-sm text-black border border-[#dcdfe6] rounded-full px-3 py-1 bg-black/5">
                   ランキングを見る
                 </button>
               </div>
@@ -1174,20 +1204,20 @@ const getDefaultSeason = (seasons) => {
               <div className="p-4 bg-white flex flex-col justify-between flex-1 relative z-10">
                 <div>
                   <div className="flex items-center justify-end gap-2 mt-2 text-[16px] text-black">
-                  <button
-                    className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
-                    onClick={(event) => event.stopPropagation()}
-                  >
-                    <LikeIcon size={14} className="text-black" />
-                  </button>
-                  <button
-                    className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
-                    onClick={(event) => event.stopPropagation()}
-                  >
-                    <CommentIcon size={14} className="text-black" />
-                  </button>
+                    <button
+                      className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <LikeIcon size={14} className="text-black" />
+                    </button>
+                    <button
+                      className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <CommentIcon size={14} className="text-black" />
+                    </button>
+                  </div>
                 </div>
-              </div>
               <div className="bg-[#f7f7f7] border border-black/10 rounded-lg p-2 mt-3">
                 <div className="flex items-center justify-between">
                   {run.party.map((member, idx) => (
@@ -1198,7 +1228,7 @@ const getDefaultSeason = (seasons) => {
                         variant="circle"
                         className="w-9 h-9 rounded-full object-cover"
                       />
-                  ))}
+                        ))}
                 </div>
                 <div className="text-[20px] font-semibold text-black text-center mt-2">{run.time}</div>
               </div>
@@ -1207,7 +1237,7 @@ const getDefaultSeason = (seasons) => {
                   event.stopPropagation();
                   onView();
                 }}
-                className="mt-4 text-sm text-black border border-black/20 rounded-full px-3 py-1 bg-black/5">
+                className="mt-4 text-sm text-black border border-[#dcdfe6] rounded-full px-3 py-1 bg-black/5">
                 ランキングを見る
               </button>
             </div>
@@ -1222,11 +1252,11 @@ const getDefaultSeason = (seasons) => {
 
       const LeaderboardRow = ({ run, index, onSelect }) => {
         const rankMove = run.rankMove || "same";
-        const rankIcon = rankMove === "up" ? "↑" : rankMove === "down" ? "↓" : "→";
+        const rankIcon = rankMove === "up" ? "^" : rankMove === "down" ? "v" : ">";
         const PlatformIcon = PlatformIcons[run.platform] || PlatformIcons.PC;
         return (
           <div
-            className="flex items-center justify-between border-t border-black/10 py-3 cursor-pointer"
+            className="flex items-center justify-between border-t border-[#ebebeb] py-3 cursor-pointer"
             onClick={() => onSelect?.(run.id)}
           >
             <div className="flex items-center gap-4">
@@ -1248,20 +1278,20 @@ const getDefaultSeason = (seasons) => {
             </div>
             <div className="flex items-center gap-4">
               <button
-                className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
+                className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
                 onClick={(event) => event.stopPropagation()}
               >
                 <LikeIcon size={14} className="text-black" />
               </button>
               <button
-                className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
+                className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
                 onClick={(event) => event.stopPropagation()}
               >
                 <CommentIcon size={14} className="text-black" />
               </button>
               <div className="text-[24px] font-semibold w-20 text-right">{run.time}</div>
               <a
-                className="border border-black/20 rounded-full w-8 h-8 flex items-center justify-center"
+                className="border border-[#dcdfe6] rounded-full w-8 h-8 flex items-center justify-center"
                 href={run.videoUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -1311,8 +1341,8 @@ const getDefaultSeason = (seasons) => {
       };
 
       const RunCard = ({ run, onSelect, isSelected }) => {
-        const charCost = run.charCost ?? 0;
-        const wepCost = run.wepCost ?? 0;
+                  {"\u5bfe\u8c61\u306e\u8a18\u9332\u30c7\u30fc\u30bf\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002"}
+                  {"\u5bfe\u8c61\u306e\u8a18\u9332\u30c7\u30fc\u30bf\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002"}
         const selectedClass = isSelected ? "ring-2 ring-[#36a1f0]" : "";
 
         return (
@@ -1416,6 +1446,9 @@ const getDefaultSeason = (seasons) => {
           { characterId: "furina", cons: 0 },
           { characterId: "xiangling", cons: 6 },
         ]);
+        const [activeSlot, setActiveSlot] = useState(0);
+        const [charSearch, setCharSearch] = useState("");
+        const [charElement, setCharElement] = useState("all");
         const [weapons, setWeapons] = useState([
           { weaponId: "s5", refine: 1 },
           { weaponId: "s4", refine: 5 },
@@ -1430,11 +1463,7 @@ const getDefaultSeason = (seasons) => {
         const [season, setSeason] = useState(seasons[0] || "5.3");
         const [isFestival, setIsFestival] = useState(false);
         const [videoUrl, setVideoUrl] = useState("");
-        const [comment, setComment] = useState("");
-        const [tagsInput, setTagsInput] = useState("");
         const [error, setError] = useState("");
-
-        if (!isOpen) return null;
 
         const partyInput = chars.map((char) => ({
           characterId: char.characterId,
@@ -1448,29 +1477,61 @@ const getDefaultSeason = (seasons) => {
         const charOnly = calcCharCost(partyInput);
         const wepOnly = calcWeaponCost(weaponInput);
 
+        const normalizedQuery = charSearch.trim().toLowerCase();
+        const filteredChars = Object.values(CHAR_DB).filter((c) => {
+          const name = (c.name || "").toLowerCase();
+          const jp = c.jpName || "";
+          const matchesQuery = !normalizedQuery || name.includes(normalizedQuery) || jp.includes(charSearch.trim());
+          const matchesElement = charElement === "all" || c.element === charElement;
+          return matchesQuery && matchesElement;
+        });
+
         let bracket = 4;
         if (charOnly <= 3 && wepOnly <= 1) bracket = 1;
         else if (charOnly <= 6 && wepOnly <= 2) bracket = 2;
         else if (charOnly <= 12 && wepOnly <= 3) bracket = 3;
 
         return (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-[#ebebeb]">
-              <div className="flex justify-between items-center mb-6 border-b border-[#f0f2f5] pb-4">
-                <h2 className="text-xl font-bold flex items-center gap-2 text-[#333333]">
-                  <Plus className="text-[#36a1f0]" /> 記録提出 (コスト計算)
-                </h2>
-                <button onClick={onClose} className="text-[#909399] hover:text-[#333333] p-1 rounded-full hover:bg-[#f4f4f5] transition-colors">
-                  <X size={20} />
-                </button>
-              </div>
+          <section id="submit-run" className="max-w-6xl mx-auto px-4 py-12">
+            <div className="flex items-center justify-between mb-4">
+              <button
+                type="button"
+                onClick={() => {
+                  if (onClose) onClose();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="text-sm font-semibold text-[#333333] bg-white border border-[#dcdfe6] rounded-full px-4 py-2 hover:bg-[#f4f4f5] flex items-center gap-2"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M19 12H5" />
+                  <path d="M11 6L5 12L11 18" />
+                </svg>
+                {"\u30db\u30fc\u30e0\u306b\u623b\u308b"}
+              </button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-8">
+              <div className="bg-white rounded-2xl w-full p-6 shadow-sm border border-[#ebebeb]">
+                <div className="flex items-center gap-3 mb-6 border-b border-[#f0f2f5] pb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-[#333333]">
+                    <Plus className="text-[#36a1f0]" /> {"\u8a18\u9332\u63d0\u51fa (\u30b3\u30b9\u30c8\u8a08\u7b97)"}
+                  </h2>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
+              <div className="space-y-8">
                   <div className="space-y-2">
                     <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
-                      <User size={16} /> 記録情報
+                      <User size={16} /> {"\u8d70\u8005\u60c5\u5831"}
                     </h3>
+                    <p className="text-xs text-[#909399] mb-3">{"\u30e6\u30fc\u30b6\u30fc\u60c5\u5831\u3068\u8a18\u9332\u60c5\u5831\u3092\u5165\u529b"}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <input
                         className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm"
@@ -1521,74 +1582,140 @@ const getDefaultSeason = (seasons) => {
                         checked={isFestival}
                         onChange={(e) => setIsFestival(e.target.checked)}
                       />
-                      Festival 記録
+                      {"\u30d5\u30a7\u30b9\u8a18\u9332"}
                     </label>
                     <input
                       className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
-                      placeholder="Video URL"
+                      placeholder={"\u52d5\u753bURL"}
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
-                    />
-                    <input
-                      className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
-                      placeholder="Tags (comma separated)"
-                      value={tagsInput}
-                      onChange={(e) => setTagsInput(e.target.value)}
-                    />
-                    <textarea
-                      className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-sm w-full"
-                      placeholder="Comment"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      rows={2}
-                    />
+                    />                    
                     {error && <div className="text-xs text-red-500">{error}</div>}
                   </div>
-                  <div>
+                  <div className="pt-6 border-t border-[#f0f2f5]">
                     <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
-                      <User size={16} /> パーティ構成
+                      <User size={16} /> {"\u7de8\u6210\uff08\u30ad\u30e3\u30e9\u9078\u629e\uff09"}
                     </h3>
-                    <div className="space-y-2">
-                      {chars.map((char, i) => (
-                        <div key={i} className="flex gap-2 items-center text-sm">
-                          <span className="w-6 text-[#909399] font-mono text-xs">#{i+1}</span>
+                    <p className="text-xs text-[#909399] mb-3">{"\u30e1\u30a4\u30f3\u30a2\u30bf\u30c3\u30ab\u30fc\u3092\u5148\u982d\u306b\u30014\u4eba\u5206\u9078\u629e"}</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        {chars.map((char, i) => {
+                          const isActive = i === activeSlot;
+                          return (
+                            <button
+                              key={`slot-${i}`}
+                              onClick={() => setActiveSlot(i)}
+                              className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-sm transition-all ${
+                                isActive ? "border-[#36a1f0] bg-[#e8f4ff]" : "border-[#ebebeb] bg-white"
+                              }`}
+                            >
+                              <CharacterImage
+                                characterId={char.characterId}
+                                variant="circle"
+                                alt={CHAR_DB[char.characterId]?.jpName || CHAR_DB[char.characterId]?.name || ""}
+                                className="w-9 h-9 rounded-md object-cover"
+                              />
+                              <span className="text-xs text-[#909399]">#{i + 1}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-[#909399]">
+                        <div>
+                          {"\u9078\u629e\u4e2d"}: #{activeSlot + 1} / {CHAR_DB[chars[activeSlot].characterId]?.jpName || CHAR_DB[chars[activeSlot].characterId]?.name || ""}
+                        </div>
+                        {CHAR_DB[chars[activeSlot].characterId]?.type === "limited" && (
                           <select
-                            className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] flex-1 outline-none transition-all text-[#606266]"
-                            value={char.characterId}
+                            className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-xs"
+                            value={chars[activeSlot].cons}
                             onChange={(e) => {
                               const newChars = [...chars];
-                              newChars[i].characterId = e.target.value;
-                              newChars[i].cons = 0;
+                              newChars[activeSlot].cons = parseInt(e.target.value, 10);
                               setChars(newChars);
                             }}
                           >
-                            {Object.values(CHAR_DB).map((c) => (
-                              <option key={c.id} value={c.id}>{c.jpName} ({c.name})</option>
+                            {[...Array(7)].map((_, n) => (
+                              <option key={n} value={n}>C{n}</option>
                             ))}
                           </select>
+                        )}
+                      </div>
 
-                          {CHAR_DB[char.characterId]?.type === 'limited' && (
-                            <select
-                              className="bg-[#f4f4f5] rounded-md px-2 py-1.5 border border-transparent hover:border-[#dcdfe6] focus:bg-white focus:border-[#36a1f0] w-20 outline-none transition-all text-[#606266]"
-                              value={char.cons}
-                              onChange={(e) => {
+                                            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                        <input
+                          className="bg-white border border-[#dcdfe6] rounded-md px-2 py-1 text-xs"
+                          placeholder={"キャラ名で検索"}
+                          value={charSearch}
+                          onChange={(e) => setCharSearch(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          className="text-xs text-[#606266] border border-[#dcdfe6] rounded-md px-2"
+                          onClick={() => setCharSearch("")}
+                        >
+                          {"クリア"}
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { key: "all", label: "\u5168\u3066" },
+                          { key: "pyro", label: "\u708e" },
+                          { key: "hydro", label: "\u6c34" },
+                          { key: "electro", label: "\u96f7" },
+                          { key: "cryo", label: "\u6c37" },
+                          { key: "anemo", label: "\u98a8" },
+                          { key: "geo", label: "\u5ca9" },
+                          { key: "dendro", label: "\u8349" },
+                        ].map((item) => (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => setCharElement(item.key)}
+                            className={`px-2 py-1 text-xs rounded-full border ${
+                              charElement === item.key
+                                ? "bg-black text-white border-black"
+                                : "bg-white text-[#606266] border-[#dcdfe6]"
+                            }`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-40 overflow-y-auto p-2 bg-[#f4f4f5] rounded-lg border border-[#ebebeb]">
+                        {filteredChars.map((c) => {
+                          const isSelected = c.id === chars[activeSlot].characterId;
+                          return (
+                            <button
+                              key={`pick-${c.id}`}
+                              onClick={() => {
                                 const newChars = [...chars];
-                                newChars[i].cons = parseInt(e.target.value, 10);
+                                newChars[activeSlot].characterId = c.id;
+                                newChars[activeSlot].cons = 0;
                                 setChars(newChars);
                               }}
+                              className={`relative w-full aspect-square rounded-md border transition-all ${
+                                isSelected ? "border-[#36a1f0] bg-white" : "border-[#dcdfe6] bg-white"
+                              }`}
                             >
-                              {[...Array(7)].map((_, n) => <option key={n} value={n}>{n}凸</option>)}
-                            </select>
-                          )}
-                        </div>
-                      ))}
+                              <CharacterImage
+                                characterId={c.id}
+                                variant="circle"
+                                alt={c.jpName || c.name}
+                                className="w-full h-full object-cover rounded-md"
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
-                  <div>
+                  <div className="pt-6 border-t border-[#f0f2f5]">
                     <h3 className="font-bold text-[#606266] border-l-4 border-[#36a1f0] pl-2 mb-3 text-sm flex items-center gap-2">
-                      <Swords size={16} /> 武器構成
+                      <Swords size={16} /> {"\u6b66\u5668\u9078\u629e"}
                     </h3>
+                    <p className="text-xs text-[#909399] mb-3">{"\u5404\u30ad\u30e3\u30e9\u306b\u88c5\u5099\u3059\u308b\u6b66\u5668\u3068\u7cbe\u935b\u3092\u9078\u629e"}</p>
                     <div className="space-y-2">
                       {weapons.map((wep, i) => (
                         <div key={i} className="flex gap-2 items-center text-sm">
@@ -1626,41 +1753,6 @@ const getDefaultSeason = (seasons) => {
                   </div>
                 </div>
 
-                <div className="bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center text-center border border-[#ebebeb]">
-                  <div className="text-xs font-bold text-[#909399] tracking-widest uppercase mb-2">Result Bracket</div>
-                  <div className={`text-6xl font-black mb-4 tracking-tighter ${
-                    bracket === 1 ? 'text-green-500' :
-                    bracket === 2 ? 'text-blue-500' :
-                    bracket === 3 ? 'text-purple-500' : 'text-orange-500'
-                  }`}>
-                    {bracket === 4 ? "Unl." : `B${bracket}`}
-                  </div>
-                  <BracketBadge bracket={bracket} />
-
-                  <div className="mt-8 w-full space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
-                        <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><User size={10} /> Character Cost</div>
-                        <div className="font-mono font-bold text-xl text-[#333333]">{charOnly}</div>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
-                        <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><Swords size={10} /> Weapon Cost</div>
-                        <div className="font-mono font-bold text-xl text-[#333333]">{wepOnly}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 text-xs text-left bg-white p-4 rounded-xl border border-[#ebebeb] w-full shadow-sm">
-                    <p className="font-bold text-[#606266] mb-2 flex items-center gap-1"><Info size={12}/> 判定条件 (AND):</p>
-                    <ul className="space-y-1.5 text-[#909399] font-mono">
-                      <li className={`flex justify-between ${bracket === 1 ? "text-green-600 font-bold" : ""}`}><span>Low</span><span>Char≤3 & Wep≤1</span></li>
-                      <li className={`flex justify-between ${bracket === 2 ? "text-blue-600 font-bold" : ""}`}><span>Middle</span><span>Char≤6 & Wep≤2</span></li>
-                      <li className={`flex justify-between ${bracket === 3 ? "text-purple-600 font-bold" : ""}`}><span>High</span><span>Char≤12 & Wep≤3</span></li>
-                      <li className={`flex justify-between ${bracket === 4 ? "text-orange-600 font-bold" : ""}`}><span>Unlimited</span><span>その他</span></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
 
               <div className="mt-8 flex justify-end gap-3 border-t border-[#f0f2f5] pt-6">
                 <button onClick={onClose} className="px-5 py-2.5 text-[#606266] hover:bg-[#f4f4f5] rounded-full transition-colors text-sm font-bold">キャンセル</button>
@@ -1669,22 +1761,18 @@ const getDefaultSeason = (seasons) => {
                     const hasEmptyChar = partyInput.some((c) => !c.characterId);
                     const hasEmptyWeapon = weaponInput.some((w) => !w.weaponId);
                     if (!userId || !userName || !timeStr || !date || !season) {
-                      setError("User/Time/Date/Seasonを入力してください。");
+                      setError("User/Time/Date/Season are required.");
                       return;
                     }
                     if (hasEmptyChar || hasEmptyWeapon) {
-                      setError("パーティと武器を選択してください。");
+                      setError("Party and weapons are required.");
                       return;
                     }
                     if (!Number.isFinite(toSeconds(timeStr))) {
-                      setError("Time形式が不正です。");
+                      setError("Time format is invalid.");
                       return;
                     }
 
-                    const tags = tagsInput
-                      .split(",")
-                      .map((t) => t.trim())
-                      .filter(Boolean);
                     const newRun = {
                       id: `r${Date.now()}`,
                       userId,
@@ -1699,10 +1787,9 @@ const getDefaultSeason = (seasons) => {
                       date,
                       season,
                       isFestival,
-                      comment: comment || undefined,
-                      tags,
+                      tags: [],
                     };
-                    setError("");
+                    setError("Party and weapons are required.");
                     onSubmit(newRun);
                     onClose();
                   }}
@@ -1712,25 +1799,79 @@ const getDefaultSeason = (seasons) => {
                 </button>
               </div>
             </div>
-          </div>
+
+              <div className="bg-[#f9f9f9] p-6 rounded-2xl flex flex-col items-center justify-center text-center border border-[#ebebeb] lg:sticky lg:top-24 self-start">
+                <div className="text-xs font-bold text-[#909399] tracking-widest uppercase mb-2">Result Bracket</div>
+                <div className={`text-6xl font-black mb-4 tracking-tighter ${
+                  bracket === 1 ? 'text-green-500' :
+                  bracket === 2 ? 'text-blue-500' :
+                  bracket === 3 ? 'text-purple-500' : 'text-orange-500'
+                }`}>
+                  {bracket === 4 ? "Unl." : `B${bracket}`}
+                </div>
+                <BracketBadge bracket={bracket} />
+
+                <div className="mt-8 w-full space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
+                      <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><User size={10} /> Character Cost</div>
+                      <div className="font-mono font-bold text-xl text-[#333333]">{charOnly}</div>
+                    </div>
+                    <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
+                      <div className="text-xs text-[#909399] mb-1 flex items-center justify-center gap-1"><Swords size={10} /> Weapon Cost</div>
+                      <div className="font-mono font-bold text-xl text-[#333333]">{wepOnly}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 w-full">
+                  <div className="p-3 bg-white rounded-xl shadow-sm border border-[#ebebeb]">
+                    <div className="text-xs text-[#909399] mb-1">{"\u5408\u8a08\u30b3\u30b9\u30c8"}</div>
+                    <div className="font-mono font-bold text-2xl text-[#111]">{charOnly + wepOnly}</div>
+                    <div className="text-[11px] text-[#909399] mt-1">{"\u30ad\u30e3\u30e9"} {charOnly} + {"\u6b66\u5668"} {wepOnly}</div>
+                  </div>
+                </div>
+
+                <div className="mt-6 text-xs text-left bg-white p-4 rounded-xl border border-[#ebebeb] w-full shadow-sm">
+                  <p className="font-bold text-[#606266] mb-2 flex items-center gap-1"><Info size={12}/> 判定条件 (AND):</p>
+                  <ul className="space-y-1.5 text-[#909399] font-mono">
+                    <li className={`flex justify-between ${bracket === 1 ? "text-green-600 font-bold" : ""}`}><span>Low</span><span>Char≤3 & Wep≤1</span></li>
+                    <li className={`flex justify-between ${bracket === 2 ? "text-blue-600 font-bold" : ""}`}><span>Middle</span><span>Char≤6 & Wep≤2</span></li>
+                    <li className={`flex justify-between ${bracket === 3 ? "text-purple-600 font-bold" : ""}`}><span>High</span><span>Char≤12 & Wep≤3</span></li>
+                    <li className={`flex justify-between ${bracket === 4 ? "text-orange-600 font-bold" : ""}`}><span>Unlimited</span><span>{"\u305d\u306e\u4ed6"}</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
         );
       };
 
       const RunDetailModal = ({ isOpen, onClose, run }) => {
         if (!isOpen) return null;
-
         if (!run) {
           return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={onClose}>
               <div className="bg-white rounded-2xl max-w-md w-full shadow-xl border border-black/10" onClick={(event) => event.stopPropagation()}>
-                <div className="flex items-center justify-between px-6 py-4 border-b border-black/10">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[#ebebeb]">
                   <div className="text-xl font-semibold text-black">記録が見つかりません</div>
-                  <button className="rounded-full border border-black/20 w-8 h-8 flex items-center justify-center" onClick={onClose} aria-label="Close">
-                    <X size={16} />
+                  <button className="rounded-full border border-[#dcdfe6] w-8 h-8 flex items-center justify-center" onClick={onClose} aria-label="Close">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4 text-[#606266]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 6L18 18" />
+                      <path d="M18 6L6 18" />
+                    </svg>
                   </button>
                 </div>
                 <div className="px-6 py-6 text-sm text-black/70">
-                  対象の記録データが見つかりません。もう一度お試しください。
+                  {"\u5bfe\u8c61\u306e\u8a18\u9332\u30c7\u30fc\u30bf\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002"}
                 </div>
               </div>
             </div>
@@ -1755,15 +1896,27 @@ const getDefaultSeason = (seasons) => {
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={onClose}>
             <div className="bg-white rounded-2xl max-w-4xl w-full shadow-xl border border-black/10" onClick={(event) => event.stopPropagation()}>
-              <div className="flex items-center justify-between px-6 py-4 border-b border-black/10">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#ebebeb]">
                 <div>
-                  <div className="text-sm text-black/60">Run Detail</div>
+                  <div className="text-sm text-[#909399]">Run Detail</div>
                   <div className="text-xl font-semibold text-black">
                     {run.userName} ・ {run.time}
                   </div>
                 </div>
-                <button className="rounded-full border border-black/20 w-8 h-8 flex items-center justify-center" onClick={onClose} aria-label="Close">
-                  <X size={16} />
+                <button className="rounded-full border border-[#dcdfe6] w-8 h-8 flex items-center justify-center" onClick={onClose} aria-label="Close">
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4 text-[#606266]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M6 6L18 18" />
+                    <path d="M18 6L6 18" />
+                  </svg>
                 </button>
               </div>
 
@@ -1781,7 +1934,7 @@ const getDefaultSeason = (seasons) => {
                       />
                     </div>
                   ) : (
-                    <div className="w-full aspect-video rounded-xl border border-dashed border-black/20 flex items-center justify-center text-sm text-black/60">
+                    <div className="w-full aspect-video rounded-xl border border-dashed border-[#dcdfe6] flex items-center justify-center text-sm text-[#909399]">
                       動画が登録されていません
                     </div>
                   )}
@@ -1814,12 +1967,10 @@ const getDefaultSeason = (seasons) => {
                             />
                             <div>
                               <div className="font-medium text-black">{characterName}</div>
-                              <div className="text-xs text-black/60">C{member.cons ?? 0}</div>
                             </div>
                           </div>
                           <div className="text-right">
                             <div className="text-sm text-black">{weaponName}</div>
-                            <div className="text-xs text-black/60">R{weapon?.refine ?? 1}</div>
                           </div>
                         </div>
                       ))}
@@ -1840,10 +1991,225 @@ const getDefaultSeason = (seasons) => {
         );
       };
 
+      const FilterModal = ({
+        isOpen,
+        onClose,
+        onApply,
+        onReset,
+        initialIncludeIds,
+        initialExcludeIds,
+        initialPlatform,
+        initialIncludeMode,
+        characters,
+      }) => {
+        const [includeIds, setIncludeIds] = useState([]);
+        const [excludeIds, setExcludeIds] = useState([]);
+        const [platform, setPlatform] = useState(null);
+        const [includeMode, setIncludeMode] = useState("or");
+
+        useEffect(() => {
+          if (!isOpen) return;
+          setIncludeIds(initialIncludeIds || []);
+          setExcludeIds(initialExcludeIds || []);
+          setPlatform(initialPlatform || null);
+          setIncludeMode(initialIncludeMode || "or");
+        }, [isOpen, initialIncludeIds, initialExcludeIds, initialPlatform, initialIncludeMode]);
+
+        const toggleInclude = (charId) => {
+          if (includeIds.includes(charId)) {
+            setIncludeIds(includeIds.filter((id) => id !== charId));
+          } else {
+            setIncludeIds([...includeIds, charId]);
+            if (excludeIds.includes(charId)) {
+              setExcludeIds(excludeIds.filter((id) => id !== charId));
+            }
+          }
+        };
+
+        const toggleExclude = (charId) => {
+          if (excludeIds.includes(charId)) {
+            setExcludeIds(excludeIds.filter((id) => id !== charId));
+          } else {
+            setExcludeIds([...excludeIds, charId]);
+            if (includeIds.includes(charId)) {
+              setIncludeIds(includeIds.filter((id) => id !== charId));
+            }
+          }
+        };
+
+        const applyFilters = () => {
+          onApply({
+            includeIds,
+            excludeIds,
+            platform,
+            includeMode,
+          });
+        };
+
+
+        if (!isOpen) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" onClick={onClose}>
+            <div
+              className="bg-white text-[#333333] rounded-2xl max-w-5xl w-full max-h-[85vh] shadow-sm border border-[#ebebeb] flex flex-col"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-6 py-5 border-b border-[#ebebeb] shrink-0">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.3em] text-[#909399]">Filter Catalog</div>
+                  <div className="text-2xl font-semibold">{"絞り込み"}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-[#f4f4f5] rounded-full border border-[#ebebeb] overflow-hidden">
+                    {[
+                      { key: "and", label: "かつ" },
+                      { key: "or", label: "または" },
+                    ].map((item) => (
+                      <button
+                        key={item.key}
+                        className={`px-4 py-1.5 text-xs font-semibold ${
+                          includeMode === item.key ? "bg-cyan-400 text-black" : "text-[#909399]"
+                        }`}
+                        onClick={() => setIncludeMode(item.key)}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button className="rounded-full border border-[#dcdfe6] w-8 h-8 flex items-center justify-center text-[#606266]" onClick={(event) => {
+                    event.stopPropagation();
+                    onClose();
+                  }} aria-label="Close">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4 text-[#606266]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 6L18 18" />
+                      <path d="M18 6L6 18" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="px-6 py-6 space-y-8 overflow-y-auto flex-1">
+                <div>
+                  <div className="text-sm font-semibold text-[#606266] mb-3">{"メインアタッカー (含む)"}</div>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    {characters.map((char) => {
+                      const isActive = includeIds.includes(char.id);
+                      return (
+                        <button
+                          key={`include-${char.id}`}
+                          className={`relative aspect-square rounded-md border transition-all ${
+                            isActive ? "bg-[#e8f4ff] border-[#6aa8ff]" : "bg-[#f4f4f5] border-[#ebebeb] hover:border-[#c0c4cc]"
+                          }`}
+                          onClick={() => toggleInclude(char.id)}
+                        >
+                          <CharacterImage
+                            characterId={char.id}
+                            variant="circle"
+                            alt={char.jpName || char.name}
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-sm font-semibold text-[#606266] mb-3">{"除外キャラ"}</div>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    {characters.map((char) => {
+                      const isActive = excludeIds.includes(char.id);
+                      return (
+                        <button
+                          key={`exclude-${char.id}`}
+                          className={`relative aspect-square rounded-md border transition-all ${
+                            isActive ? "bg-[#ffecec] border-[#ff6b6b]" : "bg-[#f4f4f5] border-[#ebebeb] hover:border-[#c0c4cc]"
+                          }`}
+                          onClick={() => toggleExclude(char.id)}
+                        >
+                          <CharacterImage
+                            characterId={char.id}
+                            variant="circle"
+                            alt={char.jpName || char.name}
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-sm font-semibold text-[#606266] mb-3">{"プラットフォーム"}</div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {["PC", "PS5", "Mobile"].map((item) => {
+                      const Icon = PlatformIcons[item] || PlatformIcons.PC;
+                      const active = platform === item;
+                      return (
+                        <button
+                          key={item}
+                          className={`flex items-center gap-2 px-5 py-2 rounded-full border text-sm ${
+                            active ? "bg-cyan-400 text-black border-cyan-300" : "bg-white text-[#606266] border-[#dcdfe6]"
+                          }`}
+                          onClick={() => setPlatform(active ? null : item)}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span>{item}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-6 py-5 border-t border-[#ebebeb] flex items-center justify-between shrink-0">
+                <button
+                  className="text-sm text-[#909399] underline"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setIncludeIds([]);
+                    setExcludeIds([]);
+                    setPlatform(null);
+                    setIncludeMode("or");
+                    onReset?.();
+                  }}
+                >
+                  {"リセット"}
+                </button>
+                <div className="flex items-center gap-3">
+                  <button className="px-4 py-2 rounded-full border border-[#dcdfe6] text-sm text-[#606266]" onClick={(event) => { event.stopPropagation(); onClose(); }}>
+                    {"キャンセル"}
+                  </button>
+                  <button
+                    className="px-6 py-2 rounded-full bg-cyan-400 text-black text-sm font-semibold"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      applyFilters();
+                      onClose();
+                    }}
+                  >
+                    {"適用"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
       const App = () => {
         const leaderboardRef = useRef(null);
         const [runs, setRuns] = useState(applyWRTag(RUNS));
-        const seasons = ["5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8", "Luna1", "Luna2", "Luna3"];
+        const seasons = ["Luna3", "Luna2", "Luna1", "5.8", "5.7", "5.6", "5.5", "5.4", "5.3", "5.2", "5.1", "5.0"];
 
         const [activeSeason, setActiveSeason] = useState(getDefaultSeason(seasons));
         const [activeTab, setActiveTab] = useState("main");
@@ -1851,13 +2217,15 @@ const getDefaultSeason = (seasons) => {
         const [filterPlatform, setFilterPlatform] = useState(null);
         const [includeInput, setIncludeInput] = useState("");
         const [excludeInput, setExcludeInput] = useState("");
+        const [includeMode, setIncludeMode] = useState("or");
         const [sortMode, setSortMode] = useState("time");
         const [enableRLogic, setEnableRLogic] = useState(false);
         const [selectedRunId, setSelectedRunId] = useState(null);
         const [isDetailOpen, setIsDetailOpen] = useState(false);
+        const [isFilterOpen, setIsFilterOpen] = useState(false);
+        const [showSubmitPage, setShowSubmitPage] = useState(false);
         const [subHeaderTab, setSubHeaderTab] = useState("NPUI");
         const [leaderboardView, setLeaderboardView] = useState("rta");
-        const [isModalOpen, setIsModalOpen] = useState(false);
         const [isOtherMenuOpen, setIsOtherMenuOpen] = useState(false);
         const topRowRef = useRef(null);
         const [showTopScrollLeft, setShowTopScrollLeft] = useState(false);
@@ -1865,6 +2233,7 @@ const getDefaultSeason = (seasons) => {
 
         const includeIds = parseAttackerInput(includeInput);
         const excludeIds = parseAttackerInput(excludeInput);
+        const characters = Object.values(CHAR_DB);
         const filters = {
           season: activeSeason,
           isFestival: activeTab === "festival",
@@ -1928,7 +2297,7 @@ const getDefaultSeason = (seasons) => {
 
         return (
           <div className="min-h-screen text-[#333333] font-sans pb-20">
-            <nav className="bg-white sticky top-0 z-40 border-b border-black/10">
+            <nav className="bg-white sticky top-0 z-40 border-b border-[#ebebeb]">
               <div className="max-w-[1280px] mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between header-font">
                 {/* !!!!!!!! HEADER PADDING: adjust px-* and py-* here !!!!!!!! */}
                 <div className="flex items-center gap-4 md:gap-6">
@@ -1959,7 +2328,10 @@ const getDefaultSeason = (seasons) => {
 
                 <div className="flex items-center gap-3 md:gap-4">
                   <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                      setShowSubmitPage(true);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
                     className="bg-black text-white rounded-full text-[16px] md:text-[20px] font-medium flex items-center justify-center md:justify-start gap-0 md:gap-2 w-9 h-9 md:w-auto md:h-auto px-0 md:px-5 py-0 md:py-2.5"
                   >
                     <span className="md:hidden flex items-center justify-center w-full h-full"><Plus size={20} /></span>
@@ -1970,7 +2342,18 @@ const getDefaultSeason = (seasons) => {
                 </div>
               </div>
             </nav>
-            {activeTab === "main" && (
+            {showSubmitPage ? (
+              <CalculatorModal
+                onClose={() => {
+                  setShowSubmitPage(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                onSubmit={handleSubmitRun}
+                seasons={seasons}
+              />
+            ) : (
+              <>
+                {activeTab === "main" && (
               <div
                 className="relative w-full h-[320px] md:h-[560px] overflow-hidden mb-8 bg-center bg-cover"
                 style={{ backgroundImage: `url(${HERO_IMAGE_URL})` }}
@@ -2004,7 +2387,7 @@ const getDefaultSeason = (seasons) => {
                           {buttonLabel}
                         </button>
                         {label === "その他" && isOtherMenuOpen && (
-                          <div className="absolute left-1/2 -translate-x-1/2 mt-2 bg-black/80 border border-white/20 rounded-lg py-2 w-40 text-white text-xs">
+                          <div className="absolute left-1/2 -translate-x-1/2 mt-2 bg-black/80 border border-[#dcdfe6] rounded-lg py-2 w-40 text-white text-xs">
                             {["Npui飯", "淵下宮", "マルチNpui", "マルチPui", "マルチPUA"].map((opt) => (
                               <button
                                 key={opt}
@@ -2105,13 +2488,13 @@ const getDefaultSeason = (seasons) => {
                                     <div className="mt-2 space-y-2">
                                       <div className="flex justify-end items-center gap-2 text-[16px] text-black">
                                         <button
-                                        className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
+                                        className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
                                         onClick={(event) => event.stopPropagation()}
                                       >
                                         <LikeIcon size={14} className="text-black" />
                                       </button>
                                         <button
-                                        className="border border-black/20 rounded-full px-2 py-0.5 bg-white/80"
+                                        className="border border-[#dcdfe6] rounded-full px-2 py-0.5 bg-white/80"
                                         onClick={(event) => event.stopPropagation()}
                                       >
                                         <CommentIcon size={14} className="text-black" />
@@ -2140,7 +2523,7 @@ const getDefaultSeason = (seasons) => {
                       </div>
                       {showTopScrollLeft && (
                         <button
-                          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 border border-black/20 rounded-full w-8 h-8 items-center justify-center z-20 shadow-sm"
+                          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 border border-[#dcdfe6] rounded-full w-8 h-8 items-center justify-center z-20 shadow-sm"
                           aria-label="Scroll left"
                           onClick={() => {
                             if (topRowRef.current) {
@@ -2156,7 +2539,7 @@ const getDefaultSeason = (seasons) => {
                       )}
                       {showTopScrollRight && (
                         <button
-                          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 border border-black/20 rounded-full w-8 h-8 items-center justify-center z-20 shadow-sm"
+                          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 border border-[#dcdfe6] rounded-full w-8 h-8 items-center justify-center z-20 shadow-sm"
                           aria-label="Scroll right"
                           onClick={() => {
                             if (topRowRef.current) {
@@ -2176,7 +2559,7 @@ const getDefaultSeason = (seasons) => {
                   <div ref={leaderboardRef} className="bg-white rounded-xl border border-black/10 p-4 md:p-6 shadow-sm mb-10">
                     <div className="text-[20px] font-semibold text-black mb-4">リーダーボード</div>
                     <div className="flex items-center justify-center mb-4">
-                      <div className="flex items-center border border-black/20 rounded-full overflow-hidden min-w-[520px]">
+                      <div className="flex items-center border border-[#dcdfe6] rounded-full overflow-hidden min-w-[520px]">
                         {[
                           { key: "rta", label: "RTAランキング" },
                           { key: "char", label: "キャラTOPプレイヤー" },
@@ -2195,7 +2578,10 @@ const getDefaultSeason = (seasons) => {
                       </div>
                     </div>
                     <div className="flex items-center mb-3">
-                      <button className="border border-black/20 rounded-full w-9 h-9 flex items-center justify-center">
+                      <button
+                        className="border border-[#dcdfe6] rounded-full w-9 h-9 flex items-center justify-center"
+                        onClick={() => setIsFilterOpen(true)}
+                      >
                         <FilterIcons.Funnel className="w-5 h-5 text-black" />
                       </button>
                     </div>
@@ -2213,7 +2599,7 @@ const getDefaultSeason = (seasons) => {
                           className={`pb-2 border-b-2 flex-1 text-center ${
                             filterBracket === item.value || (item.value === null && filterBracket === null)
                               ? "border-black text-black"
-                              : "border-transparent text-black/60 hover:text-black"
+                              : "border-transparent text-[#909399] hover:text-black"
                           }`}
                         >
                           {item.label}
@@ -2268,12 +2654,28 @@ const getDefaultSeason = (seasons) => {
               onClose={() => setIsDetailOpen(false)}
               run={selectedRun}
             />
-            <CalculatorModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              onSubmit={handleSubmitRun}
-              seasons={seasons}
+            <FilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onReset={() => {
+                setIncludeInput("");
+                setExcludeInput("");
+                setFilterPlatform(null);
+              }}
+              onApply={({ includeIds: nextInclude, excludeIds: nextExclude, platform, includeMode: nextIncludeMode }) => {
+                setIncludeInput(nextInclude.join(","));
+                setExcludeInput(nextExclude.join(","));
+                setFilterPlatform(platform || null);
+                setIncludeMode(nextIncludeMode || "or");
+              }}
+              initialIncludeIds={includeIds}
+              initialExcludeIds={excludeIds}
+              initialPlatform={filterPlatform}
+              initialIncludeMode={includeMode}
+              characters={characters}
             />
+              </>
+            )}
           </div>
         );
       };
